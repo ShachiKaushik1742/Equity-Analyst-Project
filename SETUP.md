@@ -1,20 +1,20 @@
 # FIN 67110 setup
 
-Verified October 22, 2026:
+Verified October 28, 2026:
 - Python 3.14.7 runs setup_check.py from a terminal.
 - Git installed; local repository initialized.
 - Codex CLI installed and signed in with ChatGPT.
-- Antigravity CLI 1.4.5 installed; authentication still to verify.
-- .env contains placeholders only and is ignored by Git.
+- Antigravity CLI 1.4.5 installed; user confirmed sign-in and that it is open in the adjacent terminal.
+- User confirmed access to LSEG Workspace, WRDS, and S&P Capital IQ.
+- Purdue GenAI Studio key added to .env; verify that a model request succeeds.
+- .env is ignored by Git.
+- GitHub CLI is authenticated; Git remote points to https://github.com/ShachiKaushik1742/Equity-Analyst-Project.git.
+- A post-commit hook pushes new commits to origin/main. The initial push and online .env check are the remaining sync steps.
 
 Still to verify:
-- Orca project FIN67110 added at /Users/shachi/Documents/FIN67110.
-- Codex and Antigravity launched side by side in the main workspace.
-- Codex displays its ready prompt.
-- Antigravity awaits review of Terms of Service & Data Use; sign-in and a model-response check remain.
-- One provider API key works (separate from coding-agent sign-in).
-- Public GitHub repository created and pushed; confirm .env is absent online.
-- WRDS and Capital IQ access confirmed by user; LSEG registration approval pending.
+- Verify the initial push succeeded and .env is absent online.
+- The specified GitHub repository is currently private; the course prerequisite asks for a public repository.
+- Verify the Purdue GenAI Studio key with a model request.
 
 ## Terminal checks
 

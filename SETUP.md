@@ -9,10 +9,10 @@ Verified October 28, 2026:
 - Purdue GenAI Studio key added to .env; verify that a model request succeeds.
 - .env is ignored by Git.
 - GitHub CLI is authenticated; Git remote points to https://github.com/ShachiKaushik1742/Equity-Analyst-Project.git.
-- A post-commit hook pushes new commits to origin/main. The initial push and online .env check are the remaining sync steps.
+- A post-commit hook pushes new commits to origin/main.
+- Initial push verified: .env is absent from the GitHub repository.
 
 Still to verify:
-- Verify the initial push succeeded and .env is absent online.
 - The specified GitHub repository is currently private; the course prerequisite asks for a public repository.
 - Verify the Purdue GenAI Studio key with a model request.
 

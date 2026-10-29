@@ -72,7 +72,7 @@ Analyst interpretation:
 - **Robust top‑line growth combined with exceptional profitability on equity.** Revenue rose 10.14% YoY while ROE stands at 28.4%, far above the industry norm, indicating that Costco can translate sales expansion into high returns for shareholders. The low debt‑to‑equity (0.172) and a sizable free‑cash‑flow generation of $9.38 bn further underscore a strong balance‑sheet position and ample liquidity to fund future store openings or membership initiatives.
 
 ### Material Risk  
-- **Thin operating margin and elevated valuation.** An operating margin of only 3.85% trails peers such as Walmart (4.18%) and Target (4.88%). Coupled with a forward‑looking P/E of 43.6×, the market is pricing in aggressive growth expectations; any slowdown in revenue growth or pressure on membership fees could compress margins and trigger a valuation correction.  
+- **Thin operating margin and elevated valuation.** An operating margin of only 3.85% trails peers such as Walmart (4.18%) and Target (4.88%). The P/E of 43.6× uses the supplied $904.70 share price and FY2026 reported diluted EPS of $20.76; it is not a forward P/E. Any slowdown in revenue growth or pressure on membership fees could compress margins and trigger a valuation correction.
 
 *All figures and interpretations are drawn exclusively from the supplied filings and calculated evidence; no external data or additional calculations have been introduced.*
 
@@ -113,14 +113,14 @@ Financial implications:
 - **Robust top‑line growth combined with exceptional profitability on equity.** Revenue rose 10.14% YoY while ROE stands at 28.4%, far above the industry norm, indicating that Costco can translate sales expansion into high returns for shareholders. The low debt‑to‑equity (0.172) and a sizable free‑cash‑flow generation of $9.38 bn further underscore a strong balance‑sheet position and ample liquidity to fund future store openings or membership initiatives.
 
 ### Material Risk  
-- **Thin operating margin and elevated valuation.** An operating margin of only 3.85% trails peers such as Walmart (4.18%) and Target (4.88%). Coupled with a forward‑looking P/E of 43.6×, the market is pricing in aggressive growth expectations; any slowdown in revenue growth or pressure on membership fees could compress margins and trigger a valuation correction.  
+- **Thin operating margin and elevated valuation.** An operating margin of only 3.85% trails peers such as Walmart (4.18%) and Target (4.88%). The P/E of 43.6× uses the supplied $904.70 share price and FY2026 reported diluted EPS of $20.76; it is not a forward P/E. Any slowdown in revenue growth or pressure on membership fees could compress margins and trigger a valuation correction.
 
 *All figures and interpretations are drawn exclusively from the supplied filings an
 
 ## Investment Recommendation
 
 **Thesis**  
-Costco’s membership‑driven model sustains ~10% top‑line growth and delivers exceptional shareholder returns, highlighted by a **28.4% ROE** (Financial Analyst). Expanding membership (150.4 M) and an 11% gasoline share boost sales, while low leverage (D/E 0.172) and $9.38 bn free cash support further expansion. However, thin operating margins (3.85%) and a high forward P/E (43.6×) signal valuation risk if growth stalls.
+Costco’s membership‑driven model sustains ~10% top‑line growth and delivers exceptional shareholder returns, highlighted by a **28.4% ROE** (Financial Analyst). Expanding membership (150.4 M) and an 11% gasoline share boost sales, while low leverage (D/E 0.172) and $9.38 bn free cash support further expansion. However, thin operating margins (3.85%) and a P/E of 43.6× based on FY2026 reported diluted EPS signal valuation risk if growth stalls.
 
 **Decision** – **Hold**.  
 
@@ -128,4 +128,4 @@ Costco’s membership‑driven model sustains ~10% top‑line growth and deliver
 
 ---
 
-This is a learning exercise, not financial advice. AI assistance: Purdue GenAI Studio. I verified the sources myself; the judgments are mine. Any remaining errors are my own.
+This is a learning exercise, not financial advice. AI assistance: Purdue GenAI Studio. Student verification and judgment are still required.

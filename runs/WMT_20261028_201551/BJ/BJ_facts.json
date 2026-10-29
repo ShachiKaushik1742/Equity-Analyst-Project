@@ -1,0 +1,151 @@
+{
+  "ticker": "BJ",
+  "title": "BJ's Wholesale Club Holdings, Inc.",
+  "cik": "0001531152",
+  "fiscal_year_end": "2026-01-31",
+  "filings": {
+    "10-K": {
+      "accession": "0001531152-26-000007",
+      "accepted": "2026-03-12T20:15:55.000Z",
+      "filing_date": "2026-03-12",
+      "document": "bj-20260131.htm",
+      "index_url": "https://www.sec.gov/Archives/edgar/data/1531152/000153115226000007/index.json"
+    },
+    "10-Q": {
+      "accession": "0001531152-26-000057",
+      "accepted": "2026-08-25T20:32:14.000Z",
+      "filing_date": "2026-08-25",
+      "document": "bj-20260801.htm",
+      "index_url": "https://www.sec.gov/Archives/edgar/data/1531152/000153115226000057/index.json"
+    },
+    "8-K": {
+      "accession": "0001531152-26-000053",
+      "accepted": "2026-08-21T11:03:32.000Z",
+      "filing_date": "2026-08-21",
+      "document": "bj-2026080126x8kex991.htm",
+      "index_url": "https://www.sec.gov/Archives/edgar/data/1531152/000153115226000053/index.json"
+    }
+  },
+  "facts": {
+    "revenue": {
+      "label": "revenue",
+      "value": 21457274000,
+      "unit": "USD",
+      "tag": "RevenueFromContractWithCustomerExcludingAssessedTax",
+      "period_start": "2025-02-02",
+      "period_end": "2026-01-31",
+      "filing": "10-K",
+      "filed": "2026-03-12",
+      "accession": "0001531152-26-000007"
+    },
+    "operating_income": {
+      "label": "operating_income",
+      "value": 816604000,
+      "unit": "USD",
+      "tag": "OperatingIncomeLoss",
+      "period_start": "2025-02-02",
+      "period_end": "2026-01-31",
+      "filing": "10-K",
+      "filed": "2026-03-12",
+      "accession": "0001531152-26-000007"
+    },
+    "net_income": {
+      "label": "net_income",
+      "value": 578377000,
+      "unit": "USD",
+      "tag": "NetIncomeLoss",
+      "period_start": "2025-02-02",
+      "period_end": "2026-01-31",
+      "filing": "10-K",
+      "filed": "2026-03-12",
+      "accession": "0001531152-26-000007"
+    },
+    "diluted_eps": {
+      "label": "diluted_eps",
+      "value": 4.38,
+      "unit": "USD/shares",
+      "tag": "EarningsPerShareDiluted",
+      "period_start": "2025-02-02",
+      "period_end": "2026-01-31",
+      "filing": "10-K",
+      "filed": "2026-03-12",
+      "accession": "0001531152-26-000007"
+    },
+    "equity": {
+      "label": "equity",
+      "value": 2197659000,
+      "unit": "USD",
+      "tag": "StockholdersEquity",
+      "period_start": null,
+      "period_end": "2026-01-31",
+      "filing": "10-K",
+      "filed": "2026-03-12",
+      "accession": "0001531152-26-000007"
+    },
+    "long_term_debt": {
+      "label": "long_term_debt",
+      "value": 399099000,
+      "unit": "USD",
+      "tag": "LongTermDebt",
+      "period_start": null,
+      "period_end": "2026-01-31",
+      "filing": "10-K",
+      "filed": "2026-03-12",
+      "accession": "0001531152-26-000007"
+    },
+    "current_debt": {
+      "label": "current_debt",
+      "value": 120000000,
+      "unit": "USD",
+      "tag": "LongTermDebtCurrent",
+      "period_start": null,
+      "period_end": "2026-01-31",
+      "filing": "10-K",
+      "filed": "2026-03-12",
+      "accession": "0001531152-26-000007"
+    },
+    "cash_from_operations": {
+      "label": "cash_from_operations",
+      "value": 1030056000,
+      "unit": "USD",
+      "tag": "NetCashProvidedByUsedInOperatingActivities",
+      "period_start": "2025-02-02",
+      "period_end": "2026-01-31",
+      "filing": "10-K",
+      "filed": "2026-03-12",
+      "accession": "0001531152-26-000007"
+    },
+    "capex": {
+      "label": "capex",
+      "value": 702048000,
+      "unit": "USD",
+      "tag": "PaymentsToAcquirePropertyPlantAndEquipment",
+      "period_start": "2025-02-02",
+      "period_end": "2026-01-31",
+      "filing": "10-K",
+      "filed": "2026-03-12",
+      "accession": "0001531152-26-000007"
+    },
+    "revenue_prior_year": {
+      "label": "revenue_prior_year",
+      "value": 20501804000,
+      "unit": "USD",
+      "tag": "RevenueFromContractWithCustomerExcludingAssessedTax",
+      "period_start": "2024-02-04",
+      "period_end": "2025-02-01",
+      "filing": "10-K",
+      "filed": "2026-03-12",
+      "accession": "0001531152-26-000007"
+    }
+  },
+  "quarter": {
+    "revenue_current": 6226579.0,
+    "revenue_prior_quarter": 5380240.0,
+    "revenue_growth": 0.15730506445809112,
+    "revenue_release_line": "Total revenues 6,226,579 5,380,240 15.7 % 11,888,079 10,533,723 12.9 %",
+    "diluted_eps_current": null,
+    "diluted_eps_prior_quarter": null,
+    "eps_release_line": "",
+    "release_units": "Dollars in millions except per-share data, as captioned in the release; quarter comparison uses the first two columns."
+  }
+}

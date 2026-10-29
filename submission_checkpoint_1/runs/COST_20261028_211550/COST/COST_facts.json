@@ -1,0 +1,154 @@
+{
+  "ticker": "COST",
+  "title": "COSTCO WHOLESALE CORP /NEW",
+  "cik": "0000909832",
+  "fiscal_year_end": "2026-08-30",
+  "filings": {
+    "10-K": {
+      "accession": "0000909832-26-000093",
+      "accepted": "2026-10-07T01:13:15.000Z",
+      "filing_date": "2026-10-07",
+      "document": "cost-20260830.htm",
+      "index_url": "https://www.sec.gov/Archives/edgar/data/909832/000090983226000093/index.json"
+    },
+    "10-Q": {
+      "accession": "0000909832-26-000051",
+      "accepted": "2026-06-03T20:43:00.000Z",
+      "filing_date": "2026-06-03",
+      "document": "cost-20260510.htm",
+      "index_url": "https://www.sec.gov/Archives/edgar/data/909832/000090983226000051/index.json"
+    },
+    "8-K": {
+      "accession": "0000909832-26-000084",
+      "accepted": "2026-09-24T20:17:37.000Z",
+      "filing_date": "2026-09-24",
+      "document": "costex9918-k92426.htm",
+      "index_url": "https://www.sec.gov/Archives/edgar/data/909832/000090983226000084/index.json"
+    }
+  },
+  "facts": {
+    "revenue": {
+      "label": "revenue",
+      "value": 303154000000,
+      "unit": "USD",
+      "tag": "RevenueFromContractWithCustomerExcludingAssessedTax",
+      "period_start": "2025-09-01",
+      "period_end": "2026-08-30",
+      "filing": "10-K",
+      "filed": "2026-10-07",
+      "accession": "0000909832-26-000093"
+    },
+    "operating_income": {
+      "label": "operating_income",
+      "value": 11685000000,
+      "unit": "USD",
+      "tag": "OperatingIncomeLoss",
+      "period_start": "2025-09-01",
+      "period_end": "2026-08-30",
+      "filing": "10-K",
+      "filed": "2026-10-07",
+      "accession": "0000909832-26-000093"
+    },
+    "net_income": {
+      "label": "net_income",
+      "value": 9226000000,
+      "unit": "USD",
+      "tag": "NetIncomeLoss",
+      "period_start": "2025-09-01",
+      "period_end": "2026-08-30",
+      "filing": "10-K",
+      "filed": "2026-10-07",
+      "accession": "0000909832-26-000093"
+    },
+    "diluted_eps": {
+      "label": "diluted_eps",
+      "value": 20.76,
+      "unit": "USD/shares",
+      "tag": "EarningsPerShareDiluted",
+      "period_start": "2025-09-01",
+      "period_end": "2026-08-30",
+      "filing": "10-K",
+      "filed": "2026-10-07",
+      "accession": "0000909832-26-000093"
+    },
+    "equity": {
+      "label": "equity",
+      "value": 35803000000,
+      "unit": "USD",
+      "tag": "StockholdersEquity",
+      "period_start": null,
+      "period_end": "2026-08-30",
+      "filing": "10-K",
+      "filed": "2026-10-07",
+      "accession": "0000909832-26-000093"
+    },
+    "long_term_debt": {
+      "label": "long_term_debt",
+      "value": 3914000000,
+      "unit": "USD",
+      "tag": "LongTermDebtNoncurrent",
+      "period_start": null,
+      "period_end": "2026-08-30",
+      "filing": "10-K",
+      "filed": "2026-10-07",
+      "accession": "0000909832-26-000093"
+    },
+    "current_debt": {
+      "label": "current_debt",
+      "value": 2248000000,
+      "unit": "USD",
+      "tag": "LongTermDebtCurrent",
+      "period_start": null,
+      "period_end": "2026-08-30",
+      "filing": "10-K",
+      "filed": "2026-10-07",
+      "accession": "0000909832-26-000093"
+    },
+    "cash_from_operations": {
+      "label": "cash_from_operations",
+      "value": 15817000000,
+      "unit": "USD",
+      "tag": "NetCashProvidedByUsedInOperatingActivities",
+      "period_start": "2025-09-01",
+      "period_end": "2026-08-30",
+      "filing": "10-K",
+      "filed": "2026-10-07",
+      "accession": "0000909832-26-000093"
+    },
+    "capex": {
+      "label": "capex",
+      "value": 6435000000,
+      "unit": "USD",
+      "tag": "PaymentsToAcquirePropertyPlantAndEquipment",
+      "period_start": "2025-09-01",
+      "period_end": "2026-08-30",
+      "filing": "10-K",
+      "filed": "2026-10-07",
+      "accession": "0000909832-26-000093"
+    },
+    "revenue_prior_year": {
+      "label": "revenue_prior_year",
+      "value": 275235000000,
+      "unit": "USD",
+      "tag": "RevenueFromContractWithCustomerExcludingAssessedTax",
+      "period_start": "2024-09-02",
+      "period_end": "2025-08-31",
+      "filing": "10-K",
+      "filed": "2026-10-07",
+      "accession": "0000909832-26-000093"
+    }
+  },
+  "quarter": {
+    "revenue_current": 95723.0,
+    "revenue_prior_quarter": 86156.0,
+    "revenue_growth": 0.11104275964529453,
+    "revenue_release_line": "Total revenue 95,723 86,156 303,154 275,235",
+    "revenue_release_line_number": 39,
+    "revenue_number_line_number": 39,
+    "diluted_eps_current": 6.75,
+    "diluted_eps_prior_quarter": 5.87,
+    "eps_release_line": "Diluted $ 6.75 $ 5.87 $ 20.76 $ 18.21 Shares used in calculation (000's):",
+    "eps_release_line_number": 52,
+    "release_units": "Dollars in millions except per-share data, as captioned in the release; quarter comparison uses the first two columns."
+  }
+}

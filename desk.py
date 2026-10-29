@@ -16,6 +16,7 @@ import ssl
 import sys
 import time
 from datetime import datetime
+from http.client import RemoteDisconnected
 from html.parser import HTMLParser
 from pathlib import Path
 from typing import Any
@@ -112,7 +113,7 @@ def request_bytes(req: Request, timeout: int) -> bytes:
         except HTTPError as exc:
             if exc.code not in {429, 500, 502, 503, 504} or attempt == 2:
                 raise
-        except URLError:
+        except (URLError, RemoteDisconnected, TimeoutError, ConnectionResetError):
             if attempt == 2:
                 raise
         time.sleep(0.5 * (attempt + 1))
@@ -270,6 +271,50 @@ def report_fact(label: str, fact: dict[str, Any] | None) -> dict[str, Any] | Non
             "filing": fact.get("form"), "filed": fact.get("filed"), "accession": fact.get("accn")}
 
 
+def revenue_statement_source(company: dict[str, Any]) -> tuple[str, int] | None:
+    """Find the income-statement label and line that contains the selected top-line value."""
+    fact = company.get("facts", {}).get("facts", {}).get("revenue")
+    text = company.get("filing_texts", {}).get("10-K", "")
+    if not fact or not text:
+        return None
+    amount = f"{int(round(float(fact['value']) / 1_000_000)):,}"
+    rows = text.splitlines()
+    statement_headings = [i for i, row in enumerate(rows)
+                         if re.fullmatch(r"\s*Consolidated Statements of (?:Income|Operations|Earnings)(?: and Comprehensive Income)?\s*", row, re.IGNORECASE)]
+    candidates: list[tuple[int, str, int]] = []
+    for index, row in enumerate(rows):
+        if amount not in row:
+            continue
+        previous_headings = [i for i in statement_headings if i <= index]
+        if not previous_headings:
+            continue
+        heading = previous_headings[-1]
+        if index - heading > 160:
+            continue
+        context = rows[max(heading + 1, index - 5):index + 1]
+        labels = [re.match(r"^(Total revenues?|Net sales)\b", x.strip(), re.IGNORECASE).group(1)
+                  for x in context if re.match(r"^(?:Total revenues?|Net sales)\b", x.strip(), re.IGNORECASE)]
+        if labels:
+            candidates.append((index - heading, labels[-1], index + 1))
+    if candidates:
+        _, label, line_number = min(candidates, key=lambda x: x[0])
+        return label, line_number
+    return None
+
+
+def earnings_release_quotes(company: dict[str, Any]) -> str:
+    """Return exact revenue and diluted-EPS lines with stable saved-text line numbers."""
+    lines = company.get("filing_texts", {}).get("8-K", "").splitlines()
+    quarter = company.get("quarter", {})
+    accession = company.get("facts", {}).get("filings", {}).get("8-K", {}).get("accession", "")
+    quotes = []
+    for key, label in (("revenue_release_line_number", "total revenue"), ("eps_release_line_number", "diluted EPS")):
+        number = quarter.get(key)
+        if isinstance(number, int) and 1 <= number <= len(lines):
+            quotes.append(f'{label}: “{lines[number - 1]}” (8-K accession {accession}, Exhibit 99.1, saved-text line {number}).')
+    return "\n".join(quotes)
+
+
 def duration_fact(facts: dict[str, Any], tags: list[str], period_start: str, period_end: str,
                   accession: str | None = None, forms: tuple[str, ...] = ("10-K",)) -> dict[str, Any] | None:
     usgaap = facts.get("facts", {}).get("us-gaap", {})
@@ -379,6 +424,7 @@ def calc_ratios(company: dict[str, Any], price: float | None) -> dict[str, Any]:
     if capex is not None:
         capex = abs(capex)
     prior_eq = None
+    prior_eq_fact = None
     if eq is not None:
         facts = company.get("company_facts")
         if not facts:
@@ -388,6 +434,7 @@ def calc_ratios(company: dict[str, Any], price: float | None) -> dict[str, Any]:
         rows = sorted((e for es in eq_entries.values() for e in es if e.get("end", "") < company["facts"]["fiscal_year_end"]), key=lambda e:e.get("end", ""), reverse=True)
         if rows:
             prior_eq = float(rows[0]["val"])
+            prior_eq_fact = report_fact("prior_equity", rows[0])
     return {
         "revenue_growth": (revenue / prior - 1) if revenue is not None and prior else None,
         "operating_margin": op / revenue if op is not None and revenue else None,
@@ -396,6 +443,7 @@ def calc_ratios(company: dict[str, Any], price: float | None) -> dict[str, Any]:
         "free_cash_flow": cfo - capex if cfo is not None and capex is not None else None,
         "pe": price / eps if price is not None and eps else None,
         "inputs": {"price": price, "diluted_eps": eps, "current_equity": eq, "prior_equity": prior_eq,
+                   "prior_equity_fact": prior_eq_fact,
                    "current_portion_debt": curr_debt, "long_term_debt": long_debt,
                    "cash_from_operations": cfo, "additions_to_property_and_equipment": capex},
     }
@@ -420,29 +468,73 @@ def print_calculations(companies: list[dict[str, Any]], price: float | None) -> 
             print("    P/E = not calculated (no price supplied)")
 
 
+def print_release_and_peers(companies: list[dict[str, Any]]) -> None:
+    main = companies[0]
+    print("\nStep 6 — earnings-release lines about revenue/EPS")
+    for line in release_claims(main["filing_texts"]["8-K"]):
+        print("  " + line[:300])
+    print("\nStep 7 — peer facts and margins")
+    for company in companies[1:]:
+        facts = company["facts"]["facts"]
+        print(f"  {company['facts']['ticker']}: revenue={facts.get('revenue')}; operating income={facts.get('operating_income')}; margin={company.get('ratios', {}).get('operating_margin')}")
+
+
+def extra_ratio_calculator(company: dict[str, Any], requested: list[str]) -> list[str]:
+    """Calculate only named, code-defined ratios. Never evaluate model text."""
+    facts = company["facts"]["facts"]
+    def val(key: str) -> float | None:
+        item = facts.get(key)
+        return float(item["value"]) if item else None
+    revenue, op, cfo = val("revenue"), val("operating_income"), val("cash_from_operations")
+    long_debt, current_debt, capex = val("long_term_debt"), val("current_debt"), val("capex")
+    ratios: dict[str, tuple[float | None, str]] = {
+        "debt_to_revenue": (((long_debt or 0) + (current_debt or 0)) / revenue if revenue else None,
+                            f"({long_debt} + {current_debt}) / {revenue}"),
+        "operating_cash_flow_margin": (cfo / revenue if cfo is not None and revenue else None,
+                                       f"{cfo} / {revenue}"),
+        "capex_to_revenue": (abs(capex) / revenue if capex is not None and revenue else None,
+                             f"{abs(capex) if capex is not None else None} / {revenue}"),
+    }
+    output = []
+    for name in dict.fromkeys(requested):
+        if name not in ratios:
+            output.append(f"- Calculator request `{name}` rejected: not an approved ratio name.")
+            continue
+        value, formula = ratios[name]
+        shown = f"{value:.2%}" if value is not None else "not calculable"
+        output.append(f"- Additional ratio {name}: {shown}; arithmetic: {formula}.")
+    return output
+
+
 def release_claims(release_text: str) -> list[str]:
     lines = release_text.splitlines()
     matched: list[str] = []
     for i, line in enumerate(lines):
         if re.search(r"revenue|net sales|diluted earnings per share|diluted EPS|per share|^diluted\b|earnings per share", line, re.IGNORECASE):
-            context = " ".join(x for x in lines[max(0, i-1):min(len(lines), i+2)] if x)
+            context = " | ".join(f"[Exhibit 99.1 line {j + 1}] {x}"
+                                 for j, x in enumerate(lines[max(0, i-1):min(len(lines), i+2)], start=max(0, i-1)) if x)
             if context not in matched:
-                matched.append(context[:600])
+                matched.append(f"Exhibit 99.1 line {i + 1}: {context[:600]}")
     return matched[:50]
 
 
 def quarter_metrics(release_text: str) -> dict[str, Any]:
     lines = release_text.splitlines()
     revenue_line = ""
+    revenue_line_number: int | None = None
+    revenue_number_line_number: int | None = None
     revenue_numbers: list[float] = []
     for i, line in enumerate(lines):
         match = re.search(r"\btotal\s+(?:net\s+)?(?:revenues?|sales)\b", line, re.IGNORECASE)
         if not match:
             continue
         revenue_line = line
+        revenue_line_number = i + 1
         revenue_context = re.sub(r"\(\d+\)", "", " ".join(lines[i:min(len(lines), i + 3)]))
         revenue_display_lines = [re.sub(r"\(\d+\)", "", item).strip() for item in lines[i:min(len(lines), i + 3)]]
-        number_line = next((item for item in revenue_display_lines if re.search(r"\d", item)), "")
+        number_offset = next((offset for offset, item in enumerate(revenue_display_lines) if re.search(r"\d", item)), 0)
+        number_line = revenue_display_lines[number_offset] if revenue_display_lines else ""
+        revenue_number_line_number = i + number_offset + 1
         label_line = re.sub(r"\(\d+\)", "", line).strip()
         revenue_line = label_line if number_line == label_line or not number_line else f"{label_line} {number_line}"
         revenue_tail = revenue_context[match.end():]
@@ -451,6 +543,7 @@ def quarter_metrics(release_text: str) -> dict[str, Any]:
         if len(revenue_numbers) >= 2:
             break
     eps_line = ""
+    eps_line_number: int | None = None
     eps_numbers: list[float] = []
     heading = next((i for i, line in enumerate(lines) if re.fullmatch(
         r"\s*(?:NET INCOME PER COMMON SHARE|EARNINGS PER SHARE)\s*:?\s*", line, re.IGNORECASE)), -1)
@@ -459,6 +552,7 @@ def quarter_metrics(release_text: str) -> dict[str, Any]:
         line = lines[i]
         match = re.match(r"\s*Diluted\b(.*)$", line, re.IGNORECASE)
         if match:
+            eps_line_number = i + 1
             eps_line = " ".join(lines[i:min(len(lines), i + 2)])
             eps_tail = " ".join((match.group(1), *lines[i + 1:min(len(lines), i + 2)]))
             found = [float(x.replace(",", "")) for x in re.findall(r"\$\s*(\d+\.\d+)", eps_tail)]
@@ -471,9 +565,12 @@ def quarter_metrics(release_text: str) -> dict[str, Any]:
         "revenue_prior_quarter": revenue[1] if len(revenue) > 1 else None,
         "revenue_growth": revenue[0] / revenue[1] - 1 if len(revenue) > 1 and revenue[1] else None,
         "revenue_release_line": revenue_line,
+        "revenue_release_line_number": revenue_line_number,
+        "revenue_number_line_number": revenue_number_line_number,
         "diluted_eps_current": eps_numbers[0] if eps_numbers else None,
         "diluted_eps_prior_quarter": eps_numbers[1] if len(eps_numbers) > 1 else None,
         "eps_release_line": eps_line,
+        "eps_release_line_number": eps_line_number,
         "release_units": "Dollars in millions except per-share data, as captioned in the release; quarter comparison uses the first two columns.",
     }
 
@@ -489,6 +586,11 @@ def financial_evidence(companies: list[dict[str, Any]], price: float | None,
             lines.append(f"- {item['label']}: {item['value']} {item['unit']}; tag {item['tag']}; period {item.get('period_start') or 'instant'} to {item['period_end']}; {item['filing']} accession {item['accession']}.")
         else:
             lines.append(f"- {key}: not found in supplied XBRL facts; do not infer a value.")
+    statement_source = revenue_statement_source(main)
+    revenue_fact = f.get("revenue")
+    if statement_source and revenue_fact:
+        label, line_number = statement_source
+        lines.append(f"- {main['facts']['ticker']} top-line definition: its latest 10-K calls the selected figure '{label}' on saved-text line {line_number}; tag {revenue_fact['tag']}; this is distinct from net sales when the filing reports membership fees separately.")
     ratios = main.get("ratios", {})
     for label, name in (("Revenue growth", "revenue_growth"), ("Operating margin", "operating_margin"),
                         ("Return on average equity", "return_on_average_equity"), ("Debt to equity", "debt_to_equity"),
@@ -506,17 +608,23 @@ def financial_evidence(companies: list[dict[str, Any]], price: float | None,
         shown = f"{val:.2%}" if name in {"revenue_growth", "operating_margin", "return_on_average_equity"} and val is not None else f"{val:.4f}" if val is not None and name == "debt_to_equity" else val
         period = f" (using FY ended {main['facts']['fiscal_year_end']} diluted EPS)" if name == "pe" and val is not None else ""
         lines.append(f"- {label}{period}: {shown}; arithmetic: {formulas[name]}.")
+    prior_equity_fact = ratios.get("inputs", {}).get("prior_equity_fact")
+    if prior_equity_fact:
+        lines.append(f"- Prior-year equity for ROAE: {prior_equity_fact['value']} {prior_equity_fact['unit']}; tag {prior_equity_fact['tag']}; period instant at {prior_equity_fact['period_end']}; {prior_equity_fact['filing']} accession {prior_equity_fact['accession']}.")
     q = main.get("quarter", {})
     qgrowth = q.get("revenue_growth")
     qgrowth_text = f"{qgrowth:.2%}" if qgrowth is not None else "not calculable from supplied release text"
-    lines.append(f"- Latest-quarter revenue (dollars in millions): {q.get('revenue_current')}; same quarter prior year: {q.get('revenue_prior_quarter')}; growth: {qgrowth_text}, arithmetic ({q.get('revenue_current')} / {q.get('revenue_prior_quarter')}) - 1; exact release row: {q.get('revenue_release_line')}")
-    lines.append(f"- Latest-quarter diluted EPS, GAAP: {q.get('diluted_eps_current')}; prior-year quarter: {q.get('diluted_eps_prior_quarter')}; exact release row: {q.get('eps_release_line')}")
+    eight_k_accession = main["facts"]["filings"]["8-K"]["accession"]
+    lines.append(f"- Latest-quarter revenue (dollars in millions): {q.get('revenue_current')}; same quarter prior year: {q.get('revenue_prior_quarter')}; growth: {qgrowth_text}, arithmetic ({q.get('revenue_current')} / {q.get('revenue_prior_quarter')}) - 1; 8-K accession {eight_k_accession}, Exhibit 99.1 label line {q.get('revenue_release_line_number')}, value line {q.get('revenue_number_line_number')}: {q.get('revenue_release_line')}")
+    lines.append(f"- Latest-quarter diluted EPS, GAAP: {q.get('diluted_eps_current')}; prior-year quarter: {q.get('diluted_eps_prior_quarter')}; 8-K accession {eight_k_accession}, Exhibit 99.1 line {q.get('eps_release_line_number')}: {q.get('eps_release_line')}")
     for peer in companies[1:]:
         pf = peer["facts"]["facts"]
         rev, op = pf.get("revenue"), pf.get("operating_income")
         margin = peer.get("ratios", {}).get("operating_margin")
         if rev and op:
-            lines.append(f"- Peer {peer['facts']['ticker']}: revenue ${rev['value']:,} ({rev['tag']}, FY ended {rev['period_end']}, 10-K {rev['accession']}); operating income ${op['value']:,} ({op['tag']}, same period); operating margin = {op['value']:,} / {rev['value']:,} = {margin:.2%}.")
+            peer_label = revenue_statement_source(peer)
+            label_text = f"; statement top-line label '{peer_label[0]}' at saved-text line {peer_label[1]}" if peer_label else ""
+            lines.append(f"- Peer {peer['facts']['ticker']}: revenue ${rev['value']:,} USD ({rev['tag']}, {rev.get('period_start')} to {rev['period_end']}, 10-K {rev['accession']}{label_text}); operating income ${op['value']:,} {op['unit']} ({op['tag']}, {op.get('period_start')} to {op['period_end']}, 10-K {op['accession']}); operating margin = {op['value']:,} / {rev['value']:,} = {margin:.2%}.")
         else:
             lines.append(f"- Peer {peer['facts']['ticker']}: revenue or operating income not found in supplied facts; margin not calculated.")
     if price is not None:
@@ -524,18 +632,82 @@ def financial_evidence(companies: list[dict[str, Any]], price: float | None,
     return "\n".join(lines)
 
 
-def call_model(client: Any, model: str, role: str, task: str, context: dict[str, Any], expected: str) -> str:
-    print(f"Running role: {role}")
-    response = client.chat.completions.create(
-        model=model,
-        temperature=0.1,
-        max_tokens=1400,
-        messages=[
-            {"role": "system", "content": "You are a role in a FIN 67110 equity research desk. Use only the supplied context. Do not guess. Preserve every source, period, definition, and hedge. Return concise Markdown. Say 'not found in supplied filings' when needed."},
-            {"role": "user", "content": json.dumps({"task": task, "context": context, "expected_output": expected}, ensure_ascii=False)},
-        ],
-    )
-    return response.choices[0].message.content or "No content returned."
+ROLE_INSTRUCTIONS = {
+    "Research Analyst": (
+        "You are the Research Analyst. Use only the supplied JSON context. Cover business model, competitive position, catalysts, and recent developments. "
+        "Every factual claim must include a short exact quote and cite the filing, section, accession, and saved-text line number. "
+        "Do not invent quotes or line numbers. If evidence is absent, say so. Distinguish net sales from total revenue. Return concise Markdown."
+    ),
+    "Financial Analyst": (
+        "You are the Financial Analyst. Use only the supplied JSON context. Interpret the supplied code-calculated facts, ratios, quarter, and peers. "
+        "Do not calculate or change any arithmetic. For every number, cite its filing and either its income-statement line or XBRL tag, unit, period, and accession. "
+        "Show supplied ratio formulas. State the chosen definition if the filing has alternatives. Do not invent values or sources. "
+        "Return concise Markdown. End with one machine-readable line: CALCULATOR_REQUESTS: NONE or a comma-separated list of approved ratio names."
+    ),
+    "Investment Advisor": (
+        "You are the Investment Advisor. Use only the Research Analyst and Financial Analyst outputs in the supplied JSON context. "
+        "Write a thesis and choose Buy, Hold, or Sell. Always choose one of the three. If the evidence is limited, choose Hold and state the limit. "
+        "Name one deciding number and cite it to the Financial Analyst output. Do not add facts or calculations. Return concise Markdown."
+    ),
+    "Strategy Manager": (
+        "You are the Strategy Manager. Use only the supplied JSON context. Check that all five report parts are present, refer to the same company, "
+        "and are consistent with the supplied evidence. Do not create facts. Follow the requested output format exactly."
+    ),
+}
+
+
+def call_model(client: Any, model: str, role: str, task: str, context: dict[str, Any], expected: str,
+               system_instruction: str | None = None, max_tokens: int = 1800) -> str:
+    for attempt in range(2):
+        print(f"Running role: {role}" + (" (retry)" if attempt else ""))
+        response = client.chat.completions.create(
+            model=model,
+            temperature=0.1,
+            max_tokens=max(max_tokens, 1800) if attempt else max_tokens,
+            messages=[
+                {"role": "system", "content": system_instruction or ROLE_INSTRUCTIONS[role]},
+                {"role": "user", "content": json.dumps({"task": task, "context": context, "expected_output": expected}, ensure_ascii=False)},
+            ],
+        )
+        content = response.choices[0].message.content
+        if content and content.strip():
+            return content.strip()
+    raise RuntimeError(f"{role} returned no text after one retry.")
+
+
+def complete_sentences_within_word_limit(text: str, limit: int) -> str:
+    """Keep only complete model sentences within a hard report word limit."""
+    sentences = re.split(r"(?<=[.!?])\s+", text.strip())
+    kept: list[str] = []
+    count = 0
+    for sentence in sentences:
+        words = re.findall(r"\S+", sentence)
+        if not sentence.strip() or not words:
+            continue
+        if count + len(words) > limit:
+            break
+        kept.append(sentence.strip())
+        count += len(words)
+    if kept:
+        return " ".join(kept)
+    words = re.findall(r"\S+", text.strip())
+    return " ".join(words[:limit])
+
+
+def clean_model_section(text: str, word_limit: int) -> str:
+    text = "\n".join(line for line in text.splitlines() if not re.match(r"^\s*#{1,4}\s+", line))
+    return complete_sentences_within_word_limit(text, word_limit).strip()
+
+
+def normalize_financial_definition(text: str, company: dict[str, Any]) -> str:
+    text = re.sub(r"(?im)^\*?Revenue definition:[^.\n]*(?:\.|$)\s*", "", text).strip()
+    source = revenue_statement_source(company)
+    fact = company.get("facts", {}).get("facts", {}).get("revenue")
+    if source and fact:
+        label, line_number = source
+        text += (f"\nRevenue definition: {label}, per the 10-K saved-text line {line_number} "
+                 f"and XBRL tag {fact['tag']}.")
+    return text
 
 
 def build_report(companies: list[dict[str, Any]], ticker: str, price: float | None, out: Path,
@@ -545,13 +717,13 @@ def build_report(companies: list[dict[str, Any]], ticker: str, price: float | No
     if with_model:
         key = env.get("API_KEY") or env.get("PURDUE_GENAI_API_KEY")
         if not key:
-            raise RuntimeError("Set PURDUE_GENAI_API_KEY or API_KEY in .env")
+            raise RuntimeError("Set API_KEY in .env (PURDUE_GENAI_API_KEY is also accepted for the existing Purdue setup).")
         try:
             from openai import OpenAI
         except ImportError as exc:
             raise RuntimeError("Install dependencies with: python3 -m pip install -r requirements.txt") from exc
         model = env.get("GENAI_MODEL", "")
-        client = OpenAI(api_key=key, base_url=GENAI_API, timeout=150.0, max_retries=0)
+        client = OpenAI(api_key=key, base_url=env.get("GENAI_API_BASE", GENAI_API), timeout=150.0, max_retries=0)
         if not model:
             available = client.models.list().data
             ids = [x.id for x in available]
@@ -562,27 +734,52 @@ def build_report(companies: list[dict[str, Any]], ticker: str, price: float | No
         facts = main["facts"]
         tenk = main["filing_texts"]["10-K"]
         business = re.search(r"ITEM\s+1\.?\s+BUSINESS", tenk, re.IGNORECASE)
-        risk_factor = re.search(r"ITEM\s+1A\.?\s+RISK FACTORS", tenk, re.IGNORECASE)
         mda = re.search(r"ITEM\s+7\.?\s+MANAGEMENT.{0,30}DISCUSSION", tenk, re.IGNORECASE)
-        business_text = tenk[business.start():business.start()+18000] if business else tenk[:18000]
-        risk_text = tenk[risk_factor.start():risk_factor.start()+10000] if risk_factor else "Risk Factors section not found in the supplied 10-K text."
-        mda_text = tenk[mda.start():mda.start()+18000] if mda else ""
+        tenk_lines = tenk.splitlines()
+        def numbered_section(start_match: re.Match[str] | None, max_chars: int) -> str:
+            if not start_match:
+                return "Section not found in the supplied 10-K text."
+            start_line = tenk[:start_match.start()].count("\n")
+            selected: list[str] = []
+            size = 0
+            for index in range(start_line, len(tenk_lines)):
+                row = f"10-K accession {facts['filings']['10-K']['accession']} line {index + 1}: {tenk_lines[index]}"
+                if size + len(row) > max_chars:
+                    break
+                selected.append(row)
+                size += len(row)
+            return "\n".join(selected)
+        business_text = numbered_section(business, 18000)
+        mda_text = numbered_section(mda, 22000)
+        release_text = (f"8-K accession {facts['filings']['8-K']['accession']}; "
+                        + "\n".join(release_claims(main["filing_texts"]["8-K"])))
         research = call_model(client, model, "Research Analyst",
-                              "In no more than 220 words, describe the business model, competitive position, catalysts, recent developments, and one risk. Use 3-5 short direct quotes from supplied filing text; label each quote's source section. Distinguish net sales from total revenue. Do not use a table.",
-                              {"10-K Item 1 Business": business_text, "10-K Item 1A Risk Factors": risk_text, "10-K Item 7 MD&A": mda_text,
-                               "earnings release relevant lines": release_claims(main["filing_texts"]["8-K"])},
-                              "No more than 220 words; concise Markdown with exact short quotes and source sections.")
+                              "In no more than 220 words, describe the business model, competitive position, catalysts, and recent developments. Use the 10-K Business and MD&A sections and the earnings release. Support every factual claim with a short exact quote and its source section and line. Do not use a table.",
+                              {"10-K Item 1 Business": business_text, "10-K Item 7 MD&A": mda_text,
+                               "earnings release relevant lines": release_text},
+                              "No more than 220 words. Every factual claim has a quote and filing, section, accession, and saved-text line.")
+        research = clean_model_section(research, 195)
+        release_quotes = earnings_release_quotes(main)
+        if release_quotes:
+            research = research.rstrip() + "\n\nRecent earnings release:\n" + release_quotes
         finance = call_model(client, model, "Financial Analyst",
-                             "Write no more than 300 words of financial interpretation. Do not repeat the full table. Identify the main strength and a material risk using only the supplied facts. Never invent values or calculate ratios in the model. Describe P/E as price divided by the latest reported full-year diluted EPS. Do not call it a forward P/E or a trailing-twelve-month P/E unless the evidence supports that period.",
-                             {"facts": facts, "ratios": main.get("ratios"),
-                              "share_price": {"price": price, "date": price_date, "source": price_source},
-                              "code_calculated_evidence": financial_evidence(companies, price, price_date, price_source),
-                              "quarter release evidence": release_claims(main["filing_texts"]["8-K"]),
-                              "peers": [c["facts"] | {"ratios": c.get("ratios")} for c in companies[1:]]},
-                             "Brief financial interpretation without unsupported numbers.")
+                             "Write no more than 100 words of financial interpretation. Use only the supplied evidence. Do not repeat the tables; the code adds them to the report. Include each number you use with its filing or XBRL tag and period. Restate supplied arithmetic; do not calculate. State the revenue definition shown in the evidence. End with CALCULATOR_REQUESTS: NONE or approved ratio names.",
+                             {"code_calculated_evidence": financial_evidence(companies, price, price_date, price_source),
+                              "available_calculator_requests": ["debt_to_revenue", "operating_cash_flow_margin", "capex_to_revenue"]},
+                             "Concise Markdown followed by the exact line CALCULATOR_REQUESTS: NONE or a comma-separated list of approved ratio names. Do not calculate any ratio.",
+                             max_tokens=1200)
+        request_match = re.search(r"(?im)^CALCULATOR_REQUESTS:\s*(.*)$", finance)
+        requested_ratios = ([item.strip() for item in request_match.group(1).split(",") if item.strip() and item.strip().upper() != "NONE"]
+                            if request_match else [])
+        finance_analysis = finance[:request_match.start()].strip() if request_match else finance
+        finance_analysis = clean_model_section(finance_analysis, 100)
+        finance_analysis = normalize_financial_definition(finance_analysis, main)
+        extra_calculations = extra_ratio_calculator(main, requested_ratios)
+        finance = finance_analysis + ("\n\n" + "\n".join(extra_calculations) if extra_calculations else "")
         advisor = call_model(client, model, "Investment Advisor",
                              "In no more than 120 words, synthesize a thesis and choose Buy, Hold, or Sell. Name one deciding number, cite it to the supplied Financial Analyst output, and use only the two role outputs below.",
                              {"Research Analyst": research, "Financial Analyst": finance}, "Thesis, one deciding number, and one recommendation; maximum 120 words.")
+        advisor = clean_model_section(advisor, 120)
         parts = {
             "Overview": f"Ticker: {ticker.upper()}. Fiscal year ended {facts['fiscal_year_end']}. Filings: 10-K {facts['filings']['10-K']['accession']}; 10-Q {facts['filings']['10-Q']['accession']}; earnings 8-K {facts['filings']['8-K']['accession']}.",
             "Market Positioning and Growth Outlook": research,
@@ -593,42 +790,89 @@ def build_report(companies: list[dict[str, Any]], ticker: str, price: float | No
             "Investment Recommendation": advisor,
         }
         # Manager completeness/consistency check, one repair pass only.
-        manager_input = {heading: text[:2000] for heading, text in parts.items()}
+        manager_input = {heading: text[:2800] for heading, text in parts.items()}
         manager = call_model(client, model, "Strategy Manager",
-                             "Check all five report parts are present, refer to the same company, and do not directly contradict one another. Human audit checks numeric support separately. If all pass, return exactly PASS. Otherwise return only the failing heading and one concise repair request.",
-                             {"five_parts": manager_input, "required_parts": list(parts)}, "Exactly PASS, or one heading plus a concise repair request.")
-        print("Strategy Manager check:", manager[:240].replace("\n", " "))
-        if not manager.strip().upper().startswith("PASS"):
-            heading = next((h for h in parts if h.lower() in manager.lower()), "Investment Recommendation")
-            repair_role = ("Financial Analyst" if heading == "Valuation Insights" else
-                           "Investment Advisor" if heading == "Investment Recommendation" else "Research Analyst")
-            evidence = {"Financial Analyst": finance, "Investment Advisor": advisor, "Research Analyst": research}[repair_role]
+                             "Check all five parts. Confirm that each Research Analyst factual claim has an exact quote and saved-text line; every Financial Analyst number has its filing or XBRL tag and period; each ratio has code-supplied arithmetic; the revenue definition matches the 10-K statement label; and the Investment Advisor chooses Buy, Hold, or Sell with one number from Financial Analyst output. Check that parts are present, use the same company, and do not contradict. Human filing audit is separate. Return JSON only with keys status, failing_part, repair_request. Use PASS only if every check passes. Otherwise name one failing part and a concise repair request.",
+                             {"five_parts": manager_input, "required_parts": list(parts),
+                              "source_facts": financial_evidence(companies, price, price_date, price_source)},
+                             'JSON: {"status":"PASS"|"FAIL","failing_part":string|null,"repair_request":string|null}')
+        try:
+            manager_result = json.loads(re.sub(r"^```(?:json)?\s*|\s*```$", "", manager.strip(), flags=re.IGNORECASE))
+        except json.JSONDecodeError as exc:
+            raise RuntimeError("Strategy Manager returned invalid check JSON.") from exc
+        advisor_repair_used = False
+        if str(manager_result.get("status", "")).upper() != "PASS":
+            heading = manager_result.get("failing_part")
+            if heading not in parts:
+                raise RuntimeError("Strategy Manager did not name a valid failing report part.")
+            repair_role = ("Financial Analyst" if heading in {"Valuation Insights", "Future Developments and Strategic Recommendations"} else
+                           "Investment Advisor" if heading == "Investment Recommendation" else
+                           "Research Analyst" if heading == "Market Positioning and Growth Outlook" else "Strategy Manager")
+            evidence = {"Financial Analyst": financial_evidence(companies, price, price_date, price_source),
+                        "Investment Advisor": {"Research Analyst": research, "Financial Analyst": finance},
+                        "Research Analyst": {"10-K Item 1 Business": business_text, "10-K Item 7 MD&A": mda_text,
+                                             "earnings release relevant lines": release_text},
+                        "Strategy Manager": {"source_filing_metadata": facts["filings"],
+                                             "source_facts_and_calculations": financial_evidence(companies, price, price_date, price_source),
+                                             "required_sections": list(parts)}}[repair_role]
             repaired = call_model(client, model, f"{repair_role} (single repair pass)",
-                                  "Repair this report part once according to the manager's request. Use only the evidence supplied. Return only the revised section.",
-                                  {"manager_request": manager, "part_heading": heading, "current_part": parts[heading][:3500], "evidence": evidence[:5000]},
-                                  "The revised text for this report section.")
-            parts[heading] = repaired
-        if "Market Positioning and Growth Outlook" in parts:
-            market = re.sub(r"\*?Note:.*?(?=\n|$)", "", parts["Market Positioning and Growth Outlook"], flags=re.IGNORECASE)
-            parts["Market Positioning and Growth Outlook"] = market.strip()
+                                  f"Repair the {heading} part once according to the manager's request. Use only the evidence supplied. Return only the revised section.",
+                                  {"manager_request": manager_result.get("repair_request"), "part_heading": heading,
+                                   "current_part": parts[heading][:3500], "evidence": evidence},
+                                  "The revised text for this report section.",
+                                  system_instruction=ROLE_INSTRUCTIONS.get(repair_role, ROLE_INSTRUCTIONS["Strategy Manager"]))
+            if repair_role == "Financial Analyst":
+                try:
+                    repaired_json = json.loads(re.sub(r"^```(?:json)?\s*|\s*```$", "", repaired.strip(), flags=re.IGNORECASE))
+                    repaired = str(repaired_json.get("analysis", repaired))
+                except (json.JSONDecodeError, AttributeError):
+                    pass
+            if repair_role == "Research Analyst":
+                research = clean_model_section(repaired, 195)
+                release_quotes = earnings_release_quotes(main)
+                if release_quotes:
+                    research = research.rstrip() + "\n\nRecent earnings release:\n" + release_quotes
+            elif repair_role == "Financial Analyst":
+                finance = normalize_financial_definition(clean_model_section(repaired, 100), main)
+            elif repair_role == "Investment Advisor":
+                advisor = clean_model_section(repaired, 120)
+            else:
+                parts[heading] = clean_model_section(repaired, 120)
+            advisor_repair_used = repair_role == "Investment Advisor"
+        if not re.search(r"\b(?:Buy|Hold|Sell)\b", advisor, re.IGNORECASE) or not re.search(r"\d", advisor):
+            if advisor_repair_used:
+                raise RuntimeError("Investment Advisor did not meet the recommendation requirement after its one repair pass.")
+            repaired = call_model(client, model, "Investment Advisor (single repair pass)",
+                                  "The manager found that your prior recommendation did not meet the task. Choose Buy, Hold, or Sell. Name one deciding number from the Financial Analyst output. If the evidence is limited, choose Hold and name the limit. Do not add facts.",
+                                  {"Research Analyst": research, "Financial Analyst": finance},
+                                  "A concise thesis, exactly one Buy/Hold/Sell choice, and one cited deciding number.",
+                                  system_instruction=ROLE_INSTRUCTIONS["Investment Advisor"])
+            advisor = clean_model_section(repaired, 120)
+            if not re.search(r"\b(?:Buy|Hold|Sell)\b", repaired, re.IGNORECASE) or not re.search(r"\d", repaired):
+                raise RuntimeError("Investment Advisor did not meet the recommendation requirement after one repair pass.")
+        # Rebuild all five sections from the final, checked role outputs. This
+        # preserves the code-calculated evidence if the manager asks for a repair.
+        evidence = financial_evidence(companies, price, price_date, price_source)
+        parts = {
+            "Overview": f"Ticker: {ticker.upper()}. Fiscal year ended {facts['fiscal_year_end']}. Filings: 10-K {facts['filings']['10-K']['accession']}; 10-Q {facts['filings']['10-Q']['accession']}; earnings 8-K {facts['filings']['8-K']['accession']}.",
+            "Market Positioning and Growth Outlook": research,
+            "Valuation Insights": evidence + "\n\nFinancial Analyst interpretation:\n\n" + finance,
+            "Future Developments and Strategic Recommendations": "Research findings:\n\n" + research + "\n\nFinancial findings:\n\n" + finance,
+            "Investment Recommendation": advisor,
+        }
         for heading, text in parts.items():
             parts[heading] = re.sub(r"\bforward P/E\b", f"P/E based on FY ended {facts['fiscal_year_end']} diluted EPS", text, flags=re.IGNORECASE)
-        if "Valuation Insights" in parts:
-            valuation = parts["Valuation Insights"]
-            if re.search(r"market average|typically lower|forward P/E|typical retailer", valuation, re.IGNORECASE):
-                valuation = re.sub(r"forward P/E", "P/E", valuation, flags=re.IGNORECASE)
-                risk_start = valuation.find("### Material Risk")
-                if risk_start >= 0:
-                    valuation = valuation[:risk_start] + ("### Valuation risk\n\nThe P/E uses the supplied closing price and diluted EPS. "
-                                                          "Peer P/E multiples were not calculated, so this report makes no direct peer-valuation comparison.\n")
-            parts["Valuation Insights"] = valuation
+        if not re.search(r"\b(?:Buy|Hold|Sell)\b", advisor, re.IGNORECASE) or not re.search(r"\d", advisor):
+            raise RuntimeError("Investment Advisor did not return a choice and a deciding number.")
+        # Strategy Manager has checked the section content. The code assembles the
+        # checked role outputs so a generation limit cannot cut off a report section.
     else:
         parts = {}
 
     filing_line = "; ".join(f"{form} {main['facts']['filings'][form]['accession']}" for form in ("10-K", "10-Q", "8-K"))
     report = out / f"{ticker.upper()}_report.md"
     if with_model:
-        body = "\n\n".join(f"## {heading}\n\n{text}" for heading, text in parts.items())
+        body = "\n\n".join(f"## {heading}\n\n{text}" for heading, text in parts.items()).strip()
         price_note = f"Price used for P/E: ${price:.2f} on {price_date or 'date not recorded'}; source: {price_source or 'not recorded'}.\n\n" if price is not None else "Price not supplied; P/E is omitted.\n\n"
         content = f"Filings read: {filing_line}\nRun time: {datetime.now().astimezone().isoformat(timespec='seconds')}\n\n# {ticker.upper()} Equity Research Report\n\n{price_note}{body}\n\n---\n\nThis is a learning exercise, not financial advice. AI assistance: Purdue GenAI Studio. Student verification and judgment are still required.\n"
     else:
@@ -637,13 +881,6 @@ def build_report(companies: list[dict[str, Any]], ticker: str, price: float | No
     if with_model and revenue_fact:
         content = content.replace("RevenueFromContractWithCustomerExcludingTax", revenue_fact["tag"])
     report.write_text(content, encoding="utf-8")
-    print(f"\nStep 6 — earnings-release lines about revenue/EPS")
-    for line in release_claims(main["filing_texts"]["8-K"]):
-        print("  " + line[:300])
-    print("\nStep 7 — peer facts and margins")
-    for c in companies[1:]:
-        f = c["facts"]["facts"]
-        print(f"  {c['facts']['ticker']}: revenue={f.get('revenue')}; operating income={f.get('operating_income')}; margin={c.get('ratios',{}).get('operating_margin')}")
     print(f"Report saved: {report}")
     return report
 
@@ -701,6 +938,7 @@ def main() -> int:
             company, _release = facts_for_company(symbol, ua, out)
             companies.append(company)
         print_calculations(companies, args.price)
+        print_release_and_peers(companies)
         report = build_report(companies, ticker, args.price, out, env, args.model, args.price_date, args.price_source)
         audit = write_audit_template(ticker, out, report)
         print(f"Human audit template: {audit}")

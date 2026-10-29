@@ -2,7 +2,7 @@
 
 Extend the Python equity-research desk in this project. Keep its seven data steps and add the four roles in Figure 1 of Francis and Zhang (2026), *Can AI Match Professional Analysts? Evidence from a Multi-Agent System*. The paper describes a role-based report workflow. Keep the roles separate and preserve the handoffs below. Do not replace the seven data steps with model-generated research.
 
-Use the existing prompt `prompts/week-02-equity-desk-data-pipeline.md` and the current desk code as the specification for the seven data steps. Keep their behavior, command-line options, filing checks, saved facts, and run folder. Do not name a company in the code.
+Use the existing prompt `prompts/lab-02-equity-desk-data-pipeline.md` and the current desk code as the specification for the seven data steps. Keep their behavior, command-line options, filing checks, saved facts, and run folder. Do not name a company in the code.
 
 ## Provider setup
 
@@ -39,5 +39,7 @@ When the code is complete, give me:
 - The exact command to install the required packages.
 - The exact command to run the desk on a ticker with peers and a share price.
 - A short note that says which provider and model configuration I must set in `.env`.
+
+Include `--model` in the run command so that it runs the four roles after the seven data steps.
 
 Paper reference: Francis, A., & Zhang, C. X. (2026). *Can AI match professional analysts? Evidence from a multi-agent system*. Finance Research Letters, 103, 110127. https://doi.org/10.1016/j.frl.2026.110127

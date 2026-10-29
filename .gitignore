@@ -7,3 +7,6 @@ __pycache__/
 .DS_Store
 data/
 exports/
+# Intermediate SEC diagnostic runs from Week 2 are kept locally, not published.
+runs/COST_20261028_200*/
+runs/WMT_20261028_201451/

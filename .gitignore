@@ -10,3 +10,6 @@ exports/
 # Intermediate SEC diagnostic runs from Week 2 are kept locally, not published.
 runs/COST_20261028_200*/
 runs/WMT_20261028_201451/
+# Superseded AAPL report drafts; keep the final corrected run only.
+runs/AAPL_20261028_203314/
+runs/AAPL_20261028_203544/

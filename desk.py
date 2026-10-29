@@ -433,21 +433,37 @@ def release_claims(release_text: str) -> list[str]:
 
 def quarter_metrics(release_text: str) -> dict[str, Any]:
     lines = release_text.splitlines()
-    revenue_line = next((line for line in lines if re.search(r"\btotal revenues?\b", line, re.IGNORECASE)), "")
-    revenue_tail = re.split(r"\btotal revenues?\b", revenue_line, flags=re.IGNORECASE, maxsplit=1)[-1]
-    revenue_numbers = [float(x.replace(",", "")) for x in re.findall(r"(?<![\w.])\$?\s*(\d{1,3}(?:,\d{3})+|\d+)(?![\w.])", revenue_tail)]
+    revenue_line = ""
+    revenue_numbers: list[float] = []
+    for i, line in enumerate(lines):
+        match = re.search(r"\btotal\s+(?:net\s+)?(?:revenues?|sales)\b", line, re.IGNORECASE)
+        if not match:
+            continue
+        revenue_line = line
+        revenue_context = re.sub(r"\(\d+\)", "", " ".join(lines[i:min(len(lines), i + 3)]))
+        revenue_display_lines = [re.sub(r"\(\d+\)", "", item).strip() for item in lines[i:min(len(lines), i + 3)]]
+        number_line = next((item for item in revenue_display_lines if re.search(r"\d", item)), "")
+        label_line = re.sub(r"\(\d+\)", "", line).strip()
+        revenue_line = label_line if number_line == label_line or not number_line else f"{label_line} {number_line}"
+        revenue_tail = revenue_context[match.end():]
+        revenue_numbers = [float(x.replace(",", "")) for x in re.findall(
+            r"(?<![\w.])\$?\s*(\d{1,3}(?:,\d{3})+|\d+)(?![\w.])", revenue_tail)]
+        if len(revenue_numbers) >= 2:
+            break
     eps_line = ""
     eps_numbers: list[float] = []
-    eps_candidates = [line for line in lines if re.match(r"\s*Diluted\b", line, re.IGNORECASE) and "$" in line]
-    if not eps_candidates:
-        heading = next((i for i, line in enumerate(lines) if re.search(r"NET INCOME PER COMMON SHARE|EARNINGS PER SHARE", line, re.IGNORECASE)), -1)
-        eps_candidates = [line for line in lines[max(0, heading + 1):heading + 12] if re.search(r"Diluted\b", line, re.IGNORECASE) and "$" in line]
-    for line in eps_candidates:
-        match = re.search(r"\bDiluted\b(.+)$", line, re.IGNORECASE)
+    heading = next((i for i, line in enumerate(lines) if re.fullmatch(
+        r"\s*(?:NET INCOME PER COMMON SHARE|EARNINGS PER SHARE)\s*:?\s*", line, re.IGNORECASE)), -1)
+    eps_start = max(0, heading + 1) if heading >= 0 else 0
+    for i in range(eps_start, min(len(lines), eps_start + 14)):
+        line = lines[i]
+        match = re.match(r"\s*Diluted\b(.*)$", line, re.IGNORECASE)
         if match:
-            found = [float(x.replace(",", "")) for x in re.findall(r"\$\s*(\d+\.\d+)", match.group(1))]
+            eps_line = " ".join(lines[i:min(len(lines), i + 2)])
+            eps_tail = " ".join((match.group(1), *lines[i + 1:min(len(lines), i + 2)]))
+            found = [float(x.replace(",", "")) for x in re.findall(r"\$\s*(\d+\.\d+)", eps_tail)]
             if len(found) >= 2:
-                eps_line, eps_numbers = line, found
+                eps_numbers = found
                 break
     revenue = revenue_numbers[:2] if len(revenue_numbers) >= 2 else []
     return {
@@ -488,11 +504,12 @@ def financial_evidence(companies: list[dict[str, Any]], price: float | None,
         }
         val = ratios.get(name)
         shown = f"{val:.2%}" if name in {"revenue_growth", "operating_margin", "return_on_average_equity"} and val is not None else f"{val:.4f}" if val is not None and name == "debt_to_equity" else val
-        lines.append(f"- {label}: {shown}; arithmetic: {formulas[name]}.")
+        period = f" (using FY ended {main['facts']['fiscal_year_end']} diluted EPS)" if name == "pe" and val is not None else ""
+        lines.append(f"- {label}{period}: {shown}; arithmetic: {formulas[name]}.")
     q = main.get("quarter", {})
     qgrowth = q.get("revenue_growth")
     qgrowth_text = f"{qgrowth:.2%}" if qgrowth is not None else "not calculable from supplied release text"
-    lines.append(f"- Latest-quarter total revenue (dollars in millions): {q.get('revenue_current')}; same quarter prior year: {q.get('revenue_prior_quarter')}; growth: {qgrowth_text}, arithmetic ({q.get('revenue_current')} / {q.get('revenue_prior_quarter')}) - 1; exact release row: {q.get('revenue_release_line')}")
+    lines.append(f"- Latest-quarter revenue (dollars in millions): {q.get('revenue_current')}; same quarter prior year: {q.get('revenue_prior_quarter')}; growth: {qgrowth_text}, arithmetic ({q.get('revenue_current')} / {q.get('revenue_prior_quarter')}) - 1; exact release row: {q.get('revenue_release_line')}")
     lines.append(f"- Latest-quarter diluted EPS, GAAP: {q.get('diluted_eps_current')}; prior-year quarter: {q.get('diluted_eps_prior_quarter')}; exact release row: {q.get('eps_release_line')}")
     for peer in companies[1:]:
         pf = peer["facts"]["facts"]
@@ -556,7 +573,7 @@ def build_report(companies: list[dict[str, Any]], ticker: str, price: float | No
                                "earnings release relevant lines": release_claims(main["filing_texts"]["8-K"])},
                               "No more than 220 words; concise Markdown with exact short quotes and source sections.")
         finance = call_model(client, model, "Financial Analyst",
-                             "Write no more than 300 words of financial interpretation. Do not repeat the full table. Identify the main strength and a material risk using only the supplied facts. Never invent values or calculate ratios in the model.",
+                             "Write no more than 300 words of financial interpretation. Do not repeat the full table. Identify the main strength and a material risk using only the supplied facts. Never invent values or calculate ratios in the model. Describe P/E as price divided by the latest reported full-year diluted EPS. Do not call it a forward P/E or a trailing-twelve-month P/E unless the evidence supports that period.",
                              {"facts": facts, "ratios": main.get("ratios"),
                               "share_price": {"price": price, "date": price_date, "source": price_source},
                               "code_calculated_evidence": financial_evidence(companies, price, price_date, price_source),
@@ -593,10 +610,9 @@ def build_report(companies: list[dict[str, Any]], ticker: str, price: float | No
             parts[heading] = repaired
         if "Market Positioning and Growth Outlook" in parts:
             market = re.sub(r"\*?Note:.*?(?=\n|$)", "", parts["Market Positioning and Growth Outlook"], flags=re.IGNORECASE)
-            market += ("\n\n**Revenue definition check (verified in the earnings release and 10-K):** "
-                       "Fiscal 2026 total revenue was $303,154 million: net sales of $297,247 million plus membership fees of $5,907 million. "
-                       "The $297.2 billion opening figure is net sales, not total revenue. The XBRL revenue fact agrees with the total-revenue statement line.")
             parts["Market Positioning and Growth Outlook"] = market.strip()
+        for heading, text in parts.items():
+            parts[heading] = re.sub(r"\bforward P/E\b", f"P/E based on FY ended {facts['fiscal_year_end']} diluted EPS", text, flags=re.IGNORECASE)
         if "Valuation Insights" in parts:
             valuation = parts["Valuation Insights"]
             if re.search(r"market average|typically lower|forward P/E|typical retailer", valuation, re.IGNORECASE):
@@ -614,9 +630,12 @@ def build_report(companies: list[dict[str, Any]], ticker: str, price: float | No
     if with_model:
         body = "\n\n".join(f"## {heading}\n\n{text}" for heading, text in parts.items())
         price_note = f"Price used for P/E: ${price:.2f} on {price_date or 'date not recorded'}; source: {price_source or 'not recorded'}.\n\n" if price is not None else "Price not supplied; P/E is omitted.\n\n"
-        content = f"Filings read: {filing_line}\nRun time: {datetime.now().astimezone().isoformat(timespec='seconds')}\n\n# {ticker.upper()} Equity Research Report\n\n{price_note}{body}\n\n---\n\nThis is a learning exercise, not financial advice. AI assistance: Purdue GenAI Studio. I verified the sources myself; the judgments are mine. Any remaining errors are my own.\n"
+        content = f"Filings read: {filing_line}\nRun time: {datetime.now().astimezone().isoformat(timespec='seconds')}\n\n# {ticker.upper()} Equity Research Report\n\n{price_note}{body}\n\n---\n\nThis is a learning exercise, not financial advice. AI assistance: Purdue GenAI Studio. Student verification and judgment are still required.\n"
     else:
         content = f"Filings read: {filing_line}\nRun time: {datetime.now().astimezone().isoformat(timespec='seconds')}\n\n# {ticker.upper()} Equity Research Report\n\nModel roles were not run. Re-run with `--model` to create the five-part report.\n"
+    revenue_fact = main["facts"]["facts"].get("revenue")
+    if with_model and revenue_fact:
+        content = content.replace("RevenueFromContractWithCustomerExcludingTax", revenue_fact["tag"])
     report.write_text(content, encoding="utf-8")
     print(f"\nStep 6 — earnings-release lines about revenue/EPS")
     for line in release_claims(main["filing_texts"]["8-K"]):

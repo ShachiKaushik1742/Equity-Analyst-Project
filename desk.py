@@ -252,7 +252,9 @@ CONCEPTS = {
     "net_income": ["NetIncomeLossAttributableToParent", "NetIncomeLoss"],
     "diluted_eps": ["EarningsPerShareDiluted"],
     "equity": ["StockholdersEquity"],
-    "long_term_debt": ["LongTermDebt", "LongTermDebtNoncurrent", "LongTermDebtAndFinanceLeaseObligationsNoncurrent"],
+    # Prefer the non-current balance-sheet concept. Some filers also tag total
+    # term debt as LongTermDebt; adding its current portion would double-count it.
+    "long_term_debt": ["LongTermDebtNoncurrent", "LongTermDebtAndFinanceLeaseObligationsNoncurrent", "LongTermDebt"],
     "current_debt": ["LongTermDebtCurrent", "LongTermDebtAndFinanceLeaseObligationsCurrent", "LongTermDebtAndCapitalLeaseObligationsCurrent", "OtherLongTermDebtCurrent"],
     "cash_from_operations": ["NetCashProvidedByUsedInOperatingActivities"],
     "capex": ["PaymentsToAcquirePropertyPlantAndEquipment", "PaymentsToAcquireProductiveAssets"],

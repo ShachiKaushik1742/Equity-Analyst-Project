@@ -308,10 +308,16 @@ def earnings_release_quotes(company: dict[str, Any]) -> str:
     quarter = company.get("quarter", {})
     accession = company.get("facts", {}).get("filings", {}).get("8-K", {}).get("accession", "")
     quotes = []
-    for key, label in (("revenue_release_line_number", "total revenue"), ("eps_release_line_number", "diluted EPS")):
-        number = quarter.get(key)
-        if isinstance(number, int) and 1 <= number <= len(lines):
-            quotes.append(f'{label}: “{lines[number - 1]}” (8-K accession {accession}, Exhibit 99.1, saved-text line {number}).')
+    for label, label_key, value_key in (
+        ("total revenue", "revenue_release_line_number", "revenue_number_line_number"),
+        ("diluted EPS", "eps_release_line_number", "eps_number_line_number"),
+    ):
+        start = quarter.get(label_key)
+        end = quarter.get(value_key) or start
+        if isinstance(start, int) and isinstance(end, int) and 1 <= start <= end <= len(lines):
+            exact_text = " ".join(line.strip() for line in lines[start - 1:end] if line.strip())
+            cited_lines = f"line {start}" if start == end else f"lines {start}-{end}"
+            quotes.append(f'{label}: “{exact_text}” (8-K accession {accession}, Exhibit 99.1, saved-text {cited_lines}).')
     return "\n".join(quotes)
 
 
@@ -544,6 +550,7 @@ def quarter_metrics(release_text: str) -> dict[str, Any]:
             break
     eps_line = ""
     eps_line_number: int | None = None
+    eps_number_line_number: int | None = None
     eps_numbers: list[float] = []
     heading = next((i for i, line in enumerate(lines) if re.fullmatch(
         r"\s*(?:NET INCOME PER COMMON SHARE|EARNINGS PER SHARE)\s*:?\s*", line, re.IGNORECASE)), -1)
@@ -558,6 +565,7 @@ def quarter_metrics(release_text: str) -> dict[str, Any]:
             found = [float(x.replace(",", "")) for x in re.findall(r"\$\s*(\d+\.\d+)", eps_tail)]
             if len(found) >= 2:
                 eps_numbers = found
+                eps_number_line_number = i + 2 if i + 1 < len(lines) and re.search(r"\$\s*\d+\.\d+", lines[i + 1]) else i + 1
                 break
     revenue = revenue_numbers[:2] if len(revenue_numbers) >= 2 else []
     return {
@@ -571,6 +579,7 @@ def quarter_metrics(release_text: str) -> dict[str, Any]:
         "diluted_eps_prior_quarter": eps_numbers[1] if len(eps_numbers) > 1 else None,
         "eps_release_line": eps_line,
         "eps_release_line_number": eps_line_number,
+        "eps_number_line_number": eps_number_line_number,
         "release_units": "Dollars in millions except per-share data, as captioned in the release; quarter comparison uses the first two columns.",
     }
 
@@ -590,7 +599,7 @@ def financial_evidence(companies: list[dict[str, Any]], price: float | None,
     revenue_fact = f.get("revenue")
     if statement_source and revenue_fact:
         label, line_number = statement_source
-        lines.append(f"- {main['facts']['ticker']} top-line definition: its latest 10-K calls the selected figure '{label}' on saved-text line {line_number}; tag {revenue_fact['tag']}; this is distinct from net sales when the filing reports membership fees separately.")
+        lines.append(f"- {main['facts']['ticker']} top-line definition: its latest 10-K calls the selected figure '{label}' on saved-text line {line_number}; tag {revenue_fact['tag']}; this is the caption for the top-line measure used in the ratios.")
     ratios = main.get("ratios", {})
     for label, name in (("Revenue growth", "revenue_growth"), ("Operating margin", "operating_margin"),
                         ("Return on average equity", "return_on_average_equity"), ("Debt to equity", "debt_to_equity"),

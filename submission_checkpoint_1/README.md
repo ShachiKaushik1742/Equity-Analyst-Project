@@ -1,31 +1,34 @@
-# Checkpoint 1 submission packet
+# Checkpoint 1 — Brightspace submission
 
-**Status: COST and MSFT audits and the partner's two-claim check are recorded. The packet is committed and pushed. Before submission, confirm the repository is public as the course requires, then submit the latest commit permalink in Brightspace.**
+## What to submit
 
-## What Checkpoint 1 asks you to submit
+Checkpoint 1 requires one **commit permalink** in Brightspace → Checkpoint 1. The commit must point to the public repository containing the desk and a report on the company selected by the partner. The course accepts the Week 2 fallback report if the desk or model provider did not run.
 
-Lab 03 says to submit in Brightspace a **permalink (commit link)** to the repository that contains the desk and a report on the partner's company. A fallback report counts if the desk or model provider does not run. The lab also calls for a hand audit of the COST report, and the partner must check two core claims of the partner-company report against its filings.
+**Repository:** https://github.com/ShachiKaushik1742/Equity-Analyst-Project
+
+**Commit permalink:** https://github.com/ShachiKaushik1742/Equity-Analyst-Project/commit/e063e8db3f850741aa42250db16b8f9f453164f1
 
 ## Packet contents
 
-- `desk.py`, `requirements.txt`, `.env.example`, and `SETUP.md`: the desk, dependencies, and setup instructions. The real `.env` and API key are intentionally excluded.
-- `runs/COST_20261028_211550/`: COST four-role report, all filing and peer text/facts, human-audit worksheet, and reflection/status note.
-- `COST_step_verification.md`: evidence for the seven data steps against the known Costco filings.
-- `XBRL_and_partner_reflection.md`: prepared Week 2 XBRL explanation and reflection.
-- `runs/WMT_20261028_201551/`: WMT data-side run and its filing evidence. The model roles were not run on WMT; this run is the Week 2 data-pipeline exercise.
-- `runs/MSFT_20261028_214246/`: the original MSFT/AAPL run, source filings, facts, price log, and original model-generated report/audit evidence.
-- `MSFT_partner_report.md`: a citation-corrected, completed report draft assembled from the MSFT model-role output and saved filing evidence. It fixes the truncated Analyst paragraphs and the competition-section attribution in the original draft. Review it against the source files before using it.
-- `MSFT_partner_audit.md`: the human review of the corrected MSFT report and the partner's verification of claims 1 and 9.
+- `desk.py`, `requirements.txt`, `.env.example`, and `SETUP.md`: desk code, dependencies, and setup instructions. The real `.env` and API key are excluded.
+- `runs/COST_20261028_211550/`: COST four-role report, filing and peer texts/facts, human audit, and reflection/status note.
+- `COST_step_verification.md`: the seven COST data steps checked against filings and facts. It records the partner check of Steps 2 and 4.
+- `XBRL_and_partner_reflection.md`: Week 2 XBRL explanation and reflection.
+- `runs/WMT_20261028_201551/`: the Week 2 data-pipeline exercise for WMT.
+- `runs/MSFT_20261028_214246/` and `MSFT_partner_report.md`: MSFT source files and the partner-company report.
+- `MSFT_partner_audit.md`: human review of the corrected MSFT report, plus the partner's check of claims 1 and 9 (Aditi Nahane, AN).
 
-## Checkpoint audit status
+## Audit status recorded in the packet
 
-1. **COST audit:** the student's marks and counts are recorded: 7 wrong/unsupported claims and 1 missing required content item.
-2. **MSFT audit:** the student's human review is recorded: 0 wrong/unsupported claims and 0 missing claims in the corrected report.
-3. **Partner check:** the worksheet records partner Aditi Nahane's check of claims 1 and 9, with initials AN.
-4. **Remaining action:** submit the pushed commit permalink in Brightspace: https://github.com/ShachiKaushik1742/Equity-Analyst-Project/commit/b9f06fe50aa533cddcf456983116351d50d81657
+- COST: 7 wrong or unsupported claims and 1 missing content item are recorded in the human audit. Findings are attributed to the roles for Week 3 follow-up.
+- MSFT partner report: 0 wrong or unsupported and 0 missing claims are recorded in `MSFT_partner_audit.md`; the partner check of claims 1 and 9 is recorded there.
+- COST Steps 2 and 4: partner review is recorded as RIGHT in `COST_step_verification.md`.
+- The reflection discussion is recorded as complete in the reflection/status files.
 
-The public GitHub API returned 404 for the configured remote, which is consistent with a private repository. The remote accepts authenticated pushes, so its visibility should be confirmed in GitHub settings before submission. Assistant verification columns are kept separate from the student and partner marks recorded in the audit worksheets.
+The GitHub repository was confirmed public in its settings on 2026-11-02. GitHub shows that this commit is in the public repository. The API key stays in the local `.env`; do not upload that file.
 
-## Separate Week 2 follow-ups
+## Submit in Brightspace
 
-The student records the XBRL reflection discussion as complete in `XBRL_and_partner_reflection.md`. Aditi Nahane (AN) checked COST Steps 2 and 4; the result is recorded in `COST_step_verification.md`.
+Open Brightspace → **Checkpoint 1** and submit the **commit permalink** above. This checkpoint asks for the link; it does not ask for a separate file upload. After submitting, confirm Brightspace shows the submission receipt.
+
+Checkpoint 1 is separate from Week 3 preparation and Checkpoint 2.

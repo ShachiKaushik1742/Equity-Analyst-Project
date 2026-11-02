@@ -6,7 +6,7 @@ Checkpoint 1 requires one **commit permalink** in Brightspace → Checkpoint 1. 
 
 **Repository:** https://github.com/ShachiKaushik1742/Equity-Analyst-Project
 
-**Commit permalink:** https://github.com/ShachiKaushik1742/Equity-Analyst-Project/commit/e063e8db3f850741aa42250db16b8f9f453164f1
+In Brightspace, submit the permalink to the latest commit on `main`.
 
 ## Packet contents
 

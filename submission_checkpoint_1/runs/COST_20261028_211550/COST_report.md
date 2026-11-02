@@ -78,4 +78,6 @@ Costco’s low‑SKU, membership-driven model supports high sales volume. ROE wa
 
 ---
 
-This is a learning exercise, not financial advice. AI assistance: Purdue GenAI Studio. Student verification and judgment are still required.
+This is a learning exercise, not financial advice.
+AI assistance: Purdue GenAI Studio and Codex. I verified the sources myself; the judgments are mine.
+Any remaining errors are my own.

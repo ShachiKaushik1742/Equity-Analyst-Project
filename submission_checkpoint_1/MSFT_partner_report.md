@@ -52,4 +52,8 @@ Microsoft’s stated plan is to continue capital spending “to support growth i
 
 ---
 
-Editorial note: This is a completed, citation-corrected report draft assembled from the role-generated output and the saved filing evidence. The original generated report is preserved in `runs/MSFT_20261028_214246/MSFT_report.md`. The audit is separate; a student must verify and mark it, and a partner must check two claims. This is a learning exercise, not financial advice.
+Editorial note: This is a citation-corrected report assembled from the role-generated output and saved filing evidence. The accompanying audit records the human review and the partner's check of claims 1 and 9.
+
+This is a learning exercise, not financial advice.
+AI assistance: Purdue GenAI Studio and Codex. I verified the sources myself; the judgments are mine.
+Any remaining errors are my own.

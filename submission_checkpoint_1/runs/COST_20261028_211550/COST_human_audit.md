@@ -38,4 +38,4 @@ The five report headings exist, but the Future Developments and Strategic Recomm
 
 `COST_step_verification.md` has a separate inconsistency in its Step 5 paragraph: it says P/E used $904.70 and 43.58×, then says this matches the saved run. That is false for this run. `COST_report.md` and its saved run facts use$992.13 on 2026-10-27, which gives 47.79×. $904.70 and 43.58× belong to an earlier September run. The Step 5 arithmetic for the other ratios is correct. This stale-price text is a wrong statement in the companion note, not a second occurrence in the report audit counts above.
 
-**Partner check:** Not completed by this assistant. A partner must independently check two marks and record their own confirmation if the assignment requires it.
+**Partner check context:** The Checkpoint 1 partner-company report check is recorded in `../../MSFT_partner_audit.md` (claims 1 and 9, partner Aditi Nahane, AN). The separate Week 2 COST known-answer partner check for Steps 2 and 4 is recorded in `../../COST_step_verification.md`.

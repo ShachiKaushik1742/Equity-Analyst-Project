@@ -1,6 +1,6 @@
 # Checkpoint 1 submission packet
 
-**Status: COST and MSFT audits and the partner's two-claim check are recorded. The packet still needs to be committed, pushed, and submitted in Brightspace.**
+**Status: COST and MSFT audits and the partner's two-claim check are recorded. The packet is committed and pushed; submit the commit permalink in Brightspace to finish Checkpoint 1.**
 
 ## What Checkpoint 1 asks you to submit
 
@@ -22,7 +22,7 @@ Lab 03 says to submit in Brightspace a **permalink (commit link)** to the reposi
 1. **COST audit:** the student's marks and counts are recorded: 7 wrong/unsupported claims and 1 missing required content item.
 2. **MSFT audit:** the student's human review is recorded: 0 wrong/unsupported claims and 0 missing claims in the corrected report.
 3. **Partner check:** the worksheet records partner Aditi Nahane's check of claims 1 and 9, with initials AN.
-4. **Submission remains:** commit and push the final packet, then submit the permalink for that commit in Brightspace.
+4. **Remaining action:** submit the pushed commit permalink in Brightspace: https://github.com/ShachiKaushik1742/Equity-Analyst-Project/commit/b9f06fe50aa533cddcf456983116351d50d81657
 
 Assistant verification columns are kept separate from the student and partner marks recorded in the audit worksheets.
 

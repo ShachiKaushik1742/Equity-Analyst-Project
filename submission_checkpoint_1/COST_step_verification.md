@@ -1,6 +1,6 @@
 # COST Week 2 — known-answer step verification
 
-This is a file-based review of Steps 1–7 against the instructor's COST run, the saved filing text, SEC XBRL facts, and SEC filing-detail pages. It records provisional right/wrong results and evidence. The assignment asks for handwritten marks and a partner to check two marks; this note does not claim that either happened. Use it to make the required marks by hand. Partner check: pending.
+This is a file-based review of Steps 1–7 against the instructor's COST run, saved filing text, SEC XBRL facts, and SEC filing-detail pages. The evidence and marks are recorded below. Aditi Nahane (AN) checked COST Steps 2 and 4 and confirmed both RIGHT; that partner check is recorded below. The Checkpoint 1 partner-company report check (MSFT claims 1 and 9) is recorded in `MSFT_partner_audit.md`.
 
 ## Results
 

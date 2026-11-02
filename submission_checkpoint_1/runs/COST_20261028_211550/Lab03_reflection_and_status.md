@@ -2,7 +2,7 @@
 
 ## Human audit status
 
-The COST report and source filings are saved in this run folder. The audit template is prepared with claim values and filing locations. The **Mark (human)** column and the error/missing counts remain blank for the student and partner to complete after comparing the claims with the filings. The report is not a human-verified investment recommendation.
+The COST report and source filings are saved in this run folder. The student's marks and counts are recorded in `COST_human_audit.md`: 7 wrong or unsupported claims and 1 missing claim. The report is a learning exercise and is not a human-verified investment recommendation beyond the stated audit marks.
 
 ## Learn on your own
 
@@ -16,7 +16,7 @@ The step I would trust least on a company I have not seen is XBRL tag selection.
 
 The four roles need the data steps in different ways: Research Analyst needs cited 10-K and release text; Financial Analyst needs verified facts, periods, arithmetic, quarter data, and peer comparisons; Investment Advisor needs the supported research and financial findings; Strategy Manager needs all role outputs and evidence to check and compile the report. Anthropic's financial-services repository says agent output is staged for human sign-off and agents do not make final investment recommendations or execute transactions ([README](https://github.com/anthropics/financial-services)). The model's recommendation in this learning report therefore needs human review.
 
-The partner discussion and the two partner checks have **not** been recorded. The partner-picked company run also remains pending because no partner ticker was supplied. Do not mark those Lab 3 items complete until the discussion and checks occur.
+The partner's MSFT company report and the partner's check of claims 1 and 9 are recorded in `../../MSFT_partner_audit.md`. The student records the spoken reflection discussion as completed in `../../XBRL_and_partner_reflection.md`. Aditi Nahane (AN) also checked COST known-answer Steps 2 and 4; see `../../COST_step_verification.md`.
 
 ## Reproduction
 

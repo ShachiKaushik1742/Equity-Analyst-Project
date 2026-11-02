@@ -1,6 +1,6 @@
 # XBRL and partner reflection — COST FY2026
 
-This note answers the Week 2 “The filings as data” and “Reflect” prompts. It uses the saved COST desk run and `COST_step_verification.md` as evidence. It is a prepared explanation; the partner discussion and partner check still need to happen.
+This note reflects answers for the Week 2 “The filings as data” and “Reflect” prompts. It uses the saved COST desk run and `COST_step_verification.md` as evidence. The MSFT partner report check is recorded separately in `MSFT_partner_audit.md`. 
 
 ## What XBRL is
 
@@ -31,6 +31,10 @@ I would say: “A company can use a different XBRL tag in a later year because t
 - **Investment Advisor:** the Research Analyst's and Financial Analyst's supported findings, plus one deciding number to use in the thesis and recommendation.
 - **Strategy Manager:** all five report parts for the same company, with consistent periods and definitions. The manager checks completeness and contradictions. A human still checks whether each number is supported by a filing.
 
-The four roles use the data gathered in these steps. They do not replace the filing checks or the human audit. The exact role prompts are in `desk.py`.
+The four roles use the data gathered in these steps.  
+   
+Reflection Summary:
 
-**Partner check:** not recorded yet. After the discussion, ask the partner to check two marks in `COST_step_verification.md` and record those marks there. Keep the human mark column in `COST_human_audit.md` for your own filing review.
+“XBRL gives each reported fact a tag, value, unit, and period. Our COST reader chose `RevenueFromContractWithCustomerExcludingAssessedTax` because it reaches the 2026 fiscal year end and matches Total revenue of $303,154 million on the 10-K statement. The tag `Revenues` only reached the prior year in the data we reviewed. A company can change tags when its reporting or taxonomy changes, so the reader checks the period and the filing instead of trusting the tag name alone. The Research Analyst needs cited filing text; the Financial Analyst needs verified facts, periods, and arithmetic; the Investment Advisor needs supported findings and one deciding number; and the Strategy Manager needs complete, consistent role outputs. I would trust XBRL tag selection least on an unfamiliar company because a plausible tag can still describe the wrong concept or year.”
+
+**Discussion status:** completed

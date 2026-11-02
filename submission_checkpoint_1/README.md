@@ -1,6 +1,6 @@
 # Checkpoint 1 submission packet
 
-**Status: prepared, pending required student and partner verification.** Do not submit this packet as complete until the open items below are finished.
+**Status: COST and MSFT audits and the partner's two-claim check are recorded. The packet still needs to be committed, pushed, and submitted in Brightspace.**
 
 ## What Checkpoint 1 asks you to submit
 
@@ -15,13 +15,17 @@ Lab 03 says to submit in Brightspace a **permalink (commit link)** to the reposi
 - `runs/WMT_20261028_201551/`: WMT data-side run and its filing evidence. The model roles were not run on WMT; this run is the Week 2 data-pipeline exercise.
 - `runs/MSFT_20261028_214246/`: the original MSFT/AAPL run, source filings, facts, price log, and original model-generated report/audit evidence.
 - `MSFT_partner_report.md`: a citation-corrected, completed report draft assembled from the MSFT model-role output and saved filing evidence. It fixes the truncated Analyst paragraphs and the competition-section attribution in the original draft. Review it against the source files before using it.
-- `MSFT_partner_audit.md`: the filing-evidence worksheet for the corrected MSFT report. Its human marks and partner fields are blank.
+- `MSFT_partner_audit.md`: the human review of the corrected MSFT report and the partner's verification of claims 1 and 9.
 
-## Still required before you submit
+## Checkpoint audit status
 
-1. **Complete the COST hand audit.** Compare the 11 core claims, other Financial Analyst numbers, report sections, and recommendation in `runs/COST_20261028_211550/COST_report.md` with the source filings. Fill its human-mark column and count wrong/unsupported claims and missing claims.
-2. **Confirm the partner's pick.** MSFT was used as the second company at your request, and its latest earnings 8-K was filed October 28, 2026. The lab says the partner picks the company. Ask your partner to confirm MSFT is their pick; if it is not, run their ticker instead.
-3. **Audit the MSFT report yourself.** Use `MSFT_partner_audit.md` and the source files in `runs/MSFT_20261028_214246/`. Enter your marks and counts. Ask your partner to check two claims and record their check in the worksheet.
-4. **Submit the repository commit permalink in Brightspace.** After the final verification is recorded and pushed, use the GitHub permalink for that commit. The packet's current commit permalink is provided with the handoff message; use the newest commit if you make more changes.
+1. **COST audit:** the student's marks and counts are recorded: 7 wrong/unsupported claims and 1 missing required content item.
+2. **MSFT audit:** the student's human review is recorded: 0 wrong/unsupported claims and 0 missing claims in the corrected report.
+3. **Partner check:** the worksheet records partner Aditi Nahane's check of claims 1 and 9, with initials AN.
+4. **Submission remains:** commit and push the final packet, then submit the permalink for that commit in Brightspace.
 
-The audit worksheets leave marks blank on purpose. This packet does not claim that a student or partner performed those checks.
+Assistant verification columns are kept separate from the student and partner marks recorded in the audit worksheets.
+
+## Separate Week 2 follow-ups
+
+The student records the XBRL reflection discussion as complete in `XBRL_and_partner_reflection.md`. Aditi Nahane (AN) checked COST Steps 2 and 4; the result is recorded in `COST_step_verification.md`.

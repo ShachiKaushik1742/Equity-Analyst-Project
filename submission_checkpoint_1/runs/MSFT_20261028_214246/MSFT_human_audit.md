@@ -2,6 +2,8 @@
 
 Report: `MSFT_report.md`
 
+**Superseded worksheet:** This blank template applies to the original model-generated report, which has been replaced for checkpoint review by [`MSFT_partner_report.md`](../../MSFT_partner_report.md). Use [`MSFT_partner_audit.md`](../../MSFT_partner_audit.md) for the corrected report's completed human audit and partner check. This original template remains here only as part of the preserved run artifacts.
+
 Antigravity-assisted evidence notes are entered below for the student's review. The course asks the student to make the marks by hand. The **Mark (human)** column is intentionally blank. Do not count errors or missing claims until you have decided the marks.
 
 Errors (wrong + unsupported): **TO BE COUNTED BY STUDENT**  

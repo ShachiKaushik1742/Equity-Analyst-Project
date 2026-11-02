@@ -1,5 +1,7 @@
 # MSFT Human Verification Record
 
+**Superseded record:** This blank verification record refers to the original model-generated `MSFT_report.md`. The checkpoint audit is now recorded in [`MSFT_partner_audit.md`](../../MSFT_partner_audit.md) for the corrected report, including the human marks, counts, and partner check.
+
 Report verified: [`MSFT_report.md`](file:///Users/shachi/Documents/FIN67110/runs/MSFT_20261028_214246/MSFT_report.md)  
 Audit template reference: [`MSFT_human_audit.md`](file:///Users/shachi/Documents/FIN67110/runs/MSFT_20261028_214246/MSFT_human_audit.md) (commit [`6681e91`](https://github.com/ShachiKaushik1742/Equity-Analyst-Project/commit/6681e91))  
 Run directory: [`runs/MSFT_20261028_214246/`](file:///Users/shachi/Documents/FIN67110/runs/MSFT_20261028_214246/)  

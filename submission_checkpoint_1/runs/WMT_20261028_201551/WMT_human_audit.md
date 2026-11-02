@@ -1,5 +1,7 @@
 # Human audit — WMT
 
+**Not used for Checkpoint 1:** The WMT run is the data-side exercise only; no model-role report was generated for it. This is an unused audit template. The required checkpoint audits are the COST worksheet and the corrected MSFT partner-report worksheet.
+
 Report: `WMT_report.md`
 
 Errors (wrong + unsupported): TO BE COUNTED BY HUMAN

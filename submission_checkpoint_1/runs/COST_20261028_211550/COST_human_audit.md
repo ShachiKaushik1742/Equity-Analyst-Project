@@ -36,6 +36,6 @@ The five report headings exist, but the Future Developments and Strategic Recomm
 
 ## Check of the companion step-verification note
 
-`COST_step_verification.md` has a separate inconsistency in its Step 5 paragraph: it says P/E used $904.70 and 43.58×, then says this matches the saved run. That is false for this run. `COST_report.md` and its saved run facts use$992.13 on 2026-10-27, which gives 47.79×. $904.70 and 43.58× belong to an earlier September run. The Step 5 arithmetic for the other ratios is correct. This stale-price text is a wrong statement in the companion note, not a second occurrence in the report audit counts above.
+`COST_step_verification.md` previously contained a stale P/E input ($904.70, 43.58×). It has been corrected: this run uses the 2026-10-27 close of $992.13, giving $992.13 / $20.76 = 47.79×. That older stale-price note is not a current error in the companion verification file and is not included in the seven report-audit errors above.
 
 **Partner check context:** The Checkpoint 1 partner-company report check is recorded in `../../MSFT_partner_audit.md` (claims 1 and 9, partner Aditi Nahane, AN). The separate Week 2 COST known-answer partner check for Steps 2 and 4 is recorded in `../../COST_step_verification.md`.

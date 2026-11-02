@@ -6,15 +6,15 @@ Verified October 28, 2026:
 - Codex CLI installed and signed in with ChatGPT.
 - Antigravity CLI 1.4.5 installed; user confirmed sign-in and that it is open in the adjacent terminal.
 - User confirmed access to LSEG Workspace, WRDS, and S&P Capital IQ.
-- Purdue GenAI Studio key added to .env; verify that a model request succeeds.
+- Purdue GenAI Studio key added to .env; successful model-backed COST and MSFT reports show that requests ran.
 - .env is ignored by Git.
 - GitHub CLI is authenticated; Git remote points to https://github.com/ShachiKaushik1742/Equity-Analyst-Project.git.
 - A post-commit hook pushes new commits to origin/main.
 - Initial push verified: .env is absent from the GitHub repository.
 
 Still to verify:
-- The specified GitHub repository is currently private; the course prerequisite asks for a public repository.
-- Verify the Purdue GenAI Studio key with a model request.
+- Repository visibility remains to confirm. The unauthenticated GitHub API returned 404 for the configured remote; this is consistent with the private repository behavior, while authenticated pushes succeed. The course prerequisite requires a public repository.
+- Checkpoint 1 still needs the latest commit permalink submitted in Brightspace.
 
 ## Terminal checks
 

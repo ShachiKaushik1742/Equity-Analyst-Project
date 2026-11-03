@@ -10,10 +10,10 @@
 
 | Item | Partner completes |
 |---|---|
-| Report claim and value checked |  |
-| Partner mark: RIGHT or WRONG |  |
-| Filing evidence (form, accession, line, value and unit) |  |
-| Correction or comment |  |
+| Report claim and value checked | `claim:cost_revenue` — `$303,154,000,000` |
+| Partner mark: RIGHT or WRONG | **RIGHT** |
+| Filing evidence (form, accession, line, value and unit) | COST 2026 Form 10-K, accession `0000909832-26-000093`, line 625: `Total revenue 303,154 275,235 254,453`. The table is in millions. The 2026 value is `$303,154 million`, or `$303,154,000,000`, for the fiscal year ended August 30, 2026. |
+| Correction or comment | No correction. The report claim agrees with the filing line, period, and unit scale. |
 
 ## Check B — check the Verifier's seeded-error mark
 
@@ -23,17 +23,17 @@
 
 | Item | Partner completes |
 |---|---|
-| Verifier mark on the $21.76 claim |  |
-| Partner mark on the Verifier: RIGHT or WRONG |  |
-| Filing evidence checked (form, accession, line, value) |  |
-| Correction or comment |  |
+| Verifier mark on the $21.76 claim | **wrong**; correction: `$20.76` |
+| Partner mark on the Verifier: RIGHT or WRONG | **RIGHT** |
+| Filing evidence checked (form, accession, line, value) | COST 2026 Form 10-K, accession `0000909832-26-000093`, lines 636–638. Line 636 identifies net income per common share. Line 638 states: `Diluted $ 20.76 $ 18.21 $ 16.56`. The first value is for the fiscal year ended August 30, 2026. |
+| Correction or comment | The Verifier correctly rejects `$21.76` and corrects it to `$20.76`. No further correction is needed. |
 
 ## Partner sign-off
 
 | Item | Partner completes |
 |---|---|
-| Partner name |  |
-| Initials |  |
-| Date |  |
+| Partner name | Mrunalini Pol |
+| Initials | MP |
+| Date | November 3, 2026 |
 
 Please edit this file only after you have checked the filing yourself. In GitHub, use the pencil icon, fill in the table, and select **Commit changes**. Do not fill in the partner's name, initials, date, or result for them.

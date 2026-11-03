@@ -14,7 +14,7 @@ This file records saved work for Lab 04. It does not mark the partner check or s
 
 ## Partner action still required
 
-Please send [Lab04_partner_check.md](Lab04_partner_check.md) to your partner. They must open the seeded EPS verified report and the COST 10-K at line 638, independently check the Verifier's mark, and fill in the name, mark, evidence, initials, and date in that worksheet. The worksheet is intentionally unsigned and blank for the partner.
+Please send [Lab04_partner_check.md](Lab04_partner_check.md) to your partner. It asks them to check the clean report's COST revenue against 10-K line 625, then independently check the seeded EPS Verifier mark against 10-K line 638. They must enter their own marks, evidence, name, initials, and date. The worksheet is intentionally unsigned and blank for the partner.
 
 ## Student class work still required
 

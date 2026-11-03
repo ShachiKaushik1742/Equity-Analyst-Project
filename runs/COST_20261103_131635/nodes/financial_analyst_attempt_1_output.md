@@ -1,0 +1,6 @@
+**Interpretation**
+Revenue of $303.154 B (RevenueFromContractWithCustomerExcludingAssessedTax, 2025‑09‑01 to 2026‑08‑30, 0000909832-26-000093) grew 10.14% YoY from $275.235 B (same tag/period, 0000909832-26-000093). Operating margin = $11.685 B / $303.154 B = 3.85% (OperatingIncomeLoss, 2025‑09‑01 to 2026‑08‑30, 0000909832-26-000093). ROE = $9.226 B / (( $35.803 B + $29.164 B ) / 2) = 28.40% (NetIncomeLoss, 2025‑09‑01 to 2026‑08‑30, 0000909832-26-000093; equity tags, 0000909832-26-000093 & 0000909832-25-000101). Debt‑to‑equity = ($3.914 B + $2.248 B) / $35.803 B = 0.1721 (LongTermDebtNoncurrent & LongTermDebtCurrent, instant to 2026‑08‑30, 0000909832-26-000093). Free cash flow = $15.817 B – $6.435 B = $9.382 B (NetCashProvidedByUsedInOperatingActivities & PaymentsToAcquirePropertyPlantAndEquipment, 2025‑09‑01 to 2026‑08‑30, 0000909832-26-000093). P/E = $992.13 / $20.76 = 47.79 (price source 2026‑10‑27). Q4 revenue $95.723 B vs $86.156 B (+11.10%) and diluted EPS $6.75 vs $5.87 (+14.8%) (8‑K, 0000909832-26-000084). Compared with peers, COST’s 3.85% margin sits between BJ (3.81%) and WMT (4.18%) and below TGT (4.88%).
+
+**Revenue definition**: “Total revenue” (saved‑text line 625), tag RevenueFromContractWithCustomerExcludingAssessedTax.
+
+CALCULATOR_REQUESTS: NONE

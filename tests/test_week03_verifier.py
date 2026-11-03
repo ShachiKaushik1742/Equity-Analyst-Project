@@ -4,7 +4,8 @@ import unittest
 from pathlib import Path
 
 import desk
-from week03_agent_team import code_verify_claims, percentage_claim_audit
+from week03_audit_helpers import (code_verify_claims, financial_amount_audit,
+                                  financial_period_audit, percentage_claim_audit)
 
 
 class VerifierTests(unittest.TestCase):
@@ -118,6 +119,18 @@ class VerifierTests(unittest.TestCase):
                                "return_on_average_equity": 0.2840},
                    "quarter": {"revenue_growth": 0.1110}}
         self.assertEqual(percentage_claim_audit("Growth 10.14%, margin 3.85%, quarter 11.10%.", [company]), [])
+
+    def test_amount_audit_flags_wrong_average_equity(self):
+        company = {"facts": {"facts": {}}, "ratios": {"inputs": {
+            "current_equity": 35_803_000_000, "prior_equity": 29_164_000_000
+        }}}
+        self.assertTrue(financial_amount_audit("Average equity was $32.433 B.", [company], None))
+        self.assertEqual(financial_amount_audit("Average equity was $32.484 B.", [company], None), [])
+
+    def test_period_audit_rejects_qoq_label_for_same_quarter_last_year(self):
+        company = {"quarter": {"revenue_current": 95723, "revenue_prior_quarter": 86156}}
+        self.assertTrue(financial_period_audit("Revenue rose 11.10% QoQ.", company))
+        self.assertEqual(financial_period_audit("Revenue rose 11.10% YoY.", company), [])
 
 
 if __name__ == "__main__":

@@ -1,3 +1,2 @@
-openai>=3,<4
-openai-agents>=0.24,<1
+crewai==1.15.34
 certifi>=2024.8.30

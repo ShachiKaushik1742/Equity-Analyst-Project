@@ -12,9 +12,9 @@ Kasparov’s account of advanced chess and the 2005 freestyle tournament makes p
 
 ### OpenAI Agents SDK, first page
 
-Official documentation: [OpenAI Agents SDK](https://openai.github.io/openai-agents-python/). The package metadata for the current release requires Python 3.10 or newer and lists Python 3.14. This project uses Python 3.14.7. The SDK can use a custom OpenAI-compatible endpoint and the Chat Completions API.
+Official documentation: [CrewAI Flows](https://docs.crewai.com/en/concepts/flows) and [CrewAI LLM configuration](https://docs.crewai.com/en/concepts/llms). This project uses CrewAI's Flow and `Process.sequential`. The current package requires Python below 3.14, so the project uses an isolated Python 3.13 environment.
 
-**Choice:** OpenAI Agents SDK. CrewAI is the framework used in Francis & Zhang, but its current package requires Python below 3.14. This repository uses the framework that supports the installed Python version.
+**Choice:** CrewAI, the framework used in Francis & Zhang. The Flow fixes application-level order; `Process.sequential` runs each role crew's task in order. Python 3.13 is used because current CrewAI does not support the installed Python 3.14 interpreter.
 
 ## Optional
 

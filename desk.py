@@ -636,6 +636,11 @@ def financial_evidence(companies: list[dict[str, Any]], price: float | None,
     prior_equity_fact = ratios.get("inputs", {}).get("prior_equity_fact")
     if prior_equity_fact:
         lines.append(f"- Prior-year equity for ROAE: {prior_equity_fact['value']} {prior_equity_fact['unit']}; tag {prior_equity_fact['tag']}; period instant at {prior_equity_fact['period_end']}; {prior_equity_fact['filing']} accession {prior_equity_fact['accession']}.")
+    current_equity = ratios.get("inputs", {}).get("current_equity")
+    prior_equity = ratios.get("inputs", {}).get("prior_equity")
+    if current_equity is not None and prior_equity is not None:
+        average_equity = (current_equity + prior_equity) / 2
+        lines.append(f"- Calculator average equity for ROAE: {average_equity:.2f} USD; arithmetic: ({current_equity} + {prior_equity}) / 2.")
     q = main.get("quarter", {})
     qgrowth = q.get("revenue_growth")
     qgrowth_text = f"{qgrowth:.2%}" if qgrowth is not None else "not calculable from supplied release text"

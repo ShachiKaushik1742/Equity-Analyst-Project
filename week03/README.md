@@ -4,7 +4,7 @@ This folder records the Week 3 reading notes and the CrewAI implementation for t
 
 ## Framework choice
 
-The application uses CrewAI 1.15.34 with a typed `Flow` for the fixed process and `Process.sequential` inside each role crew. The Flow owns the order, run state, manager decision, one repair route, and final verifier. Current CrewAI requires Python below 3.14, so use Python 3.13.
+The application uses CrewAI 1.15.34 with a typed `Flow` for the fixed process and `Process.sequential` inside each role crew. The Flow owns the order, run state, manager decision, one repair route, report compilation, and final verifier. Code selects the next node; a model does not select it. A role can run once, plus one repair call if the Strategy Manager requests it. Current CrewAI requires Python below 3.14, so use Python 3.13.
 
 ## Install and run
 
@@ -23,6 +23,12 @@ Run a ticker and its peers with a price:
 .venv-crewai/bin/python week03_crewai_flow.py COST --peers WMT,TGT,BJ --price 999.99
 ```
 
+Verify only a saved run. This does not repeat the data steps or analyst roles:
+
+```sh
+.venv-crewai/bin/python week03_crewai_flow.py --verify-only runs/COST_YYYYMMDD_HHMMSS
+```
+
 The `.env` file must contain `SEC_USER_AGENT` and your Purdue key as `API_KEY` (the existing `PURDUE_GENAI_API_KEY` name also works). You can set `GENAI_MODEL`; otherwise the program lists the available models and selects one. `GENAI_API_BASE` can set Purdue's OpenAI-compatible endpoint. Never commit `.env`.
 
 ## Flow and process
@@ -39,7 +45,17 @@ flowchart LR
   G --> H[Verified report and marks]
 ```
 
-Flow decorators control the end-to-end order and repair branch. Each role runs with its own JSON input envelope in an isolated Crew whose task process is `Process.sequential`. Each role receives only its assigned context. The Verifier always runs after the manager or the one repair.
+Flow decorators control the end-to-end order and repair branch. Each role runs with its own JSON input envelope in an isolated Crew whose task process is `Process.sequential`. Each role receives only its assigned context. The Verifier runs every time. It receives the compiled report with the Investment Advisor thesis omitted, cited line excerpts from the saved filing texts, and the saved facts. The full filing texts remain in the run folder. Code checks XBRL values, tags, periods, filing lines, and ratio arithmetic. The model checks whether the cited filing supports the number, period, and definition. Each Flow node saves its input and output in the run folder. Cited excerpts keep the request within the model's context limit.
+
+## Lab 04 evidence
+
+- [Completion status and remaining partner/student actions](Lab04_completion.md)
+- [Partner verification worksheet](Lab04_partner_check.md)
+- Clean COST run: `../runs/COST_20261103_131635/verified_report.md`
+- Seeded $1 EPS error: `../runs/COST_20261103_140000_seed_eps/verified_report.md`
+- Seeded revenue-growth error: `../runs/COST_20261103_140001_seed_growth/verified_report.md`
+
+The ASD-STE100-style reconstructed request is in [reconstructed-week-03-crewai-flow.md](../prompts/reconstructed-week-03-crewai-flow.md).
 
 ## Persona work
 

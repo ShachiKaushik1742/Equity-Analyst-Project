@@ -4,8 +4,10 @@ import unittest
 from pathlib import Path
 
 import desk
-from week03_audit_helpers import (code_verify_claims, financial_amount_audit,
-                                  financial_period_audit, percentage_claim_audit)
+from week03_audit_helpers import (calc_expected_ratio, code_verify_claims,
+                                  cited_filing_evidence, financial_amount_audit, financial_period_audit,
+                                  omit_report_part, percentage_claim_audit,
+                                  save_verified_report)
 
 
 class VerifierTests(unittest.TestCase):
@@ -75,6 +77,38 @@ class VerifierTests(unittest.TestCase):
                                   "<!-- claim:cost_diluted_eps --> 18.95 EarningsPerShareDiluted 2026-08-30 0000000000-26-000001")
         self.assertEqual(marks[0]["mark"], "wrong")
         self.assertEqual(marks[0]["correction"], 17.95)
+
+    def test_free_cash_flow_uses_reported_capex_input(self):
+        claim = {"ratio": "free_cash_flow", "inputs": {
+            "cash_from_operations": 200, "additions_to_property_and_equipment": 75}}
+        self.assertEqual(calc_expected_ratio(claim), 125)
+
+    def test_report_copy_omits_investment_thesis(self):
+        text = "## Overview\nText\n## Investment Recommendation\nPrivate thesis\n## Claims\nEvidence"
+        redacted = omit_report_part(text, "Investment Recommendation")
+        self.assertNotIn("Private thesis", redacted)
+        self.assertIn("## Claims", redacted)
+
+    def test_verifier_gets_cited_line_windows_not_whole_filings(self):
+        company = {"facts": {"ticker": "COST", "filings": {
+            "10-K": {"accession": "0000000000-26-000001"}},
+            }, "filing_texts": {"10-K": "one\ntwo\nthree\nfour\nfive\nsix\nseven"}}
+        excerpts = cited_filing_evidence([
+            {"ticker": "COST", "filing": "10-K", "accession": "0000000000-26-000001",
+             "source_line": 4}
+        ], [company], context_lines=1)
+        excerpt = excerpts["COST"]["10-K"]
+        self.assertIn("saved-text lines 3-5", excerpt)
+        self.assertIn("4 | four", excerpt)
+        self.assertNotIn("1 | one", excerpt)
+        self.assertNotIn("7 | seven", excerpt)
+
+    def test_verified_report_keeps_filings_as_first_line(self):
+        path = self.run / "verified_report.md"
+        save_verified_report(path, "Filings read: 10-K accession 123", "run-time", "## Overview\nText", [])
+        lines = path.read_text().splitlines()
+        self.assertEqual(lines[0], "Filings read: 10-K accession 123")
+        self.assertEqual(lines[2], "## Verifier marks")
 
     def test_invented_growth_rate_is_wrong(self):
         claim = {"id": "claim:cost_ratio_revenue_growth", "kind": "ratio", "ticker": "COST", "ratio": "revenue_growth",

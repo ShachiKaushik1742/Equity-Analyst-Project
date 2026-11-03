@@ -1,0 +1,155 @@
+{
+  "ticker": "TGT",
+  "title": "TARGET CORP",
+  "cik": "0000027419",
+  "fiscal_year_end": "2026-01-31",
+  "filings": {
+    "10-K": {
+      "accession": "0000027419-26-000016",
+      "accepted": "2026-03-11T20:42:00.000Z",
+      "filing_date": "2026-03-11",
+      "document": "tgt-20260131.htm",
+      "index_url": "https://www.sec.gov/Archives/edgar/data/27419/000002741926000016/index.json"
+    },
+    "10-Q": {
+      "accession": "0000027419-26-000042",
+      "accepted": "2026-08-28T17:53:59.000Z",
+      "filing_date": "2026-08-28",
+      "document": "tgt-20260801.htm",
+      "index_url": "https://www.sec.gov/Archives/edgar/data/27419/000002741926000042/index.json"
+    },
+    "8-K": {
+      "accession": "0000027419-26-000034",
+      "accepted": "2026-08-19T11:51:13.000Z",
+      "filing_date": "2026-08-19",
+      "document": "a2026q2ex-99.htm",
+      "index_url": "https://www.sec.gov/Archives/edgar/data/27419/000002741926000034/index.json"
+    }
+  },
+  "facts": {
+    "revenue": {
+      "label": "revenue",
+      "value": 104780000000,
+      "unit": "USD",
+      "tag": "RevenueFromContractWithCustomerExcludingAssessedTax",
+      "period_start": "2025-02-02",
+      "period_end": "2026-01-31",
+      "filing": "10-K",
+      "filed": "2026-03-11",
+      "accession": "0000027419-26-000016"
+    },
+    "operating_income": {
+      "label": "operating_income",
+      "value": 5117000000,
+      "unit": "USD",
+      "tag": "OperatingIncomeLoss",
+      "period_start": "2025-02-02",
+      "period_end": "2026-01-31",
+      "filing": "10-K",
+      "filed": "2026-03-11",
+      "accession": "0000027419-26-000016"
+    },
+    "net_income": {
+      "label": "net_income",
+      "value": 3705000000,
+      "unit": "USD",
+      "tag": "NetIncomeLoss",
+      "period_start": "2025-02-02",
+      "period_end": "2026-01-31",
+      "filing": "10-K",
+      "filed": "2026-03-11",
+      "accession": "0000027419-26-000016"
+    },
+    "diluted_eps": {
+      "label": "diluted_eps",
+      "value": 8.13,
+      "unit": "USD/shares",
+      "tag": "EarningsPerShareDiluted",
+      "period_start": "2025-02-02",
+      "period_end": "2026-01-31",
+      "filing": "10-K",
+      "filed": "2026-03-11",
+      "accession": "0000027419-26-000016"
+    },
+    "equity": {
+      "label": "equity",
+      "value": 16165000000,
+      "unit": "USD",
+      "tag": "StockholdersEquity",
+      "period_start": null,
+      "period_end": "2026-01-31",
+      "filing": "10-K",
+      "filed": "2026-03-11",
+      "accession": "0000027419-26-000016"
+    },
+    "long_term_debt": {
+      "label": "long_term_debt",
+      "value": 14398000000,
+      "unit": "USD",
+      "tag": "LongTermDebt",
+      "period_start": null,
+      "period_end": "2026-01-31",
+      "filing": "10-K",
+      "filed": "2026-03-11",
+      "accession": "0000027419-26-000016"
+    },
+    "current_debt": {
+      "label": "current_debt",
+      "value": 2130000000,
+      "unit": "USD",
+      "tag": "LongTermDebtAndCapitalLeaseObligationsCurrent",
+      "period_start": null,
+      "period_end": "2026-01-31",
+      "filing": "10-K",
+      "filed": "2026-03-11",
+      "accession": "0000027419-26-000016"
+    },
+    "cash_from_operations": {
+      "label": "cash_from_operations",
+      "value": 6562000000,
+      "unit": "USD",
+      "tag": "NetCashProvidedByUsedInOperatingActivities",
+      "period_start": "2025-02-02",
+      "period_end": "2026-01-31",
+      "filing": "10-K",
+      "filed": "2026-03-11",
+      "accession": "0000027419-26-000016"
+    },
+    "capex": {
+      "label": "capex",
+      "value": 3727000000,
+      "unit": "USD",
+      "tag": "PaymentsToAcquirePropertyPlantAndEquipment",
+      "period_start": "2025-02-02",
+      "period_end": "2026-01-31",
+      "filing": "10-K",
+      "filed": "2026-03-11",
+      "accession": "0000027419-26-000016"
+    },
+    "revenue_prior_year": {
+      "label": "revenue_prior_year",
+      "value": 106566000000,
+      "unit": "USD",
+      "tag": "RevenueFromContractWithCustomerExcludingAssessedTax",
+      "period_start": "2024-02-04",
+      "period_end": "2025-02-01",
+      "filing": "10-K",
+      "filed": "2026-03-11",
+      "accession": "0000027419-26-000016"
+    }
+  },
+  "quarter": {
+    "revenue_current": null,
+    "revenue_prior_quarter": null,
+    "revenue_growth": null,
+    "revenue_release_line": "",
+    "revenue_release_line_number": null,
+    "revenue_number_line_number": null,
+    "diluted_eps_current": null,
+    "diluted_eps_prior_quarter": null,
+    "eps_release_line": "",
+    "eps_release_line_number": null,
+    "eps_number_line_number": null,
+    "release_units": "Dollars in millions except per-share data, as captioned in the release; quarter comparison uses the first two columns."
+  }
+}

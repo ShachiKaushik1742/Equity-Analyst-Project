@@ -18,6 +18,7 @@ import week03_audit_helpers as audit
 
 ROOT = Path(__file__).resolve().parent
 PARTS = audit.PARTS
+ROLE_CALL_COUNTS: dict[str, int] = {}
 
 
 def _read_role(name: str) -> str:
@@ -35,6 +36,10 @@ def _call_role(name: str, task: str, context: dict[str, Any], expected: str,
     attempt = 1
     while (node_dir / f"{slug}_attempt_{attempt}_input.json").exists():
         attempt += 1
+    calls = ROLE_CALL_COUNTS.get(name, 0) + 1
+    if calls > 2:
+        raise RuntimeError(f"{name} exceeded the limit of two model calls in this run.")
+    ROLE_CALL_COUNTS[name] = calls
     envelope = {"task": task, "context": context, "expected_output": expected}
     audit.save_json(node_dir / f"{slug}_attempt_{attempt}_input.json", envelope)
     print(f"Running CrewAI node: {name}", flush=True)
@@ -60,27 +65,21 @@ def _verify_with_crew(report: str, claims: list[dict[str, Any]], out: Path,
     """Run deterministic checks first, then a CrewAI semantic verifier."""
     code_marks = audit.code_verify_claims(claims, out, report)
     audit.save_json(out / "code_verification.json", code_marks)
-    filing_texts: dict[str, dict[str, str]] = {}
-    by_ticker = {c["facts"]["ticker"]: c for c in companies}
-    for claim in claims:
-        company = by_ticker.get(claim.get("ticker"))
-        if not company:
-            continue
-        filing = claim.get("filing", "10-K")
-        source = company["filing_texts"].get(filing, "")
-        line_no = claim.get("source_line")
-        if not source or not isinstance(line_no, int):
-            continue
-        rows = source.splitlines()
-        lo, hi = max(1, line_no - 2), min(len(rows), line_no + 2)
-        filing_texts.setdefault(claim["ticker"], {})[f"{filing} lines {lo}-{hi}"] = "\n".join(
-            f"{i}: {rows[i - 1]}" for i in range(lo, hi + 1))
+    filing_texts = audit.cited_filing_evidence(claims, companies)
     facts = {c["facts"]["ticker"]: c["facts"] for c in companies}
+    verifier_report = audit.omit_report_part(report, "Investment Recommendation")
     raw = _call_role(
         "Verifier",
-        "Check each cited source for the reported value, period, and definition. Do not evaluate the recommendation. Return a concise JSON array with one object per claim and only id and mark.",
-        {"compiled_report": report, "saved_filing_texts": filing_texts, "saved_facts": facts},
-        'JSON array like [{"id":"claim:ticker_revenue","mark":"correct"}].', out, model, key, base_url)
+        "Check every numbered claim in the report copy. The Investment Advisor thesis is omitted. "
+        "Use only the report, saved filing texts, and saved facts. For each claim, check its value, period, "
+        "definition, and source. Check XBRL values against the saved tag and period. Check line claims "
+        "against the cited filing line. Check ratios from their stated formula and inputs. Mark each claim "
+        "correct, wrong, or unsupported. For a wrong or unsupported claim, give its corrected value and "
+        "the filing line or XBRL tag that supports the correction. Return JSON only.",
+        {"compiled_report_without_investment_thesis": verifier_report,
+         "cited_excerpts_from_saved_filing_texts": filing_texts, "saved_facts": facts},
+        'JSON array: [{"id":"claim:ticker_revenue","mark":"correct|wrong|unsupported","correction":"value and source or null","reason":"short reason"}].',
+        out, model, key, base_url)
     try:
         parsed = json.loads(re.sub(r"^```(?:json)?\s*|\s*```$", "", raw, flags=re.I))
         if isinstance(parsed, dict):
@@ -103,6 +102,11 @@ def _verify_with_crew(report: str, claims: list[dict[str, Any]], out: Path,
             mark["mark"] = model_mark
             mark["reason"] = "Semantic verifier: " + str(model_item.get("reason", "source meaning not confirmed"))
             mark["correction"] = model_item.get("correction") or mark["correction"]
+        elif mark["mark"] in {"wrong", "unsupported"}:
+            # Keep a code-derived correction when available; add the model's source-based correction otherwise.
+            mark["correction"] = mark.get("correction") or semantic[mark["id"]].get("correction")
+            mark["reason"] = (mark.get("reason", "") + " Semantic verifier: " +
+                              str(semantic[mark["id"]].get("reason", "source meaning checked"))).strip()
     return code_marks
 
 
@@ -142,6 +146,7 @@ if isinstance(Flow, type) and Flow is not object:
     class EquityDeskFlow(Flow[EquityDeskState]):
         @start()
         def collect_sec_data(self) -> str:
+            print("Running node: Steps (1-7)", flush=True)
             env = desk.load_env()
             key = env.get("API_KEY") or env.get("PURDUE_GENAI_API_KEY")
             user_agent = env.get("SEC_USER_AGENT", "")
@@ -265,9 +270,14 @@ if isinstance(Flow, type) and Flow is not object:
 
         @router(strategy_manager)
         def choose_manager_path(self) -> Literal["approve_report", "perform_one_repair"]:
+            print("Running Flow router: Strategy Manager repair decision", flush=True)
             if str(self.state.manager_result.get("status", "")).upper() == "PASS" and not self.state.manager_result.get("numeric_audit"):
-                return "approve_report"
-            return "perform_one_repair"
+                decision = "approve_report"
+            else:
+                decision = "perform_one_repair"
+            audit.save_node_record(Path(self.state.run_dir), "choose_manager_path",
+                                   {"manager_result": self.state.manager_result}, {"next_node": decision})
+            return decision
 
         @listen("approve_report")
         def compile_approved_report(self) -> str:
@@ -284,6 +294,8 @@ if isinstance(Flow, type) and Flow is not object:
                                                self.state.price_date or None,
                                                self.state.price_source or None)
             current = self.state.parts[heading]
+            repair_input = {"part": heading, "role": role, "manager_request": self.state.manager_result.get("repair_request"),
+                            "current_part": current}
             repaired = _call_role(
                 role, (f"Repair {heading} once. Follow the manager request and use only the supplied evidence. "
                       "Do not calculate any values; remove every unsupported dollar amount or percentage. "
@@ -294,6 +306,8 @@ if isinstance(Flow, type) and Flow is not object:
                  "automatic_numeric_audit": self.state.manager_result.get("numeric_audit", [])},
                 "The revised report part only.", Path(self.state.run_dir), self.state.model,
                 self.state.api_key, self.state.base_url)
+            audit.save_node_record(Path(self.state.run_dir), "repair_once", repair_input,
+                                   {"role": role, "repaired_part": repaired})
             if role == "Financial Analyst":
                 self.state.finance = repaired
                 evidence = desk.financial_evidence(self.state.companies, self.state.price,
@@ -348,6 +362,7 @@ if isinstance(Flow, type) and Flow is not object:
             return str(out / "verified_report.md")
 
         def _compile_report(self) -> str:
+            print("Strategy Manager: compiling report", flush=True)
             claims = audit.claim_ledger(self.state.companies, self.state.price)
             body = "\n\n".join(f"## {part}\n\n{text}" for part, text in self.state.parts.items())
             body += "\n\n" + "\n".join(audit.report_claim_lines(claims))
@@ -357,11 +372,14 @@ if isinstance(Flow, type) and Flow is not object:
             timestamp = datetime.now().astimezone().isoformat(timespec="seconds")
             out = Path(self.state.run_dir)
             (out / "report.md").write_text(f"{filing_line}\nRun time: {timestamp}\n\n{body}\n", encoding="utf-8")
+            audit.save_node_record(out, "compile_report", {"parts": self.state.parts},
+                                   {"report_path": str(out / "report.md"), "report_body": body})
             return body
 
 
 def run_flow(ticker: str, peers: list[str], price: float | None,
              price_date: str | None, price_source: str | None) -> int:
+    ROLE_CALL_COUNTS.clear()
     if Flow is object:
         raise RuntimeError("Install requirements.txt with Python 3.13 to use the CrewAI Flow implementation.")
     flow = EquityDeskFlow()
@@ -373,6 +391,7 @@ def run_flow(ticker: str, peers: list[str], price: float | None,
 
 
 def verify_saved_run(run_dir: Path, env: dict[str, str]) -> int:
+    ROLE_CALL_COUNTS.clear()
     run_dir = run_dir.resolve()
     report_path = run_dir / "report.md"
     if not report_path.exists():

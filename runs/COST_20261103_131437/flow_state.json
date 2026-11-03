@@ -1,0 +1,8 @@
+{
+  "ticker": "COST",
+  "manager_status": "PASS",
+  "framework": "CrewAI Flow + Process.sequential",
+  "verification_total": 27,
+  "verification_correct": 27,
+  "verification_other": 0
+}

@@ -1,37 +1,41 @@
 Filings read: 10-K 0000909832-26-000093; 10-Q 0000909832-26-000051; 8-K 0000909832-26-000084
-Run time: 2026-11-03T13:17:54-05:00
 
 ## Verifier marks
 
 | Claim | Mark | Reason | Source | Correction |
 |---|---|---|---|---|
-| claim:cost_revenue | correct | Report value, tag, period, and accession match the saved XBRL fact. | COST 10-K accession 0000909832-26-000093; tag RevenueFromContractWithCustomerExcludingAssessedTax, period ending 2026-08-30, saved-text line 625 | 303154000000 |
-| claim:cost_operating_income | correct | Report value, tag, period, and accession match the saved XBRL fact. | COST 10-K accession 0000909832-26-000093; tag OperatingIncomeLoss, period ending 2026-08-30, saved-text line 629 | 11685000000 |
-| claim:cost_net_income | correct | Report value, tag, period, and accession match the saved XBRL fact. | COST 10-K accession 0000909832-26-000093; tag NetIncomeLoss, period ending 2026-08-30, saved-text line 635 | 9226000000 |
-| claim:cost_diluted_eps | correct | Report value, tag, period, and accession match the saved XBRL fact. | COST 10-K accession 0000909832-26-000093; tag EarningsPerShareDiluted, period ending 2026-08-30, saved-text line 638 | 20.76 |
-| claim:cost_equity | correct | Report value, tag, period, and accession match the saved XBRL fact. | COST 10-K accession 0000909832-26-000093; tag StockholdersEquity, period ending 2026-08-30, saved-text line 704 | 35803000000 |
-| claim:cost_long_term_debt | correct | Report value, tag, period, and accession match the saved XBRL fact. | COST 10-K accession 0000909832-26-000093; tag LongTermDebtNoncurrent, period ending 2026-08-30, saved-text line 691 | 3914000000 |
-| claim:cost_current_debt | correct | Report value, tag, period, and accession match the saved XBRL fact. | COST 10-K accession 0000909832-26-000093; tag LongTermDebtCurrent, period ending 2026-08-30, saved-text line 687 | 2248000000 |
-| claim:cost_cash_from_operations | correct | Report value, tag, period, and accession match the saved XBRL fact. | COST 10-K accession 0000909832-26-000093; tag NetCashProvidedByUsedInOperatingActivities, period ending 2026-08-30, saved-text line 766 | 15817000000 |
-| claim:cost_capex | correct | Report value, tag, period, and accession match the saved XBRL fact. | COST 10-K accession 0000909832-26-000093; tag PaymentsToAcquirePropertyPlantAndEquipment, period ending 2026-08-30, saved-text line 768 | 6435000000 |
-| claim:cost_revenue_prior_year | correct | Report value, tag, period, and accession match the saved XBRL fact. | COST 10-K accession 0000909832-26-000093; tag RevenueFromContractWithCustomerExcludingAssessedTax, period ending 2025-08-31, saved-text line 625 | 275235000000 |
-| claim:cost_ratio_revenue_growth | correct | Ratio recomputed from its saved inputs and formula. | COST ratio formula revenue / revenue_prior_year - 1 | 0.10143695387577889 |
-| claim:cost_ratio_operating_margin | correct | Ratio recomputed from its saved inputs and formula. | COST ratio formula operating_income / revenue | 0.03854476602650798 |
-| claim:cost_ratio_return_on_average_equity | correct | Ratio recomputed from its saved inputs and formula. | COST ratio formula net_income / ((equity + prior_equity) / 2) | 0.284021118413964 |
-| claim:cost_ratio_debt_to_equity | correct | Ratio recomputed from its saved inputs and formula. | COST ratio formula (long_term_debt + current_debt) / equity | 0.17210848252939698 |
-| claim:cost_ratio_free_cash_flow | correct | Ratio recomputed from its saved inputs and formula. | COST ratio formula cash_from_operations - capex | 9382000000.0 |
-| claim:cost_ratio_pe | correct | Ratio recomputed from its saved inputs and formula. | COST ratio formula price / diluted_eps | 47.79046242774566 |
-| claim:cost_quarter_revenue | correct | Quoted filing text and report value are present. | COST 8-K accession 0000909832-26-000084, saved-text line 39 | 95723.0 |
-| claim:cost_quarter_diluted_eps | correct | Quoted filing text and report value are present. | COST 8-K accession 0000909832-26-000084, saved-text line 52 | 6.75 |
-| claim:wmt_revenue | correct | Report value, tag, period, and accession match the saved XBRL fact. | WMT 10-K accession 0000104169-26-000055; tag Revenues, period ending 2026-01-31, saved-text line 955 | 713163000000 |
-| claim:wmt_operating_income | correct | Report value, tag, period, and accession match the saved XBRL fact. | WMT 10-K accession 0000104169-26-000055; tag OperatingIncomeLoss, period ending 2026-01-31, saved-text line 959 | 29825000000 |
-| claim:wmt_ratio_operating_margin | correct | Ratio recomputed from its saved inputs and formula. | WMT ratio formula operating_income / revenue | 0.041820733829433104 |
-| claim:tgt_revenue | correct | Report value, tag, period, and accession match the saved XBRL fact. | TGT 10-K accession 0000027419-26-000016; tag RevenueFromContractWithCustomerExcludingAssessedTax, period ending 2026-01-31, saved-text line 1121 | 104780000000 |
-| claim:tgt_operating_income | correct | Report value, tag, period, and accession match the saved XBRL fact. | TGT 10-K accession 0000027419-26-000016; tag OperatingIncomeLoss, period ending 2026-01-31, saved-text line 1127 | 5117000000 |
-| claim:tgt_ratio_operating_margin | correct | Ratio recomputed from its saved inputs and formula. | TGT ratio formula operating_income / revenue | 0.048835655659477 |
-| claim:bj_revenue | correct | Report value, tag, period, and accession match the saved XBRL fact. | BJ 10-K accession 0001531152-26-000007; tag RevenueFromContractWithCustomerExcludingAssessedTax, period ending 2026-01-31, saved-text line 869 | 21457274000 |
-| claim:bj_operating_income | correct | Report value, tag, period, and accession match the saved XBRL fact. | BJ 10-K accession 0001531152-26-000007; tag OperatingIncomeLoss, period ending 2026-01-31, saved-text line 873 | 816604000 |
-| claim:bj_ratio_operating_margin | correct | Ratio recomputed from its saved inputs and formula. | BJ ratio formula operating_income / revenue | 0.03805721080879146 |
+| claim:cost_revenue | correct | Report value, tag, period, and accession match the saved XBRL fact. | COST 10-K accession 0000909832-26-000093; tag RevenueFromContractWithCustomerExcludingAssessedTax, period ending 2026-08-30, saved-text line 625 | None |
+| claim:cost_operating_income | correct | Report value, tag, period, and accession match the saved XBRL fact. | COST 10-K accession 0000909832-26-000093; tag OperatingIncomeLoss, period ending 2026-08-30, saved-text line 629 | None |
+| claim:cost_net_income | correct | Report value, tag, period, and accession match the saved XBRL fact. | COST 10-K accession 0000909832-26-000093; tag NetIncomeLoss, period ending 2026-08-30, saved-text line 635 | None |
+| claim:cost_diluted_eps | correct | Report value, tag, period, and accession match the saved XBRL fact. | COST 10-K accession 0000909832-26-000093; tag EarningsPerShareDiluted, period ending 2026-08-30, saved-text line 638 | None |
+| claim:cost_equity | correct | Report value, tag, period, and accession match the saved XBRL fact. | COST 10-K accession 0000909832-26-000093; tag StockholdersEquity, period ending 2026-08-30, saved-text line 704 | None |
+| claim:cost_long_term_debt | correct | Report value, tag, period, and accession match the saved XBRL fact. | COST 10-K accession 0000909832-26-000093; tag LongTermDebtNoncurrent, period ending 2026-08-30, saved-text line 691 | None |
+| claim:cost_current_debt | correct | Report value, tag, period, and accession match the saved XBRL fact. | COST 10-K accession 0000909832-26-000093; tag LongTermDebtCurrent, period ending 2026-08-30, saved-text line 687 | None |
+| claim:cost_cash_from_operations | correct | Report value, tag, period, and accession match the saved XBRL fact. | COST 10-K accession 0000909832-26-000093; tag NetCashProvidedByUsedInOperatingActivities, period ending 2026-08-30, saved-text line 766 | None |
+| claim:cost_capex | correct | Report value, tag, period, and accession match the saved XBRL fact. | COST 10-K accession 0000909832-26-000093; tag PaymentsToAcquirePropertyPlantAndEquipment, period ending 2026-08-30, saved-text line 768 | None |
+| claim:cost_revenue_prior_year | correct | Report value, tag, period, and accession match the saved XBRL fact. | COST 10-K accession 0000909832-26-000093; tag RevenueFromContractWithCustomerExcludingAssessedTax, period ending 2025-08-31, saved-text line 625 | None |
+| claim:cost_ratio_revenue_growth | correct | Ratio recomputed from its saved inputs and formula. | COST ratio formula revenue / revenue_prior_year - 1 | None |
+| claim:cost_ratio_operating_margin | correct | Ratio recomputed from its saved inputs and formula. | COST ratio formula operating_income / revenue | None |
+| claim:cost_ratio_return_on_average_equity | correct | Ratio recomputed from its saved inputs and formula. | COST ratio formula net_income / ((equity + prior_equity) / 2) | None |
+| claim:cost_ratio_debt_to_equity | correct | Ratio recomputed from its saved inputs and formula. | COST ratio formula (long_term_debt + current_debt) / equity | None |
+| claim:cost_ratio_free_cash_flow | correct | Ratio recomputed from its saved inputs and formula. | COST ratio formula cash_from_operations - capex | None |
+| claim:cost_ratio_pe | correct | Ratio recomputed from its saved inputs and formula. | COST ratio formula price / diluted_eps | None |
+| claim:cost_quarter_revenue | correct | Quoted filing text and report value are present. | COST 8-K accession 0000909832-26-000084, saved-text line 39 | None |
+| claim:cost_quarter_diluted_eps | correct | Quoted filing text and report value are present. | COST 8-K accession 0000909832-26-000084, saved-text line 52 | None |
+| claim:wmt_revenue | correct | Report value, tag, period, and accession match the saved XBRL fact. | WMT 10-K accession 0000104169-26-000055; tag Revenues, period ending 2026-01-31, saved-text line 955 | None |
+| claim:wmt_operating_income | correct | Report value, tag, period, and accession match the saved XBRL fact. | WMT 10-K accession 0000104169-26-000055; tag OperatingIncomeLoss, period ending 2026-01-31, saved-text line 959 | None |
+| claim:wmt_ratio_operating_margin | correct | Ratio recomputed from its saved inputs and formula. | WMT ratio formula operating_income / revenue | None |
+| claim:tgt_revenue | correct | Report value, tag, period, and accession match the saved XBRL fact. | TGT 10-K accession 0000027419-26-000016; tag RevenueFromContractWithCustomerExcludingAssessedTax, period ending 2026-01-31, saved-text line 1121 | None |
+| claim:tgt_operating_income | correct | Report value, tag, period, and accession match the saved XBRL fact. | TGT 10-K accession 0000027419-26-000016; tag OperatingIncomeLoss, period ending 2026-01-31, saved-text line 1127 | None |
+| claim:tgt_ratio_operating_margin | correct | Ratio recomputed from its saved inputs and formula. | TGT ratio formula operating_income / revenue | None |
+| claim:bj_revenue | correct | Report value, tag, period, and accession match the saved XBRL fact. | BJ 10-K accession 0001531152-26-000007; tag RevenueFromContractWithCustomerExcludingAssessedTax, period ending 2026-01-31, saved-text line 869 | None |
+| claim:bj_operating_income | correct | Report value, tag, period, and accession match the saved XBRL fact. | BJ 10-K accession 0001531152-26-000007; tag OperatingIncomeLoss, period ending 2026-01-31, saved-text line 873 | None |
+| claim:bj_ratio_operating_margin | correct | Ratio recomputed from its saved inputs and formula. | BJ ratio formula operating_income / revenue | None |
+
+Run time: 2026-11-03T18:11:58-05:00
+
+Filings read: 10-K 0000909832-26-000093; 10-Q 0000909832-26-000051; 8-K 0000909832-26-000084
+Run time: 2026-11-03T13:17:37-05:00
 
 ## Overview
 

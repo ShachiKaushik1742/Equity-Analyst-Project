@@ -1,0 +1,136 @@
+{
+  "task": "Check the five required report parts for completeness and consistency. If automatic_numeric_audit is non-empty, fail Valuation Insights. Return JSON PASS or identify one failing part for its single repair.",
+  "context": {
+    "ticker": "COST",
+    "parts": {
+      "Overview": "Ticker: COST. Fiscal year ended 2026-08-30. Filings: 10-K 0000909832-26-000093; 10-Q 0000909832-26-000051; 8-K 0000909832-26-000084",
+      "Market Positioning and Growth Outlook": "**Business Model**  \nCostco “operates membership warehouses and e‑commerce sites based on the concept that offering low prices on a limited selection of nationally‑branded and private‑label products … will produce high sales volumes and rapid inventory turnover” (10‑K, Item 1—Business, accession 0000909832‑26‑000093, line 134).  It “carries less than 4,000 active stock‑keeping units (SKUs) per warehouse … significantly less than other broadline retailers” (10‑K, Item 1—Business, accession 0000909832‑26‑000093, line 141).  \n\n**Competitive Position**  \nThe model “enables us to operate profitably at significantly lower gross margins (net sales less merchandise costs) than most other retailers” (10‑K, Item 1—Business, accession 0000909832‑26‑000093, line 134).  By limiting SKUs and using cross‑docking “creates freight volume and handling efficiencies, lowering costs associated with traditional multiple‑step distribution channels” (10‑K, Item 1—Business, accession 0000909832‑26‑000093, line 135‑138).  \n\n**Catalysts**  \nForward‑looking statements cite “net sales growth, … warehouse openings and closures, capital spending, the effect of adopting certain accounting standards, … investments in technology, strategic direction, expense controls, membership fee changes, sign‑ups and renewal rates” as future drivers (10‑K, Item 7 MD&A, accession 0000909832‑26‑000093, line 128‑129).  \n\n**Recent Developments**  \n- Operated **939 warehouses** worldwide as of Aug 30 2026 (10‑K, Item 1—Business, accession 0000909832‑26‑000093, line 131).  \n- **774 gas stations**; gasoline accounted for **11 % of total net sales** in 2026 (10‑K, Item 1—Business, accession 0000909832‑26‑000093, line 150).  \n- **Digitally‑enabled sales and Costco Travel** together also represented **11 % of total net sales** in 2026 (10‑K, Item 1—Business, accession 0000909832‑26‑000093, line 153).  \n- FY 2026 net sales rose **10.1 % to $297.2 billion** (Exhibit 99.1, line 36‑37); total revenue reached **$303.2 billion** (Exhibit 99.1, line 39).  \n- Membership base grew to **150.4 million cardholders** (84.1 M paid, 66.3 M household) (10‑K, Item 7 MD&A, accession 0000909832‑26‑000093, line 160‑163).  \n- Member renewal rate was **92.3 % in the U.S. and Canada, 89.8 % worldwide** (10‑K, Item 7 MD&A, accession 0000909832‑26‑000093, line 167).",
+      "Valuation Insights": "Code-calculated figures and filing evidence (use these values; do not recompute in the model):\n- revenue: 303154000000 USD; tag RevenueFromContractWithCustomerExcludingAssessedTax; period 2025-09-01 to 2026-08-30; 10-K accession 0000909832-26-000093.\n- revenue_prior_year: 275235000000 USD; tag RevenueFromContractWithCustomerExcludingAssessedTax; period 2024-09-02 to 2025-08-31; 10-K accession 0000909832-26-000093.\n- operating_income: 11685000000 USD; tag OperatingIncomeLoss; period 2025-09-01 to 2026-08-30; 10-K accession 0000909832-26-000093.\n- net_income: 9226000000 USD; tag NetIncomeLoss; period 2025-09-01 to 2026-08-30; 10-K accession 0000909832-26-000093.\n- diluted_eps: 20.76 USD/shares; tag EarningsPerShareDiluted; period 2025-09-01 to 2026-08-30; 10-K accession 0000909832-26-000093.\n- equity: 35803000000 USD; tag StockholdersEquity; period instant to 2026-08-30; 10-K accession 0000909832-26-000093.\n- long_term_debt: 3914000000 USD; tag LongTermDebtNoncurrent; period instant to 2026-08-30; 10-K accession 0000909832-26-000093.\n- current_debt: 2248000000 USD; tag LongTermDebtCurrent; period instant to 2026-08-30; 10-K accession 0000909832-26-000093.\n- cash_from_operations: 15817000000 USD; tag NetCashProvidedByUsedInOperatingActivities; period 2025-09-01 to 2026-08-30; 10-K accession 0000909832-26-000093.\n- capex: 6435000000 USD; tag PaymentsToAcquirePropertyPlantAndEquipment; period 2025-09-01 to 2026-08-30; 10-K accession 0000909832-26-000093.\n- COST top-line definition: its latest 10-K calls the selected figure 'Total revenue' on saved-text line 625; tag RevenueFromContractWithCustomerExcludingAssessedTax; this is the caption for the top-line measure used in the ratios.\n- Revenue growth: 10.14%; arithmetic: (303154000000 / 275235000000) - 1.\n- Operating margin: 3.85%; arithmetic: 11685000000 / 303154000000.\n- Return on average equity: 28.40%; arithmetic: 9226000000 / ((35803000000.0 + 29164000000.0) / 2).\n- Debt to equity: 0.1721; arithmetic: (3914000000.0 + 2248000000.0) / 35803000000.0.\n- Free cash flow: 9382000000.0; arithmetic: 15817000000.0 - 6435000000.0.\n- P/E (using FY ended 2026-08-30 diluted EPS): 47.79046242774566; arithmetic: 992.13 / 20.76.\n- Prior-year equity for ROAE: 29164000000 USD; tag StockholdersEquity; period instant at 2025-08-31; 10-K accession 0000909832-25-000101.\n- Calculator average equity for ROAE: 32483500000.00 USD; arithmetic: (35803000000.0 + 29164000000.0) / 2.\n- Latest-quarter revenue (dollars in millions): 95723.0; same quarter prior year: 86156.0; growth: 11.10%, arithmetic (95723.0 / 86156.0) - 1; 8-K accession 0000909832-26-000084, Exhibit 99.1 label line 39, value line 39: Total revenue 95,723 86,156 303,154 275,235\n- Latest-quarter diluted EPS, GAAP: 6.75; prior-year quarter: 5.87; 8-K accession 0000909832-26-000084, Exhibit 99.1 line 52: Diluted $ 6.75 $ 5.87 $ 20.76 $ 18.21\n- Peer WMT: revenue $713,163,000,000 USD (Revenues, 2025-02-01 to 2026-01-31, 10-K 0000104169-26-000055; statement top-line label 'Total revenues' at saved-text line 955); operating income $29,825,000,000 USD (OperatingIncomeLoss, 2025-02-01 to 2026-01-31, 10-K 0000104169-26-000055); operating margin = 29,825,000,000 / 713,163,000,000 = 4.18%.\n- Peer TGT: revenue $104,780,000,000 USD (RevenueFromContractWithCustomerExcludingAssessedTax, 2025-02-02 to 2026-01-31, 10-K 0000027419-26-000016; statement top-line label 'Net sales' at saved-text line 1121); operating income $5,117,000,000 USD (OperatingIncomeLoss, 2025-02-02 to 2026-01-31, 10-K 0000027419-26-000016); operating margin = 5,117,000,000 / 104,780,000,000 = 4.88%.\n- Peer BJ: revenue $21,457,274,000 USD (RevenueFromContractWithCustomerExcludingAssessedTax, 2025-02-02 to 2026-01-31, 10-K 0001531152-26-000007; statement top-line label 'Total revenues' at saved-text line 869); operating income $816,604,000 USD (OperatingIncomeLoss, 2025-02-02 to 2026-01-31, 10-K 0001531152-26-000007); operating margin = 816,604,000 / 21,457,274,000 = 3.81%.\n- P/E price input: $992.13, date 2026-10-27; source https://ycharts.com/companies/COST/price.\n\nFinancial Analyst interpretation:\n\n**Interpretation**  \nRevenue of $303.154 B (RevenueFromContractWithCustomerExcludingAssessedTax, 2025‑09‑01 to 2026‑08‑30, 0000909832-26-000093) grew 10.14% YoY from $275.235 B (same tag/period, 0000909832-26-000093). Operating margin = $11.685 B / $303.154 B = 3.85% (OperatingIncomeLoss, 2025‑09‑01 to 2026‑08‑30, 0000909832-26-000093). ROE = $9.226 B / (( $35.803 B + $29.164 B ) / 2) = 28.40% (NetIncomeLoss, 2025‑09‑01 to 2026‑08‑30, 0000909832-26-000093; equity tags, 0000909832-26-000093 & 0000909832-25-000101). Debt‑to‑equity = ($3.914 B + $2.248 B) / $35.803 B = 0.1721 (LongTermDebtNoncurrent & LongTermDebtCurrent, instant to 2026‑08‑30, 0000909832-26-000093). Free cash flow = $15.817 B – $6.435 B = $9.382 B (NetCashProvidedByUsedInOperatingActivities & PaymentsToAcquirePropertyPlantAndEquipment, 2025‑09‑01 to 2026‑08‑30, 0000909832-26-000093). P/E = $992.13 / $20.76 = 47.79 (price source 2026‑10‑27). Q4 revenue $95.723 B vs $86.156 B (+11.10%) and diluted EPS $6.75 vs $5.87 (+14.8%) (8‑K, 0000909832-26-000084). Compared with peers, COST’s 3.85% margin sits between BJ (3.81%) and WMT (4.18%) and below TGT (4.88%).  \n\n**Revenue definition**: “Total revenue” (saved‑text line 625), tag RevenueFromContractWithCustomerExcludingAssessedTax.  \n\nCALCULATOR_REQUESTS: NONE",
+      "Future Developments and Strategic Recommendations": "Research findings:\n\n**Business Model**  \nCostco “operates membership warehouses and e‑commerce sites based on the concept that offering low prices on a limited selection of nationally‑branded and private‑label products … will produce high sales volumes and rapid inventory turnover” (10‑K, Item 1—Business, accession 0000909832‑26‑000093, line 134).  It “carries less than 4,000 active stock‑keeping units (SKUs) per warehouse … significantly less than other broadline retailers” (10‑K, Item 1—Business, accession 0000909832‑26‑000093, line 141).  \n\n**Competitive Position**  \nThe model “enables us to operate profitably at significantly lower gross margins (net sales less merchandise costs) than most other retailers” (10‑K, Item 1—Business, accession 0000909832‑26‑000093, line 134).  By limiting SKUs and using cross‑docking “creates freight volume and handling efficiencies, lowering costs associated with traditional multiple‑step distribution channels” (10‑K, Item 1—Business, accession 0000909832‑26‑000093, line 135‑138).  \n\n**Catalysts**  \nForward‑looking statements cite “net sales growth, … warehouse openings and closures, capital spending, the effect of adopting certain accounting standards, … investments in technology, strategic direction, expense controls, membership fee changes, sign‑ups and renewal rates” as future drivers (10‑K, Item 7 MD&A, accession 0000909832‑26‑000093, line 128‑129).  \n\n**Recent Developments**  \n- Operated **939 warehouses** worldwide as of Aug 30 2026 (10‑K, Item 1—Business, accession 0000909832‑26‑000093, line 131).  \n- **774 gas stations**; gasoline accounted for **11 % of total net sales** in 2026 (10‑K, Item 1—Business, accession 0000909832‑26‑000093, line 150).  \n- **Digitally‑enabled sales and Costco Travel** together also represented **11 % of total net sales** in 2026 (10‑K, Item 1—Business, accession 0000909832‑26‑000093, line 153).  \n- FY 2026 net sales rose **10.1 % to $297.2 billion** (Exhibit 99.1, line 36‑37); total revenue reached **$303.2 billion** (Exhibit 99.1, line 39).  \n- Membership base grew to **150.4 million cardholders** (84.1 M paid, 66.3 M household) (10‑K, Item 7 MD&A, accession 0000909832‑26‑000093, line 160‑163).  \n- Member renewal rate was **92.3 % in the U.S. and Canada, 89.8 % worldwide** (10‑K, Item 7 MD&A, accession 0000909832‑26‑000093, line 167).\n\nFinancial findings:\n\n**Interpretation**  \nRevenue of $303.154 B (RevenueFromContractWithCustomerExcludingAssessedTax, 2025‑09‑01 to 2026‑08‑30, 0000909832-26-000093) grew 10.14% YoY from $275.235 B (same tag/period, 0000909832-26-000093). Operating margin = $11.685 B / $303.154 B = 3.85% (OperatingIncomeLoss, 2025‑09‑01 to 2026‑08‑30, 0000909832-26-000093). ROE = $9.226 B / (( $35.803 B + $29.164 B ) / 2) = 28.40% (NetIncomeLoss, 2025‑09‑01 to 2026‑08‑30, 0000909832-26-000093; equity tags, 0000909832-26-000093 & 0000909832-25-000101). Debt‑to‑equity = ($3.914 B + $2.248 B) / $35.803 B = 0.1721 (LongTermDebtNoncurrent & LongTermDebtCurrent, instant to 2026‑08‑30, 0000909832-26-000093). Free cash flow = $15.817 B – $6.435 B = $9.382 B (NetCashProvidedByUsedInOperatingActivities & PaymentsToAcquirePropertyPlantAndEquipment, 2025‑09‑01 to 2026‑08‑30, 0000909832-26-000093). P/E = $992.13 / $20.76 = 47.79 (price source 2026‑10‑27). Q4 revenue $95.723 B vs $86.156 B (+11.10%) and diluted EPS $6.75 vs $5.87 (+14.8%) (8‑K, 0000909832-26-000084). Compared with peers, COST’s 3.85% margin sits between BJ (3.81%) and WMT (4.18%) and below TGT (4.88%).  \n\n**Revenue definition**: “Total revenue” (saved‑text line 625), tag RevenueFromContractWithCustomerExcludingAssessedTax.  \n\nCALCULATOR_REQUESTS: NONE",
+      "Investment Recommendation": "**Thesis:** Costco’s low‑SKU, membership‑driven model continues to deliver strong top‑line growth (10% YoY revenue) and exceptional profitability, evidenced by a 28.40% return on equity and robust free cash flow. High renewal rates (>92% in North America) and expanding ancillary businesses (gas, travel, e‑commerce) reinforce its defensive moat and cash generation capacity, supporting further price appreciation.\n\n**Recommendation:** **Buy**\n\n**Deciding number:** ROE = 28.40% (Financial Analyst)."
+    },
+    "required_parts": [
+      "Overview",
+      "Market Positioning and Growth Outlook",
+      "Valuation Insights",
+      "Future Developments and Strategic Recommendations",
+      "Investment Recommendation"
+    ],
+    "source_facts": {
+      "revenue": {
+        "label": "revenue",
+        "value": 303154000000,
+        "unit": "USD",
+        "tag": "RevenueFromContractWithCustomerExcludingAssessedTax",
+        "period_start": "2025-09-01",
+        "period_end": "2026-08-30",
+        "filing": "10-K",
+        "filed": "2026-10-07",
+        "accession": "0000909832-26-000093"
+      },
+      "operating_income": {
+        "label": "operating_income",
+        "value": 11685000000,
+        "unit": "USD",
+        "tag": "OperatingIncomeLoss",
+        "period_start": "2025-09-01",
+        "period_end": "2026-08-30",
+        "filing": "10-K",
+        "filed": "2026-10-07",
+        "accession": "0000909832-26-000093"
+      },
+      "net_income": {
+        "label": "net_income",
+        "value": 9226000000,
+        "unit": "USD",
+        "tag": "NetIncomeLoss",
+        "period_start": "2025-09-01",
+        "period_end": "2026-08-30",
+        "filing": "10-K",
+        "filed": "2026-10-07",
+        "accession": "0000909832-26-000093"
+      },
+      "diluted_eps": {
+        "label": "diluted_eps",
+        "value": 20.76,
+        "unit": "USD/shares",
+        "tag": "EarningsPerShareDiluted",
+        "period_start": "2025-09-01",
+        "period_end": "2026-08-30",
+        "filing": "10-K",
+        "filed": "2026-10-07",
+        "accession": "0000909832-26-000093"
+      },
+      "equity": {
+        "label": "equity",
+        "value": 35803000000,
+        "unit": "USD",
+        "tag": "StockholdersEquity",
+        "period_start": null,
+        "period_end": "2026-08-30",
+        "filing": "10-K",
+        "filed": "2026-10-07",
+        "accession": "0000909832-26-000093"
+      },
+      "long_term_debt": {
+        "label": "long_term_debt",
+        "value": 3914000000,
+        "unit": "USD",
+        "tag": "LongTermDebtNoncurrent",
+        "period_start": null,
+        "period_end": "2026-08-30",
+        "filing": "10-K",
+        "filed": "2026-10-07",
+        "accession": "0000909832-26-000093"
+      },
+      "current_debt": {
+        "label": "current_debt",
+        "value": 2248000000,
+        "unit": "USD",
+        "tag": "LongTermDebtCurrent",
+        "period_start": null,
+        "period_end": "2026-08-30",
+        "filing": "10-K",
+        "filed": "2026-10-07",
+        "accession": "0000909832-26-000093"
+      },
+      "cash_from_operations": {
+        "label": "cash_from_operations",
+        "value": 15817000000,
+        "unit": "USD",
+        "tag": "NetCashProvidedByUsedInOperatingActivities",
+        "period_start": "2025-09-01",
+        "period_end": "2026-08-30",
+        "filing": "10-K",
+        "filed": "2026-10-07",
+        "accession": "0000909832-26-000093"
+      },
+      "capex": {
+        "label": "capex",
+        "value": 6435000000,
+        "unit": "USD",
+        "tag": "PaymentsToAcquirePropertyPlantAndEquipment",
+        "period_start": "2025-09-01",
+        "period_end": "2026-08-30",
+        "filing": "10-K",
+        "filed": "2026-10-07",
+        "accession": "0000909832-26-000093"
+      },
+      "revenue_prior_year": {
+        "label": "revenue_prior_year",
+        "value": 275235000000,
+        "unit": "USD",
+        "tag": "RevenueFromContractWithCustomerExcludingAssessedTax",
+        "period_start": "2024-09-02",
+        "period_end": "2025-08-31",
+        "filing": "10-K",
+        "filed": "2026-10-07",
+        "accession": "0000909832-26-000093"
+      }
+    },
+    "automatic_numeric_audit": [
+      "Unsupported percentage 14.8%; use only percentages from the code-calculated evidence."
+    ]
+  },
+  "expected_output": "{\"status\":\"PASS\"|\"FAIL\",\"failing_part\":string|null,\"repair_request\":string|null}"
+}

@@ -14,6 +14,66 @@ PARTS = ["Overview", "Market Positioning and Growth Outlook", "Valuation Insight
 def save_json(path: Path, value: Any) -> None:
     path.write_text(json.dumps(value, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
+
+def save_node_record(run_dir: Path, name: str, node_input: Any, node_output: Any) -> None:
+    """Save input and output for a deterministic Flow node."""
+    node_dir = run_dir / "nodes"
+    node_dir.mkdir(exist_ok=True)
+    save_json(node_dir / f"{name}_input.json", node_input)
+    save_json(node_dir / f"{name}_output.json", node_output)
+
+
+def omit_report_part(report: str, heading: str) -> str:
+    """Remove one Markdown section before sending a report copy to the Verifier."""
+    lines = report.splitlines()
+    target = f"## {heading}".casefold()
+    start = next((i for i, line in enumerate(lines) if line.strip().casefold() == target), None)
+    if start is None:
+        return report
+    end = next((i for i in range(start + 1, len(lines))
+                if re.match(r"^##\s+", lines[i])), len(lines))
+    return "\n".join(lines[:start] + ["## Investment Advisor thesis omitted for verification."] + lines[end:])
+
+
+def cited_filing_evidence(claims: list[dict[str, Any]],
+                          companies: list[dict[str, Any]],
+                          context_lines: int = 2) -> dict[str, dict[str, str]]:
+    """Return numbered excerpts around cited lines from the saved filings.
+
+    Keep the Verifier's input focused on evidence already cited in the report.
+    This avoids sending full 10-Ks to a model with a finite context window.
+    The filing files themselves remain unchanged in the run folder.
+    """
+    by_ticker = {company["facts"]["ticker"]: company for company in companies}
+    excerpts: dict[str, dict[str, list[str]]] = {}
+    seen: dict[tuple[str, str], set[int]] = {}
+    for claim in claims:
+        ticker = claim.get("ticker")
+        company = by_ticker.get(ticker)
+        filing = claim.get("filing")
+        line_number = claim.get("source_line")
+        if not company or not filing or not isinstance(line_number, int):
+            continue
+        source = company.get("filing_texts", {}).get(filing, "")
+        lines = source.splitlines()
+        if not (1 <= line_number <= len(lines)):
+            continue
+        key = (ticker, filing)
+        included = seen.setdefault(key, set())
+        start, end = max(1, line_number - context_lines), min(len(lines), line_number + context_lines)
+        new_lines = [n for n in range(start, end + 1) if n not in included]
+        if not new_lines:
+            continue
+        meta = company["facts"].get("filings", {}).get(filing, {})
+        accession = claim.get("accession") or meta.get("accession", "unknown accession")
+        bucket = excerpts.setdefault(ticker, {}).setdefault(filing, [])
+        bucket.append(f"{filing} accession {accession}; saved-text lines {start}-{end}:")
+        bucket.extend(f"{number} | {lines[number - 1]}" for number in new_lines)
+        included.update(new_lines)
+    return {ticker: {filing: "\n".join(chunks)
+                     for filing, chunks in filings.items()}
+            for ticker, filings in excerpts.items()}
+
 def model_name(env: dict[str, str], key: str, base_url: str) -> str:
     selected = env.get("GENAI_MODEL", "").strip()
     if selected:
@@ -72,10 +132,18 @@ def claim_ledger(companies: list[dict[str, Any]], price: float | None) -> list[d
                 "formula": {
                     "revenue_growth": "revenue / revenue_prior_year - 1",
                     "operating_margin": "operating_income / revenue",
-                    "return_on_average_equity": "net_income / ((equity + prior_equity) / 2)",
-                    "debt_to_equity": "(long_term_debt + current_debt) / equity",
-                    "free_cash_flow": "cash_from_operations - capex",
+                    "return_on_average_equity": "net_income / ((current_equity + prior_equity) / 2)",
+                    "debt_to_equity": "(long_term_debt + current_portion_debt) / current_equity",
+                    "free_cash_flow": "cash_from_operations - additions_to_property_and_equipment",
                     "pe": "price / diluted_eps",
+                }[name],
+                "definition": {
+                    "revenue_growth": "(latest fiscal-year revenue / prior fiscal-year revenue) - 1",
+                    "operating_margin": "operating income / latest fiscal-year revenue",
+                    "return_on_average_equity": "net income / average of current and prior year-end equity",
+                    "debt_to_equity": "(long-term debt + current portion of long-term debt) / current year-end equity",
+                    "free_cash_flow": "cash from operations - additions to property and equipment",
+                    "pe": "supplied share price / diluted EPS for the selected fiscal year",
                 }[name],
             })
         quarter = company.get("quarter", {})
@@ -100,8 +168,8 @@ def calc_expected_ratio(claim: dict[str, Any]) -> float | None:
         "revenue_growth": lambda: i["revenue"] / i["revenue_prior_year"] - 1,
         "operating_margin": lambda: i["operating_income"] / i["revenue"],
         "return_on_average_equity": lambda: i["net_income"] / ((i["current_equity"] + i["prior_equity"]) / 2),
-        "debt_to_equity": lambda: (i["long_term_debt"] + i["current_portion_debt"]) / i["current_equity"],
-        "free_cash_flow": lambda: i["cash_from_operations"] - i["additions_to_property_and_equipment"],
+            "debt_to_equity": lambda: (i["long_term_debt"] + i["current_portion_debt"]) / i["current_equity"],
+            "free_cash_flow": lambda: i["cash_from_operations"] - i["additions_to_property_and_equipment"],
         "pe": lambda: i["price"] / i["diluted_eps"],
     }
     try:
@@ -199,7 +267,7 @@ def code_verify_claims(claims: list[dict[str, Any]], run_dir: Path,
     marks = []
     for claim in claims:
         reason = ""
-        corrected = claim.get("expected_value")
+        corrected = None
         marker = f"<!-- {claim['id']} -->"
         if marker not in report_text:
             mark = "unsupported"
@@ -238,6 +306,7 @@ def code_verify_claims(claims: list[dict[str, Any]], run_dir: Path,
             elif abs(float(claim["reported_value"]) - expected) > max(1e-8, abs(expected) * 1e-8):
                 mark, reason, corrected = "wrong", "Recalculation from the quoted inputs does not match the reported ratio.", expected
             elif (f"{expected:.8g}" not in report_line or claim.get("formula", "") not in report_line
+                  or claim.get("definition", claim.get("formula", "")) not in report_line
                   or json.dumps(claim.get("inputs", {}), sort_keys=True) not in report_line):
                 mark, reason, corrected = "wrong", "The report line does not state the recomputed ratio.", expected
             else:
@@ -248,7 +317,7 @@ def code_verify_claims(claims: list[dict[str, Any]], run_dir: Path,
                 mark, reason = "unsupported", "The cited filing text is missing."
             else:
                 text = path.read_text(encoding="utf-8")
-                norm = lambda value: re.sub(r"\s+", " ", value).strip().casefold()
+                norm = lambda value: re.sub(r"[^a-z0-9.$%-]", "", value.casefold())
                 report_line = next((line for line in report_text.splitlines() if marker in line), "")
                 lines = text.splitlines()
                 cited_line = claim.get("source_line")
@@ -281,7 +350,7 @@ def report_claim_lines(claims: list[dict[str, Any]]) -> list[str]:
             line = f" | saved-text line {c['source_line']}" if c.get("source_line") else ""
             detail = f"{c['reported_value']} {c['unit']} | {c['tag']} | period {c['period_end']} | {c['filing']} accession {c['accession']}{line}"
         elif c["kind"] == "ratio":
-            detail = f"{float(c['reported_value']):.8g} | formula: {c['formula']} | inputs: {json.dumps(c['inputs'], sort_keys=True)}"
+            detail = f"{float(c['reported_value']):.8g} | definition: {c.get('definition', c['formula'])} | formula: {c['formula']} | inputs: {json.dumps(c['inputs'], sort_keys=True)}"
         else:
             detail = f"{c['reported_value']} | {c['filing']} accession {c['accession']} line {c['source_line']} | quote: {c['source_excerpt']}"
         lines.append(f"- {marker} {c['id'].split(':',1)[-1]}: {detail}")
@@ -328,7 +397,7 @@ def save_verified_report(path: Path, first_line: str, timestamp: str, body: str,
                          marks: list[dict[str, Any]]) -> None:
     table = ["## Verifier marks", "", "| Claim | Mark | Reason | Source | Correction |", "|---|---|---|---|---|"]
     table.extend(f"| {m['id']} | {m['mark']} | {m['reason'].replace('|', '/')} | {m.get('source', '').replace('|', '/')} | {m.get('correction')} |" for m in marks)
-    content = f"{first_line}\nRun time: {timestamp}\n\n" + "\n".join(table) + "\n\n" + body.strip() + "\n"
+    content = f"{first_line}\n\n" + "\n".join(table) + f"\n\nRun time: {timestamp}\n\n" + body.strip() + "\n"
     path.write_text(content, encoding="utf-8")
 
 def numbered_sections(company: dict[str, Any]) -> tuple[str, str, str]:

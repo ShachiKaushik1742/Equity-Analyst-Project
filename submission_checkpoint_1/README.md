@@ -16,8 +16,7 @@ In Brightspace, submit the permalink to the latest commit on `main`.
 - `XBRL_and_partner_reflection.md`: Week 2 XBRL explanation and reflection.
 - `runs/WMT_20261028_201551/`: the Week 2 data-pipeline exercise for WMT.
 - `runs/MSFT_20261028_214246/` and `MSFT_partner_report.md`: MSFT source files and the partner-company report.
-- `MSFT_partner_audit.md`: human review of the corrected MSFT report, plus the partner's check of claims 1 and 9 (Aditi Nahane, AN).
-- `Partner_Redo_Check.md`: Aditi Nahane's completed AI-assisted partner record dated 2026-11-02, with COST Steps 2 and 4 and MSFT Claims 1 and 9 marked RIGHT and source notes recorded.
+- `MSFT_partner_audit.md`: human review of the corrected MSFT report, plus Aditi Nahane's AI-assisted partner check of Claims 1 and 9 with filing sources, results, and notes.
 
 ## Audit status recorded in the packet
 

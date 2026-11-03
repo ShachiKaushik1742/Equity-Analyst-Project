@@ -31,7 +31,12 @@ Human review — missing claims: **0**
 
 Partner company: **MSFT**.
 
-Partner: Aditi Nahane  
-Two claim numbers checked against filings: **1 and 9**  
-Partner initials or confirmation: **AN**  
-Comments: The partner cross-checked claim 1 against the MSFT 10-K line 1377 ($331,839 million revenue) and claim 9 against the 8-K Exhibit 99.1 lines 279 and 291–292 ($92,279 million quarterly revenue). Both match the report.
+Partner: **Aditi Nahane (AN)**; claims checked: **1 and 9**.
+
+| Claim | Report claim | Filing evidence | Partner result | Notes |
+|---|---|---|---|---|
+| 1 | FY2026 revenue of $331.839 billion | MSFT 10-K `0001193125-26-323660`, lines 1376–1378; tag `RevenueFromContractWithCustomerExcludingAssessedTax`; period ending 2026-06-30. | **RIGHT** | Line 1376 labels total revenue; line 1377 reports 331,839 in millions ($331.839 billion). The period is 2025-07-01 to 2026-06-30. |
+| 9 | Q1 FY2027 revenue of $92.279 billion for the quarter ended 2026-09-30 | MSFT 8-K `0001193125-26-436122`, Exhibit 99.1, lines 279–292. | **RIGHT** | Line 279 states amounts are in millions; lines 291–292 show total revenue of 92,279 ($92.279 billion) for the quarter ended September 30, 2026. |
+
+**Comments:** Both values, periods, and cited lines match the saved sources.
+**Method disclosure:** Aditi's accompanying message states that her AI assistant checked these two claims and entered the marks. This is an AI-assisted partner check, not a human-only verification.

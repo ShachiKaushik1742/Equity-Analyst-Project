@@ -13,8 +13,9 @@ Verified October 28, 2026:
 - Initial push verified: .env is absent from the GitHub repository.
 
 Still to verify:
-- Repository visibility remains to confirm. The unauthenticated GitHub API returned 404 for the configured remote; this is consistent with the private repository behavior, while authenticated pushes succeed. The course prerequisite requires a public repository.
 - Checkpoint 1 still needs the latest commit permalink submitted in Brightspace.
+
+The repository was confirmed public on 2026-11-02.
 
 ## Terminal checks
 

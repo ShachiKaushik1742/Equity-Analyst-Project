@@ -1,0 +1,104 @@
+{
+  "ticker": "COST",
+  "peers": [
+    "WMT",
+    "TGT",
+    "BJ"
+  ],
+  "price": 992.13,
+  "run_time": "2026-11-03T09:20:58-05:00",
+  "filings": [
+    {
+      "10-K": {
+        "accession": "0000909832-26-000093",
+        "accepted": "2026-10-07T01:13:15.000Z",
+        "filing_date": "2026-10-07",
+        "document": "cost-20260830.htm",
+        "index_url": "https://www.sec.gov/Archives/edgar/data/909832/000090983226000093/index.json"
+      },
+      "10-Q": {
+        "accession": "0000909832-26-000051",
+        "accepted": "2026-06-03T20:43:00.000Z",
+        "filing_date": "2026-06-03",
+        "document": "cost-20260510.htm",
+        "index_url": "https://www.sec.gov/Archives/edgar/data/909832/000090983226000051/index.json"
+      },
+      "8-K": {
+        "accession": "0000909832-26-000084",
+        "accepted": "2026-09-24T20:17:37.000Z",
+        "filing_date": "2026-09-24",
+        "document": "costex9918-k92426.htm",
+        "index_url": "https://www.sec.gov/Archives/edgar/data/909832/000090983226000084/index.json"
+      }
+    },
+    {
+      "10-K": {
+        "accession": "0000104169-26-000055",
+        "accepted": "2026-03-13T20:06:24.000Z",
+        "filing_date": "2026-03-13",
+        "document": "wmt-20260131.htm",
+        "index_url": "https://www.sec.gov/Archives/edgar/data/104169/000010416926000055/index.json"
+      },
+      "10-Q": {
+        "accession": "0000104169-26-000154",
+        "accepted": "2026-08-28T20:11:28.000Z",
+        "filing_date": "2026-08-28",
+        "document": "wmt-20260731.htm",
+        "index_url": "https://www.sec.gov/Archives/edgar/data/104169/000010416926000154/index.json"
+      },
+      "8-K": {
+        "accession": "0000104169-26-000145",
+        "accepted": "2026-08-20T10:59:01.000Z",
+        "filing_date": "2026-08-20",
+        "document": "earningsreleasefy27q2.htm",
+        "index_url": "https://www.sec.gov/Archives/edgar/data/104169/000010416926000145/index.json"
+      }
+    },
+    {
+      "10-K": {
+        "accession": "0000027419-26-000016",
+        "accepted": "2026-03-11T20:42:00.000Z",
+        "filing_date": "2026-03-11",
+        "document": "tgt-20260131.htm",
+        "index_url": "https://www.sec.gov/Archives/edgar/data/27419/000002741926000016/index.json"
+      },
+      "10-Q": {
+        "accession": "0000027419-26-000042",
+        "accepted": "2026-08-28T17:53:59.000Z",
+        "filing_date": "2026-08-28",
+        "document": "tgt-20260801.htm",
+        "index_url": "https://www.sec.gov/Archives/edgar/data/27419/000002741926000042/index.json"
+      },
+      "8-K": {
+        "accession": "0000027419-26-000034",
+        "accepted": "2026-08-19T11:51:13.000Z",
+        "filing_date": "2026-08-19",
+        "document": "a2026q2ex-99.htm",
+        "index_url": "https://www.sec.gov/Archives/edgar/data/27419/000002741926000034/index.json"
+      }
+    },
+    {
+      "10-K": {
+        "accession": "0001531152-26-000007",
+        "accepted": "2026-03-12T20:15:55.000Z",
+        "filing_date": "2026-03-12",
+        "document": "bj-20260131.htm",
+        "index_url": "https://www.sec.gov/Archives/edgar/data/1531152/000153115226000007/index.json"
+      },
+      "10-Q": {
+        "accession": "0001531152-26-000057",
+        "accepted": "2026-08-25T20:32:14.000Z",
+        "filing_date": "2026-08-25",
+        "document": "bj-20260801.htm",
+        "index_url": "https://www.sec.gov/Archives/edgar/data/1531152/000153115226000057/index.json"
+      },
+      "8-K": {
+        "accession": "0001531152-26-000053",
+        "accepted": "2026-08-21T11:03:32.000Z",
+        "filing_date": "2026-08-21",
+        "document": "bj-2026080126x8kex991.htm",
+        "index_url": "https://www.sec.gov/Archives/edgar/data/1531152/000153115226000053/index.json"
+      }
+    }
+  ]
+}

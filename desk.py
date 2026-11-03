@@ -554,28 +554,34 @@ def quarter_metrics(release_text: str) -> dict[str, Any]:
     eps_line_number: int | None = None
     eps_number_line_number: int | None = None
     eps_numbers: list[float] = []
-    heading = next((i for i, line in enumerate(lines) if re.fullmatch(
-        r"\s*(?:NET INCOME PER COMMON SHARE|EARNINGS PER SHARE)\s*:?\s*", line, re.IGNORECASE)), -1)
+    heading = next((i for i, line in enumerate(lines) if re.search(
+        r"(?:NET INCOME PER COMMON SHARE|EARNINGS PER SHARE)", line, re.IGNORECASE)), -1)
     eps_start = max(0, heading + 1) if heading >= 0 else 0
     for i in range(eps_start, min(len(lines), eps_start + 20)):
         # Require an Earnings per share heading first. Otherwise the later
         # diluted weighted-share-count row can be mistaken for diluted EPS.
-        if heading < 0 or not re.match(r"\s*Diluted\s*$", lines[i], re.IGNORECASE):
+        if heading < 0 or not re.match(r"\s*Diluted(?:\s|$)", lines[i], re.IGNORECASE):
             continue
         values: list[tuple[int, float]] = []
-        for j in range(i + 1, min(len(lines), i + 4)):
-            found = re.search(r"\$\s*(\d+\.\d+)", lines[j])
+        for j in range(i, min(len(lines), i + 4)):
+            found = re.findall(r"(?<![\w.])\$?\s*(\d+\.\d+)(?![\w.])", lines[j])
             if found:
-                values.append((j, float(found.group(1))))
-                if len(values) == 2:
+                values.extend((j, float(item)) for item in found)
+                if len(values) >= 2:
                     break
-            elif lines[j].strip() and not re.fullmatch(r"\s*(?:\$?\s*)", lines[j]):
+            elif j > i and lines[j].strip() and not re.fullmatch(r"\s*(?:\$?\s*)", lines[j]):
                 break
         if len(values) == 2:
             eps_line_number = i + 1
             eps_number_line_number = values[-1][0] + 1
             eps_line = " ".join(lines[i:values[-1][0] + 1])
             eps_numbers = [value for _, value in values]
+            break
+        if len(values) > 2:
+            eps_line_number = i + 1
+            eps_number_line_number = values[-1][0] + 1
+            eps_line = " ".join(lines[i:values[-1][0] + 1])
+            eps_numbers = [value for _, value in values[:2]]
             break
     revenue = revenue_numbers[:2] if len(revenue_numbers) >= 2 else []
     return {

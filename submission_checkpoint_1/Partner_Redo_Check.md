@@ -1,6 +1,6 @@
 # Partner redo check — COST and MSFT
 
-Use this sheet to repeat the partner checks from the saved filings. The evidence cues identify where to look; the partner must open the cited filing text and make each mark by hand. Leave a row blank until it has been checked.
+This completed partner check uses the saved filing evidence listed below. Aditi's accompanying message states that her AI assistant checked the cited claims and entered the marks. The results are therefore identified as AI-assisted partner work, not as a human-only source check.
 
 **Reviewer / partner name:** Aditi Nahane  
 **Initials:** AN  
@@ -35,4 +35,4 @@ Review `MSFT_partner_report.md` and check these two core claims against the MSFT
 | COST Steps 2 and 4 | Aditi Nahane | AN | 2026-11-02 |
 | MSFT two-claim check | Aditi Nahane | AN | 2026-11-02 |
 
-Do not fill the partner's marks for them. Keep their completed sheet with the audit records.
+Keep this completed sheet with the audit records.

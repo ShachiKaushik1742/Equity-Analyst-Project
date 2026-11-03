@@ -19,3 +19,7 @@ Please send [Lab04_partner_check.md](Lab04_partner_check.md) to your partner. It
 ## Student class work
 
 **Complete — student confirmed on 2026-11-03.** The student reports completing the paired review, working on one gap-list item in a second AI chat, and discussing the Lab 04 reflection questions with their partner. These are recorded as student-completed based on that confirmation; the worksheet below remains for the partner's independent written marks.
+
+## Before Session 5 preparation
+
+**Complete — student confirmed on 2026-11-03.** The student reports completing the Week 3 preparation list linked from the Lab 04 page.

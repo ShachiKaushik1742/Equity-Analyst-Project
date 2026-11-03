@@ -16,13 +16,6 @@ This file records saved work for Lab 04. It does not mark the partner check or s
 
 Please send [Lab04_partner_check.md](Lab04_partner_check.md) to your partner. It asks them to check the clean report's COST revenue against 10-K line 625, then independently check the seeded EPS Verifier mark against 10-K line 638. They must enter their own marks, evidence, name, initials, and date. The worksheet is intentionally unsigned and blank for the partner.
 
-## Student class work still required
+## Student class work
 
-These items require your own participation or explanation. I have not recorded them as completed:
-
-- In the paired review, show your partner the source for one number and let them find it in the filing.
-- Use the second AI chat to work on one item from your gap list.
-- Explain to your partner what code now decides about role order and one thing the Verifier cannot check by design (the Investment Advisor's thesis is omitted).
-- Discuss which Anthropic patterns fit the Manager and Verifier, what the Verifier receives, and why it does not receive role instructions.
-
-The last topic is discussion work; the saved runs and worksheets do not prove that the conversation happened.
+**Complete — student confirmed on 2026-11-03.** The student reports completing the paired review, working on one gap-list item in a second AI chat, and discussing the Lab 04 reflection questions with their partner. These are recorded as student-completed based on that confirmation; the worksheet below remains for the partner's independent written marks.

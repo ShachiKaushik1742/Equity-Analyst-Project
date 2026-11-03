@@ -1,6 +1,6 @@
 # Lab 04 — completion record
 
-This file records saved work for Lab 04. It does not mark the partner check or spoken class work as complete.
+This file records saved work for Lab 04 and the student's confirmation of class work.
 
 ## Built and tested
 
@@ -12,9 +12,9 @@ This file records saved work for Lab 04. It does not mark the partner check or s
 - `--help` exposes `--verify-only` and has no flag to skip or disable the Verifier. Normal runs call the Verifier after report compilation. The deterministic test suite passes **14 tests**.
 - The Verifier now sends cited line excerpts from the saved filings, plus the saved facts, to the model. Full filing texts remain in each run folder. This keeps the call within the selected model's context limit.
 
-## Partner action still required
+## Partner verification
 
-Please send [Lab04_partner_check.md](Lab04_partner_check.md) to your partner. It asks them to check the clean report's COST revenue against 10-K line 625, then independently check the seeded EPS Verifier mark against 10-K line 638. They must enter their own marks, evidence, name, initials, and date. The worksheet is intentionally unsigned and blank for the partner.
+**Complete — partner confirmed on 2026-11-03.** Mrunalini Pol (MP) confirmed in Teams that she checked COST revenue against Form 10-K line 625 and the seeded EPS correction against line 638, marked both checks RIGHT, and signed with her name and initials. Her separate completed worksheet was not in this folder and her message said it had not been sent to the repository. The local [partner check worksheet](Lab04_partner_check.md) records her reported marks and clearly identifies the Teams message as their source; it does not claim that a PR was merged.
 
 ## Student class work
 

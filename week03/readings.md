@@ -10,7 +10,7 @@ Garry Kasparov, “The Chess Master and the Computer,” *The New York Review of
 
 Kasparov’s account of advanced chess and the 2005 freestyle tournament makes process design central: people can improve results by coordinating human judgment with machine calculation. The useful lesson for this desk is to make the handoffs and checks clear, not to treat a model call as the whole process.
 
-### OpenAI Agents SDK, first page
+### CrewAI Flows, first page
 
 Official documentation: [CrewAI Flows](https://docs.crewai.com/en/concepts/flows) and [CrewAI LLM configuration](https://docs.crewai.com/en/concepts/llms). This project uses CrewAI's Flow and `Process.sequential`. The current package requires Python below 3.14, so the project uses an isolated Python 3.13 environment.
 

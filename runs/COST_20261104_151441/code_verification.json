@@ -1,0 +1,191 @@
+[
+  {
+    "id": "claim:cost_revenue",
+    "mark": "correct",
+    "reason": "Report value, tag, period, and accession match the saved XBRL fact.",
+    "source": "COST 10-K accession 0000909832-26-000093; tag RevenueFromContractWithCustomerExcludingAssessedTax, period ending 2026-08-30, saved-text line 625",
+    "correction": null
+  },
+  {
+    "id": "claim:cost_operating_income",
+    "mark": "correct",
+    "reason": "Report value, tag, period, and accession match the saved XBRL fact.",
+    "source": "COST 10-K accession 0000909832-26-000093; tag OperatingIncomeLoss, period ending 2026-08-30, saved-text line 629",
+    "correction": null
+  },
+  {
+    "id": "claim:cost_net_income",
+    "mark": "correct",
+    "reason": "Report value, tag, period, and accession match the saved XBRL fact.",
+    "source": "COST 10-K accession 0000909832-26-000093; tag NetIncomeLoss, period ending 2026-08-30, saved-text line 635",
+    "correction": null
+  },
+  {
+    "id": "claim:cost_diluted_eps",
+    "mark": "correct",
+    "reason": "Report value, tag, period, and accession match the saved XBRL fact.",
+    "source": "COST 10-K accession 0000909832-26-000093; tag EarningsPerShareDiluted, period ending 2026-08-30, saved-text line 638",
+    "correction": null
+  },
+  {
+    "id": "claim:cost_equity",
+    "mark": "correct",
+    "reason": "Report value, tag, period, and accession match the saved XBRL fact.",
+    "source": "COST 10-K accession 0000909832-26-000093; tag StockholdersEquity, period ending 2026-08-30, saved-text line 704",
+    "correction": null
+  },
+  {
+    "id": "claim:cost_long_term_debt",
+    "mark": "correct",
+    "reason": "Report value, tag, period, and accession match the saved XBRL fact.",
+    "source": "COST 10-K accession 0000909832-26-000093; tag LongTermDebtNoncurrent, period ending 2026-08-30, saved-text line 691",
+    "correction": null
+  },
+  {
+    "id": "claim:cost_current_debt",
+    "mark": "correct",
+    "reason": "Report value, tag, period, and accession match the saved XBRL fact.",
+    "source": "COST 10-K accession 0000909832-26-000093; tag LongTermDebtCurrent, period ending 2026-08-30, saved-text line 687",
+    "correction": null
+  },
+  {
+    "id": "claim:cost_cash_from_operations",
+    "mark": "correct",
+    "reason": "Report value, tag, period, and accession match the saved XBRL fact.",
+    "source": "COST 10-K accession 0000909832-26-000093; tag NetCashProvidedByUsedInOperatingActivities, period ending 2026-08-30, saved-text line 766",
+    "correction": null
+  },
+  {
+    "id": "claim:cost_capex",
+    "mark": "correct",
+    "reason": "Report value, tag, period, and accession match the saved XBRL fact.",
+    "source": "COST 10-K accession 0000909832-26-000093; tag PaymentsToAcquirePropertyPlantAndEquipment, period ending 2026-08-30, saved-text line 768",
+    "correction": null
+  },
+  {
+    "id": "claim:cost_revenue_prior_year",
+    "mark": "correct",
+    "reason": "Report value, tag, period, and accession match the saved XBRL fact.",
+    "source": "COST 10-K accession 0000909832-26-000093; tag RevenueFromContractWithCustomerExcludingAssessedTax, period ending 2025-08-31, saved-text line 625",
+    "correction": null
+  },
+  {
+    "id": "claim:cost_ratio_revenue_growth",
+    "mark": "correct",
+    "reason": "Ratio recomputed from its saved inputs and formula.",
+    "source": "COST ratio formula revenue / revenue_prior_year - 1",
+    "correction": null
+  },
+  {
+    "id": "claim:cost_ratio_operating_margin",
+    "mark": "correct",
+    "reason": "Ratio recomputed from its saved inputs and formula.",
+    "source": "COST ratio formula operating_income / revenue",
+    "correction": null
+  },
+  {
+    "id": "claim:cost_ratio_return_on_average_equity",
+    "mark": "correct",
+    "reason": "Ratio recomputed from its saved inputs and formula.",
+    "source": "COST ratio formula net_income / ((current_equity + prior_equity) / 2)",
+    "correction": null
+  },
+  {
+    "id": "claim:cost_ratio_debt_to_equity",
+    "mark": "correct",
+    "reason": "Ratio recomputed from its saved inputs and formula.",
+    "source": "COST ratio formula (long_term_debt + current_portion_debt) / current_equity",
+    "correction": null
+  },
+  {
+    "id": "claim:cost_ratio_free_cash_flow",
+    "mark": "correct",
+    "reason": "Ratio recomputed from its saved inputs and formula.",
+    "source": "COST ratio formula cash_from_operations - additions_to_property_and_equipment",
+    "correction": null
+  },
+  {
+    "id": "claim:cost_ratio_pe",
+    "mark": "correct",
+    "reason": "Ratio recomputed from its saved inputs and formula.",
+    "source": "COST ratio formula price / diluted_eps",
+    "correction": null
+  },
+  {
+    "id": "claim:cost_quarter_revenue",
+    "mark": "correct",
+    "reason": "Quoted filing text and report value are present.",
+    "source": "COST 8-K accession 0000909832-26-000084, saved-text line 39",
+    "correction": null
+  },
+  {
+    "id": "claim:cost_quarter_diluted_eps",
+    "mark": "correct",
+    "reason": "Quoted filing text and report value are present.",
+    "source": "COST 8-K accession 0000909832-26-000084, saved-text line 52",
+    "correction": null
+  },
+  {
+    "id": "claim:wmt_revenue",
+    "mark": "correct",
+    "reason": "Report value, tag, period, and accession match the saved XBRL fact.",
+    "source": "WMT 10-K accession 0000104169-26-000055; tag Revenues, period ending 2026-01-31, saved-text line 955",
+    "correction": null
+  },
+  {
+    "id": "claim:wmt_operating_income",
+    "mark": "correct",
+    "reason": "Report value, tag, period, and accession match the saved XBRL fact.",
+    "source": "WMT 10-K accession 0000104169-26-000055; tag OperatingIncomeLoss, period ending 2026-01-31, saved-text line 959",
+    "correction": null
+  },
+  {
+    "id": "claim:wmt_ratio_operating_margin",
+    "mark": "correct",
+    "reason": "Ratio recomputed from its saved inputs and formula.",
+    "source": "WMT ratio formula operating_income / revenue",
+    "correction": null
+  },
+  {
+    "id": "claim:tgt_revenue",
+    "mark": "correct",
+    "reason": "Report value, tag, period, and accession match the saved XBRL fact.",
+    "source": "TGT 10-K accession 0000027419-26-000016; tag RevenueFromContractWithCustomerExcludingAssessedTax, period ending 2026-01-31, saved-text line 1121",
+    "correction": null
+  },
+  {
+    "id": "claim:tgt_operating_income",
+    "mark": "correct",
+    "reason": "Report value, tag, period, and accession match the saved XBRL fact.",
+    "source": "TGT 10-K accession 0000027419-26-000016; tag OperatingIncomeLoss, period ending 2026-01-31, saved-text line 1127",
+    "correction": null
+  },
+  {
+    "id": "claim:tgt_ratio_operating_margin",
+    "mark": "correct",
+    "reason": "Ratio recomputed from its saved inputs and formula.",
+    "source": "TGT ratio formula operating_income / revenue",
+    "correction": null
+  },
+  {
+    "id": "claim:bj_revenue",
+    "mark": "correct",
+    "reason": "Report value, tag, period, and accession match the saved XBRL fact.",
+    "source": "BJ 10-K accession 0001531152-26-000007; tag RevenueFromContractWithCustomerExcludingAssessedTax, period ending 2026-01-31, saved-text line 869",
+    "correction": null
+  },
+  {
+    "id": "claim:bj_operating_income",
+    "mark": "correct",
+    "reason": "Report value, tag, period, and accession match the saved XBRL fact.",
+    "source": "BJ 10-K accession 0001531152-26-000007; tag OperatingIncomeLoss, period ending 2026-01-31, saved-text line 873",
+    "correction": null
+  },
+  {
+    "id": "claim:bj_ratio_operating_margin",
+    "mark": "correct",
+    "reason": "Ratio recomputed from its saved inputs and formula.",
+    "source": "BJ ratio formula operating_income / revenue",
+    "correction": null
+  }
+]

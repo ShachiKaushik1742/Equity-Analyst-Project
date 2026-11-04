@@ -51,15 +51,18 @@ Flow decorators control the end-to-end order and repair branch. Each role runs w
 
 - [Completion status and remaining partner/student actions](Lab04_completion.md)
 - [Partner verification worksheet](Lab04_partner_check.md)
-- Clean COST run: `../runs/COST_20261103_131635/verified_report.md`
+- [Student-authored analyst personas](personas.md)
+- Clean COST run with all three sourced insight lines, one permitted repair, and 27/27 verifier marks: `../runs/COST_20261104_151441/verified_report.md`
 - Seeded $1 EPS error: `../runs/COST_20261103_140000_seed_eps/verified_report.md`
 - Seeded revenue-growth error: `../runs/COST_20261103_140001_seed_growth/verified_report.md`
+- Invented unsupported number: `../runs/COST_20261103_185432_seed_invented/verified_report.md` (the claim is marked unsupported)
+- Automated tests: `.venv-crewai/bin/python -m unittest tests/test_week03_verifier.py` (16 tests pass)
 
 The ASD-STE100-style reconstructed request is in [reconstructed-week-03-crewai-flow.md](../prompts/reconstructed-week-03-crewai-flow.md).
 
 ## Persona work
 
-The course says students must write the three analyst personas in their own words. The `roles/` files preserve the Lab 03 role boundaries as a starting contract. Replace their text with your own persona writing for Lab 05; this project does not claim that AI wrote your personal personas.
+The student supplied the persona text in `personas.md`; the three analyst nodes load those persona sections together with their separate execution contracts in `roles/`. Each analyst output ends with one sourced `Insight:` line. The Strategy Manager checks the line and can send its part back once. The code checks for exactly one line and a filing plus line or tag citation; the Manager model checks whether the insight adds a filing-supported point beyond the earnings-release opening.
 
 ## Readings
 

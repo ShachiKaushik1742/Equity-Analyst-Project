@@ -1,0 +1,12 @@
+{
+  "ticker": "COST",
+  "manager_status": "PASS_AFTER_REPAIR",
+  "framework": "CrewAI Flow + Process.sequential",
+  "verification_total": 27,
+  "verification_correct": 27,
+  "verification_other": 0,
+  "manager_initial_status": "FAIL",
+  "repair_used": true,
+  "repair_outcome": "passed_after_repair",
+  "framework_version": "1.15.34"
+}

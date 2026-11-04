@@ -1,0 +1,8 @@
+{
+  "manager_result": {
+    "status": "FAIL",
+    "failing_part": "Valuation Insights",
+    "repair_request": "Financial Analyst Insight: line must cite a filing and exact saved-text line or XBRL tag.",
+    "numeric_audit": []
+  }
+}

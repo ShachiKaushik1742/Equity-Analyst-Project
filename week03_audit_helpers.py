@@ -11,6 +11,32 @@ ROOT = Path(__file__).resolve().parent
 RUNS = ROOT / "runs"
 PARTS = ["Overview", "Market Positioning and Growth Outlook", "Valuation Insights", "Future Developments and Strategic Recommendations", "Investment Recommendation"]
 
+def analyst_insight_audit(outputs: dict[str, str]) -> list[dict[str, str]]:
+    """Check analyst outputs for one sourced insight line each."""
+    required = {
+        "Research Analyst": "Market Positioning and Growth Outlook",
+        "Financial Analyst": "Valuation Insights",
+        "Investment Advisor": "Investment Recommendation",
+    }
+    issues: list[dict[str, str]] = []
+    for role, part in required.items():
+        text = outputs.get(role, "") or ""
+        lines = [line.strip() for line in text.splitlines()
+                 if re.match(r"(?i)^\*{0,2}Insight\s*:\*{0,2}", line.strip())]
+        issue = None
+        if len(lines) != 1:
+            issue = f"{role} output must contain exactly one Insight: line; found {len(lines)}."
+        else:
+            insight = re.sub(r"(?i)^\*{0,2}Insight\s*:\*{0,2}", "", lines[0]).strip()
+            if not insight:
+                issue = f"{role} Insight: line is empty."
+            elif not re.search(r"(?i)\b(?:10[-‐‑–—]K|10[-‐‑–—]Q|8[-‐‑–—]K)\b", insight) or not re.search(
+                    r"(?i)\b(?:saved-text\s+)?line\s+\d+\b|\btag\s+[A-Za-z][A-Za-z0-9]+", insight):
+                issue = f"{role} Insight: line must cite a filing and exact saved-text line or XBRL tag."
+        if issue:
+            issues.append({"role": role, "part": part, "issue": issue})
+    return issues
+
 def save_json(path: Path, value: Any) -> None:
     path.write_text(json.dumps(value, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 

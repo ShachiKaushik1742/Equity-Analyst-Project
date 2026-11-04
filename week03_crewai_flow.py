@@ -22,7 +22,28 @@ ROLE_CALL_COUNTS: dict[str, int] = {}
 
 
 def _read_role(name: str) -> str:
-    return (ROOT / "roles" / f"{name.replace(' ', '_')}.md").read_text(encoding="utf-8")
+    execution_contract = (ROOT / "roles" / f"{name.replace(' ', '_')}.md").read_text(encoding="utf-8")
+    if name not in {"Research Analyst", "Financial Analyst", "Investment Advisor"}:
+        return execution_contract
+    persona_text = (ROOT / "week03" / "personas.md").read_text(encoding="utf-8")
+    match = re.search(
+        rf"(?ms)^## {re.escape(name)}\s*\n(.*?)(?=^## |\Z)", persona_text
+    )
+    if not match:
+        raise RuntimeError(f"No student persona found for {name} in week03/personas.md")
+    return "Student-authored persona:\n" + match.group(1).strip() + "\n\nExecution contract:\n" + execution_contract
+
+
+def _release_opening(company: dict[str, Any], limit: int = 10) -> str:
+    """Return a short, line-numbered release opening for insight comparisons."""
+    facts = company["facts"]
+    accession = facts["filings"]["8-K"]["accession"]
+    text = company.get("filing_texts", {}).get("8-K", "")
+    rows = text.splitlines()
+    return "\n".join(
+        f"8-K accession {accession} saved-text line {index + 1}: {row}"
+        for index, row in enumerate(rows[:limit]) if row.strip()
+    )
 
 
 def _call_role(name: str, task: str, context: dict[str, Any], expected: str,
@@ -55,6 +76,9 @@ def _call_role(name: str, task: str, context: dict[str, Any], expected: str,
     output = crew.kickoff(inputs={}).raw.strip()
     if not output:
         raise RuntimeError(f"{name} returned an empty result")
+    # Markdown bold is common in model output, but the assignment requires the
+    # final line to begin with the literal `Insight:` label.
+    output = re.sub(r"(?im)^\*\*Insight:\*\*", "Insight:", output)
     (node_dir / f"{slug}_attempt_{attempt}_output.md").write_text(output + "\n", encoding="utf-8")
     return output
 
@@ -197,10 +221,11 @@ if isinstance(Flow, type) and Flow is not object:
             business, mda, release = audit.numbered_sections(main)
             self.state.research = _call_role(
                 "Research Analyst",
-                "In no more than 220 words, describe business model, competitive position, catalysts, and recent developments. Every factual claim needs an exact quote with filing, section, accession, and saved-text line.",
+                "In no more than 220 words, describe business model, competitive position, catalysts, and recent developments. Every factual claim needs an exact quote with filing, section, accession, and saved-text line. End with exactly one line that begins 'Insight:'. It must state a filing-supported claim that the earnings release opening excerpt does not state. Cite the exact 10-K or 8-K accession and saved-text line on that same line. Do not invent numbers or sources.",
                 {"10-K Item 1 Business": business, "10-K Item 7 MD&A": mda,
-                 "earnings release relevant lines": release},
-                "Concise Markdown with source-supported claims and exact line references.",
+                 "earnings release relevant lines": release,
+                 "earnings release opening excerpt": _release_opening(main)},
+                "Concise Markdown with source-supported claims and exact line references, ending in one sourced Insight line.",
                 Path(self.state.run_dir), self.state.model, self.state.api_key, self.state.base_url)
             return self.state.research
 
@@ -211,10 +236,11 @@ if isinstance(Flow, type) and Flow is not object:
                                                self.state.price_source or None)
             self.state.finance = _call_role(
                 "Financial Analyst",
-                "In no more than 100 words, interpret the code-calculated facts, ratios, quarter, and peers. Do not reproduce evidence tables. Do not calculate or introduce intermediate values. Use only dollar amounts and percentages printed in the supplied evidence; omit unlisted numbers. Do not calculate average equity or EPS growth. Cite every number with filing/tag, period, and accession. State the selected revenue definition. End with CALCULATOR_REQUESTS: NONE.",
+                "In no more than 100 words, interpret the code-calculated facts, ratios, quarter, and peers. Do not reproduce evidence tables. Do not calculate or introduce intermediate values. Use only dollar amounts and percentages printed in the supplied evidence; omit unlisted numbers. Do not calculate average equity or EPS growth. Cite every number with filing/tag or saved-text line, period, and accession. State the selected revenue definition. Put CALCULATOR_REQUESTS: NONE before the final line. End with exactly one line that begins 'Insight:'. It must state a filing-supported insight that the earnings release opening excerpt does not state. Cite its source and period on that same line. Do not invent numbers or sources.",
                 {"code_calculated_evidence": evidence,
+                 "earnings release opening excerpt": _release_opening(self.state.companies[0]),
                  "available_calculator_requests": ["debt_to_revenue", "operating_cash_flow_margin", "capex_to_revenue"]},
-                "Concise Markdown with sourced numbers and supplied formulas.",
+                "Concise Markdown with sourced numbers and supplied formulas, ending in one sourced Insight line.",
                 Path(self.state.run_dir), self.state.model, self.state.api_key, self.state.base_url)
             return self.state.finance
 
@@ -222,9 +248,9 @@ if isinstance(Flow, type) and Flow is not object:
         def investment_advisor(self, _: str) -> str:
             self.state.advisor = _call_role(
                 "Investment Advisor",
-                "In no more than 120 words, write a thesis and choose Buy, Hold, or Sell. Name one deciding number. Use only the Research Analyst and Financial Analyst outputs.",
+                "In no more than 120 words, write a thesis and choose Buy, Hold, or Sell. Name one deciding number. Use only the Research Analyst and Financial Analyst outputs. End with exactly one line that begins 'Insight:'. It must state one filing-supported claim that the Research and Financial Analyst outputs identify as absent from the earnings release opening. Reuse its cited source; do not add a fact or an uncited number.",
                 {"Research Analyst": self.state.research, "Financial Analyst": self.state.finance},
-                "A thesis, one supported deciding number, and one recommendation.",
+                "A thesis, one supported deciding number, one recommendation, and a sourced Insight line.",
                 Path(self.state.run_dir), self.state.model, self.state.api_key, self.state.base_url)
             return self.state.advisor
 
@@ -246,11 +272,18 @@ if isinstance(Flow, type) and Flow is not object:
             numeric_audit = audit.percentage_claim_audit(self.state.finance, self.state.companies)
             numeric_audit += audit.financial_amount_audit(self.state.finance, self.state.companies, self.state.price)
             numeric_audit += audit.financial_period_audit(self.state.finance, main)
+            insight_issues = audit.analyst_insight_audit({
+                "Research Analyst": self.state.research,
+                "Financial Analyst": self.state.finance,
+                "Investment Advisor": self.state.advisor,
+            })
             raw = _call_role(
                 "Strategy Manager",
-                "Check the five required report parts for completeness and consistency. If automatic_numeric_audit is non-empty, fail Valuation Insights. Return JSON PASS or identify one failing part for its single repair.",
+                "Check the five required report parts for completeness and consistency. Check every analyst output for exactly one sourced Insight line. Each insight must make a filing-supported claim that the supplied earnings release opening excerpt does not state. Reject an insight that restates the release headline or lacks a source citation. If automatic_numeric_audit is non-empty, fail Valuation Insights. If automatic_insight_audit is non-empty, fail the part owned by the first listed role. Return JSON PASS or identify one failing part for its single repair.",
                 {"ticker": self.state.ticker, "parts": self.state.parts, "required_parts": PARTS,
-                 "source_facts": main["facts"]["facts"], "automatic_numeric_audit": numeric_audit},
+                 "source_facts": main["facts"]["facts"], "automatic_numeric_audit": numeric_audit,
+                 "automatic_insight_audit": insight_issues,
+                 "earnings_release_opening_excerpt": _release_opening(main)},
                 '{"status":"PASS"|"FAIL","failing_part":string|null,"repair_request":string|null}',
                 Path(self.state.run_dir), self.state.model, self.state.api_key, self.state.base_url)
             try:
@@ -262,6 +295,13 @@ if isinstance(Flow, type) and Flow is not object:
                     "status": "FAIL",
                     "failing_part": "Valuation Insights",
                     "repair_request": "Correct the financial language flagged by the automatic audit: " + "; ".join(numeric_audit),
+                })
+            elif insight_issues:
+                first_issue = insight_issues[0]
+                self.state.manager_result.update({
+                    "status": "FAIL",
+                    "failing_part": first_issue["part"],
+                    "repair_request": first_issue["issue"],
                 })
             if str(self.state.manager_result.get("status", "")).upper() != "PASS" and self.state.manager_result.get("failing_part") not in PARTS:
                 raise RuntimeError("Strategy Manager failed without naming one valid report part.")
@@ -299,9 +339,11 @@ if isinstance(Flow, type) and Flow is not object:
             repaired = _call_role(
                 role, (f"Repair {heading} once. Follow the manager request and use only the supplied evidence. "
                       "Do not calculate any values; remove every unsupported dollar amount or percentage. "
-                      "Quarter revenue growth compares the same quarter last year: call it YoY, never QoQ."),
+                      "Quarter revenue growth compares the same quarter last year: call it YoY, never QoQ. "
+                      "Preserve exactly one final Insight: line. It must state a supported claim absent from the earnings release opening and cite its filing plus exact saved-text line or XBRL tag."),
                 {"current_part": current, "manager_request": self.state.manager_result.get("repair_request"),
                  "evidence": evidence if role != "Research Analyst" else audit.numbered_sections(main),
+                 "earnings_release_opening_excerpt": _release_opening(main),
                  "role_outputs": {"Research Analyst": self.state.research, "Financial Analyst": self.state.finance},
                  "automatic_numeric_audit": self.state.manager_result.get("numeric_audit", [])},
                 "The revised report part only.", Path(self.state.run_dir), self.state.model,
@@ -325,10 +367,18 @@ if isinstance(Flow, type) and Flow is not object:
             unresolved = audit.percentage_claim_audit(self.state.finance, self.state.companies)
             unresolved += audit.financial_amount_audit(self.state.finance, self.state.companies, self.state.price)
             unresolved += audit.financial_period_audit(self.state.finance, self.state.companies[0])
+            unresolved_insights = audit.analyst_insight_audit({
+                "Research Analyst": self.state.research,
+                "Financial Analyst": self.state.finance,
+                "Investment Advisor": self.state.advisor,
+            })
             self.state.repair_used = True
-            self.state.repair_outcome = "unresolved" if unresolved else "passed_after_repair"
+            self.state.repair_outcome = "unresolved" if unresolved or unresolved_insights else "passed_after_repair"
             if unresolved:
                 self.state.parts["Valuation Insights"] += "\n\nManager note: Numeric audit remains unresolved after the one permitted repair. " + "; ".join(unresolved)
+            if unresolved_insights:
+                self.state.parts[heading] += "\n\nManager note: Insight requirement remains unresolved after the one permitted repair. " + "; ".join(
+                    item["issue"] for item in unresolved_insights)
             return self._compile_report()
 
         @listen(or_(compile_approved_report, repair_once))

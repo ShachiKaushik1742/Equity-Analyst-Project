@@ -6,7 +6,7 @@ from pathlib import Path
 import desk
 from week03_audit_helpers import (calc_expected_ratio, code_verify_claims,
                                   cited_filing_evidence, financial_amount_audit, financial_period_audit,
-                                  omit_report_part, percentage_claim_audit,
+                                  analyst_insight_audit, omit_report_part, percentage_claim_audit,
                                   save_verified_report)
 
 
@@ -165,6 +165,25 @@ class VerifierTests(unittest.TestCase):
         company = {"quarter": {"revenue_current": 95723, "revenue_prior_quarter": 86156}}
         self.assertTrue(financial_period_audit("Revenue rose 11.10% QoQ.", company))
         self.assertEqual(financial_period_audit("Revenue rose 11.10% YoY.", company), [])
+
+    def test_insight_audit_requires_one_cited_line_per_role(self):
+        outputs = {
+            "Research Analyst": "**Insight:** Mix shifted (10-K, saved-text line 20).",
+            "Financial Analyst": "Insight: Cash conversion was strong (10-K tag NetCashProvidedByUsedInOperatingActivities).",
+            "Investment Advisor": "Insight: Margin supports the thesis (10-K line 40).",
+        }
+        self.assertEqual(analyst_insight_audit(outputs), [])
+        outputs["Financial Analyst"] = "No insight."
+        issues = analyst_insight_audit(outputs)
+        self.assertEqual(len(issues), 1)
+        self.assertEqual(issues[0]["role"], "Financial Analyst")
+        self.assertEqual(issues[0]["part"], "Valuation Insights")
+
+    def test_insight_audit_rejects_missing_filing_citation(self):
+        outputs = {"Research Analyst": "Insight: The business mix changed (line 20).",
+                   "Financial Analyst": "Insight: Cash flow grew (10-K line 21).",
+                   "Investment Advisor": "Insight: Margin is stable (10-K line 22)."}
+        self.assertEqual(analyst_insight_audit(outputs)[0]["role"], "Research Analyst")
 
 
 if __name__ == "__main__":

@@ -31,8 +31,8 @@ def analyst_insight_audit(outputs: dict[str, str]) -> list[dict[str, str]]:
             if not insight:
                 issue = f"{role} Insight: line is empty."
             elif not re.search(r"(?i)\b(?:10[-‐‑–—]K|10[-‐‑–—]Q|8[-‐‑–—]K)\b", insight) or not re.search(
-                    r"(?i)\b(?:saved-text\s+)?line\s+\d+\b|\btag\s+[A-Za-z][A-Za-z0-9]+", insight):
-                issue = f"{role} Insight: line must cite a filing and exact saved-text line or XBRL tag."
+                    r"(?i)\d{10}[-‐‑–—]\d{2}[-‐‑–—]\d{6}.*\bline\s+\d+\b", insight):
+                issue = f"{role} Insight: line must cite the filing, accession, and exact saved-text line."
         if issue:
             issues.append({"role": role, "part": part, "issue": issue})
     return issues
@@ -59,6 +59,76 @@ def omit_report_part(report: str, heading: str) -> str:
     end = next((i for i in range(start + 1, len(lines))
                 if re.match(r"^##\s+", lines[i])), len(lines))
     return "\n".join(lines[:start] + ["## Investment Advisor thesis omitted for verification."] + lines[end:])
+
+
+def verifier_report_copy(report: str) -> str:
+    """Keep only the Advisor's Insight line; omit the Advisor's thesis."""
+    lines = report.splitlines()
+    heading = "## Investment Recommendation"
+    start = next((i for i, line in enumerate(lines) if line.strip() == heading), None)
+    if start is None:
+        return report
+    end = next((i for i in range(start + 1, len(lines)) if re.match(r"^##\s+", lines[i])), len(lines))
+    section = lines[start + 1:end]
+    insight = [line for line in section if re.match(r"(?i)^\s*Insight\s*:", line.strip())]
+    return "\n".join(lines[:start] + [heading, "", "Investment Advisor thesis omitted.", *insight] + lines[end:])
+
+
+def numeric_tokens(text: str) -> list[tuple[float, bool]]:
+    """Return numeric values and whether each value is stated as a percent."""
+    pattern = r"(?<![\w])\$?(-?\d[\d,]*(?:\.\d+)?)\s*(%)?"
+    return [(float(value.replace(",", "")), bool(percent))
+            for value, percent in re.findall(pattern, text)]
+
+
+def normalize_citation(text: str) -> str:
+    """Normalize typographic spaces and dashes used by model-written citations."""
+    return re.sub(r"[\u2000-\u200f\u202f\u205f\u00a0]", " ", text).translate(
+        str.maketrans({"‐": "-", "‑": "-", "‒": "-", "–": "-", "—": "-"}))
+
+
+def insight_claims(outputs: dict[str, str], companies: dict[str, Any] | list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Create a sourced claim for each analyst Insight line."""
+    roles = {"Research Analyst": "research", "Financial Analyst": "financial",
+             "Investment Advisor": "advisor"}
+    company_list = companies if isinstance(companies, list) else [companies]
+    primary_facts = company_list[0]["facts"]
+    claims = []
+    for role, slug in roles.items():
+        output = outputs.get(role, "") or ""
+        line = next((row.strip() for row in output.splitlines()
+                     if re.match(r"(?i)^\s*Insight\s*:", row.strip())), "")
+        claim_id = f"claim:{primary_facts['ticker'].lower()}_insight_{slug}"
+        normalized = normalize_citation(line)
+        citation = re.search(r"\(([^)]*\d{10}-\d{2}-\d{6}[^)]*line\s+\d+[^)]*)\)", normalized, re.I)
+        accession_match = re.search(r"(\d{10})-(\d{2})-(\d{6})", normalized)
+        line_match = re.search(r"\bline\s+(\d+)\b", normalized, re.I)
+        accession = "-".join(accession_match.groups()) if accession_match else None
+        source_company = next((c for c in company_list
+                               if accession and any(meta.get("accession") == accession
+                                                    for meta in c["facts"].get("filings", {}).values())), None)
+        filing = next((form for form, meta in source_company["facts"].get("filings", {}).items()
+                       if meta.get("accession") == accession), None) if source_company else None
+        source_ticker = source_company["facts"]["ticker"] if source_company else primary_facts["ticker"]
+        source_line = int(line_match.group(1)) if line_match else None
+        source_text = source_company.get("filing_texts", {}).get(filing or "", "") if source_company else ""
+        rows = source_text.splitlines()
+        source_excerpt = rows[source_line - 1] if source_line and source_line <= len(rows) else ""
+        source_context = "\n".join(rows[max(0, source_line - 12):source_line]) if source_line else ""
+        claim_text = re.sub(r"(?i)^\s*Insight\s*:\s*", "", normalized)
+        claim_text = re.sub(r"<!--\s*claim:[^>]+-->", "", claim_text).strip()
+        if citation:
+            claim_text = claim_text.replace(citation.group(0), "").strip()
+        claim_text = re.sub(r"(?i)^(?:the\s+)?(?:10-K|10-Q|8-K)\s+", "", claim_text)
+        claims.append({
+            "id": claim_id, "kind": "insight", "ticker": source_ticker, "role": role,
+            "report_line": line, "claim_text": claim_text, "insight_numbers": numeric_tokens(claim_text),
+            "filing": filing, "accession": accession, "source_line": source_line,
+            "source_excerpt": source_excerpt, "source_context": source_context,
+            "source_file": (f"{source_ticker}/{filing.replace('-', '')}_{accession}.txt"
+                            if filing and accession else ""),
+        })
+    return claims
 
 
 def cited_filing_evidence(claims: list[dict[str, Any]],
@@ -116,7 +186,8 @@ def model_name(env: dict[str, str], key: str, base_url: str) -> str:
         raise RuntimeError("Purdue GenAI Studio returned no available models. Set GENAI_MODEL in .env.")
     return selected
 
-def claim_ledger(companies: list[dict[str, Any]], price: float | None) -> list[dict[str, Any]]:
+def claim_ledger(companies: list[dict[str, Any]], price: float | None,
+                 role_outputs: dict[str, str] | None = None) -> list[dict[str, Any]]:
     """Build claims from deterministic SEC inputs and ratio calculations."""
     claims: list[dict[str, Any]] = []
     for company_index, company in enumerate(companies):
@@ -185,6 +256,8 @@ def claim_ledger(companies: list[dict[str, Any]], price: float | None) -> list[d
                     "source_file": f"{symbol}/8K_{filing_map['8-K']['accession']}.txt",
                     "source_line": line, "source_excerpt": excerpt,
                 })
+    if role_outputs and companies:
+        claims.extend(insight_claims(role_outputs, companies))
     return claims
 
 def calc_expected_ratio(claim: dict[str, Any]) -> float | None:
@@ -337,6 +410,46 @@ def code_verify_claims(claims: list[dict[str, Any]], run_dir: Path,
                 mark, reason, corrected = "wrong", "The report line does not state the recomputed ratio.", expected
             else:
                 mark, reason = "correct", "Ratio recomputed from its saved inputs and formula."
+        elif claim["kind"] == "insight":
+            path = run_dir / claim.get("source_file", "")
+            report_line = next((line for line in report_text.splitlines() if marker in line), "")
+            if not path.is_file() or not claim.get("source_line") or not claim.get("accession"):
+                mark, reason = "unsupported", "The insight has no saved filing line or accession."
+            else:
+                filing_text = path.read_text(encoding="utf-8").splitlines()
+                line_number = claim["source_line"]
+                excerpt = claim.get("source_excerpt", "")
+                cited_accession = re.sub(r"\D", "", str(claim["accession"])) in re.sub(
+                    r"\D", "", str(claim.get("report_line", "")))
+                cited_source = (1 <= line_number <= len(filing_text)
+                                and filing_text[line_number - 1] == excerpt
+                                and cited_accession)
+                tokens = claim.get("insight_numbers", [])
+                source_tokens = numeric_tokens(excerpt)
+                context = claim.get("source_context", "")
+                scale = 1.0
+                if re.search(r"(?i)in\s+millions", context):
+                    scale = 1_000_000.0
+                elif re.search(r"(?i)in\s+thousands", context):
+                    scale = 1_000.0
+                elif re.search(r"(?i)in\s+billions", context):
+                    scale = 1_000_000_000.0
+                values_supported = bool(tokens) and all(
+                    (float(token[0]), bool(token[1])) in source_tokens
+                    or (not bool(token[1]) and scale > 1 and
+                        (float(token[0]) / scale, False) in source_tokens)
+                    for token in tokens)
+                report_has_insight = claim.get("report_line", "") in report_line
+                if not cited_source:
+                    mark, reason = "unsupported", "The cited accession or exact filing line is missing or does not match."
+                elif not report_has_insight:
+                    mark, reason = "unsupported", "The marked Insight line is missing from the report."
+                elif not values_supported:
+                    mark, reason = "wrong", "One or more numbers in the Insight line do not appear on its cited filing line."
+                else:
+                    mark, reason = "correct", "Insight number(s) match the cited saved filing line."
+            if mark in {"wrong", "unsupported"}:
+                corrected = claim.get("source_excerpt")
         else:
             path = run_dir / claim["source_file"]
             if not path.exists():
@@ -362,6 +475,8 @@ def code_verify_claims(claims: list[dict[str, Any]], run_dir: Path,
                 source += f", saved-text line {claim['source_line']}"
         elif claim["kind"] == "line":
             source = f"{claim['ticker']} {claim.get('filing')} accession {claim.get('accession')}, saved-text line {claim.get('source_line')}"
+        elif claim["kind"] == "insight":
+            source = f"{claim.get('ticker')} {claim.get('filing')} accession {claim.get('accession')}, saved-text line {claim.get('source_line')}"
         else:
             source = f"{claim['ticker']} ratio formula {claim.get('formula')}"
         marks.append({"id": claim["id"], "mark": mark, "reason": reason,
@@ -377,6 +492,8 @@ def report_claim_lines(claims: list[dict[str, Any]]) -> list[str]:
             detail = f"{c['reported_value']} {c['unit']} | {c['tag']} | period {c['period_end']} | {c['filing']} accession {c['accession']}{line}"
         elif c["kind"] == "ratio":
             detail = f"{float(c['reported_value']):.8g} | definition: {c.get('definition', c['formula'])} | formula: {c['formula']} | inputs: {json.dumps(c['inputs'], sort_keys=True)}"
+        elif c["kind"] == "insight":
+            detail = f"{c.get('report_line', '')} | source excerpt: {c.get('source_excerpt', '')}"
         else:
             detail = f"{c['reported_value']} | {c['filing']} accession {c['accession']} line {c['source_line']} | quote: {c['source_excerpt']}"
         lines.append(f"- {marker} {c['id'].split(':',1)[-1]}: {detail}")

@@ -23,6 +23,14 @@ Run a ticker and its peers with a price:
 .venv-crewai/bin/python week03_crewai_flow.py COST --peers WMT,TGT,BJ --price 999.99
 ```
 
+Start the local browser page:
+
+```sh
+.venv-crewai/bin/python -m streamlit run app.py
+```
+
+The page streams the node names and shows the saved verified report at the end.
+
 Verify only a saved run. This does not repeat the data steps or analyst roles:
 
 ```sh
@@ -56,7 +64,17 @@ Flow decorators control the end-to-end order and repair branch. Each role runs w
 - Seeded $1 EPS error: `../runs/COST_20261103_140000_seed_eps/verified_report.md`
 - Seeded revenue-growth error: `../runs/COST_20261103_140001_seed_growth/verified_report.md`
 - Invented unsupported number: `../runs/COST_20261103_185432_seed_invented/verified_report.md` (the claim is marked unsupported)
-- Automated tests: `.venv-crewai/bin/python -m unittest tests/test_week03_verifier.py` (16 tests pass)
+- Automated tests: `.venv-crewai/bin/python -m unittest tests/test_week03_verifier.py` (20 tests pass)
+
+## Lab 05 evidence
+
+- [Lab 05 completion record and remaining student/partner work](Lab05_completion.md)
+- [Blank partner review worksheet](Lab05_partner_check.md)
+- [COST run with WMT, TGT, BJ and the logged $992.13 close: 30/30 verifier marks](../runs/COST_20261105_180611/verified_report.md)
+- The run folder contains SEC filing texts, facts, peer facts, every node's inputs and outputs, claims, code checks, final verifier marks, and the saved report.
+- Start the local browser interface with `.venv-crewai/bin/python -m streamlit run app.py`. The app accepts a ticker, optional peers and price, displays node progress, and presents the verified report when the run ends. `AppTest` passed.
+- The current verifier adds individual marks for all three insight lines, resolves citations to peer filings, and checks reported-unit conversions against nearby statement scale labels. The offline suite has 20 passing tests.
+- The ASD-STE100 Lab 05 prompt is an AI-assisted draft at [lab-05-asd-ste100-draft.md](../prompts/lab-05-asd-ste100-draft.md). The course asks the student to rewrite it; the file does not claim student authorship.
 
 The ASD-STE100-style reconstructed request is in [reconstructed-week-03-crewai-flow.md](../prompts/reconstructed-week-03-crewai-flow.md).
 

@@ -16,7 +16,15 @@ This repository contains the Week 3 agent team, student-provided analyst persona
 - [Invented number: marked unsupported](../runs/COST_20261103_185432_seed_invented/verified_report.md)
 - [Offline verifier tests](../tests/test_week03_verifier.py)
 
-The complete saved runs include filing texts, facts, node inputs and outputs, claims, verifier marks, and reports. The repository excludes `.env` and API keys.
+## Lab 05 work in progress
+
+- [Lab 05 completion and outstanding partner/student actions](../week03/Lab05_completion.md)
+- [Local Streamlit interface](../app.py)
+- [COST Lab 05 run with three sourced insights and 30/30 verifier marks](../runs/COST_20261105_180611/verified_report.md)
+- [Blank partner review worksheet](../week03/Lab05_partner_check.md)
+- [AI-assisted ASD-STE100 prompt draft, awaiting the student's own rewrite](../prompts/lab-05-asd-ste100-draft.md)
+
+The complete saved runs include filing texts, facts, node inputs and outputs, claims, verifier marks, and reports. The repository excludes `.env` and API keys. Lab 05 is not fully partner-complete: the partner-selected ticker and their two manual claim checks must be added before the partner review can be marked complete.
 
 ## Brightspace
 

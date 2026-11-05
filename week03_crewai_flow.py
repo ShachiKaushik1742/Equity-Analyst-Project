@@ -91,10 +91,11 @@ def _verify_with_crew(report: str, claims: list[dict[str, Any]], out: Path,
     audit.save_json(out / "code_verification.json", code_marks)
     filing_texts = audit.cited_filing_evidence(claims, companies)
     facts = {c["facts"]["ticker"]: c["facts"] for c in companies}
-    verifier_report = audit.omit_report_part(report, "Investment Recommendation")
+    verifier_report = audit.verifier_report_copy(report)
     raw = _call_role(
         "Verifier",
-        "Check every numbered claim in the report copy. The Investment Advisor thesis is omitted. "
+        "Check every numbered claim in the report copy, including all three separately marked Insight claims. "
+        "The Investment Advisor thesis is omitted, but keep and check the Advisor's Insight line. "
         "Use only the report, saved filing texts, and saved facts. For each claim, check its value, period, "
         "definition, and source. Check XBRL values against the saved tag and period. Check line claims "
         "against the cited filing line. Check ratios from their stated formula and inputs. Mark each claim "
@@ -221,7 +222,7 @@ if isinstance(Flow, type) and Flow is not object:
             business, mda, release = audit.numbered_sections(main)
             self.state.research = _call_role(
                 "Research Analyst",
-                "In no more than 220 words, describe business model, competitive position, catalysts, and recent developments. Every factual claim needs an exact quote with filing, section, accession, and saved-text line. End with exactly one line that begins 'Insight:'. It must state a filing-supported claim that the earnings release opening excerpt does not state. Cite the exact 10-K or 8-K accession and saved-text line on that same line. Do not invent numbers or sources.",
+                "In no more than 220 words, describe business model, competitive position, catalysts, and recent developments. Every factual claim needs an exact quote with filing, section, accession, and saved-text line. End with exactly one line that begins 'Insight:'. It must state one directly reported number that appears on one saved-text line, and a claim not stated in the earnings release opening excerpt. Cite filing, accession, and exact saved-text line on that same line. Do not calculate or invent numbers or sources.",
                 {"10-K Item 1 Business": business, "10-K Item 7 MD&A": mda,
                  "earnings release relevant lines": release,
                  "earnings release opening excerpt": _release_opening(main)},
@@ -236,7 +237,7 @@ if isinstance(Flow, type) and Flow is not object:
                                                self.state.price_source or None)
             self.state.finance = _call_role(
                 "Financial Analyst",
-                "In no more than 100 words, interpret the code-calculated facts, ratios, quarter, and peers. Do not reproduce evidence tables. Do not calculate or introduce intermediate values. Use only dollar amounts and percentages printed in the supplied evidence; omit unlisted numbers. Do not calculate average equity or EPS growth. Cite every number with filing/tag or saved-text line, period, and accession. State the selected revenue definition. Put CALCULATOR_REQUESTS: NONE before the final line. End with exactly one line that begins 'Insight:'. It must state a filing-supported insight that the earnings release opening excerpt does not state. Cite its source and period on that same line. Do not invent numbers or sources.",
+                "In no more than 100 words, interpret the code-calculated facts, ratios, quarter, and peers. Do not reproduce evidence tables. Do not calculate or introduce intermediate values. Use only dollar amounts and percentages printed in the supplied evidence; omit unlisted numbers. Do not calculate average equity or EPS growth. Cite every number with filing/tag or saved-text line, period, and accession. State the selected revenue definition. Put CALCULATOR_REQUESTS: NONE before the final line. End with exactly one line that begins 'Insight:'. It must state one directly reported number that appears on one saved-text line, and a claim not stated in the earnings release opening excerpt. For this Insight line, copy the number exactly as printed on the cited line: do not convert thousands or millions to another scale and do not add digits from the filing citation or line number as claim values. Cite the filing form, accession, and exact saved-text line on that same line. Do not calculate or invent numbers or sources.",
                 {"code_calculated_evidence": evidence,
                  "earnings release opening excerpt": _release_opening(self.state.companies[0]),
                  "available_calculator_requests": ["debt_to_revenue", "operating_cash_flow_margin", "capex_to_revenue"]},
@@ -248,7 +249,7 @@ if isinstance(Flow, type) and Flow is not object:
         def investment_advisor(self, _: str) -> str:
             self.state.advisor = _call_role(
                 "Investment Advisor",
-                "In no more than 120 words, write a thesis and choose Buy, Hold, or Sell. Name one deciding number. Use only the Research Analyst and Financial Analyst outputs. End with exactly one line that begins 'Insight:'. It must state one filing-supported claim that the Research and Financial Analyst outputs identify as absent from the earnings release opening. Reuse its cited source; do not add a fact or an uncited number.",
+                "In no more than 120 words, write a thesis and choose Buy, Hold, or Sell. Name one deciding number. Use only the Research Analyst and Financial Analyst outputs. End with exactly one line that begins 'Insight:'. Reuse one directly reported number and its exact filing, accession, and saved-text line from the other analyst outputs. The claim must be absent from the earnings release opening. Do not add a fact or an uncited number.",
                 {"Research Analyst": self.state.research, "Financial Analyst": self.state.finance},
                 "A thesis, one supported deciding number, one recommendation, and a sourced Insight line.",
                 Path(self.state.run_dir), self.state.model, self.state.api_key, self.state.base_url)
@@ -384,7 +385,7 @@ if isinstance(Flow, type) and Flow is not object:
         @listen(or_(compile_approved_report, repair_once))
         def verify_final_report(self, report: str) -> str:
             out = Path(self.state.run_dir)
-            claims = audit.claim_ledger(self.state.companies, self.state.price)
+            claims = json.loads((out / "claims.json").read_text(encoding="utf-8"))
             audit.save_json(out / "claims.json", claims)
             marks = _verify_with_crew(report, claims, out, self.state.companies,
                                       self.state.model, self.state.api_key, self.state.base_url)
@@ -413,7 +414,21 @@ if isinstance(Flow, type) and Flow is not object:
 
         def _compile_report(self) -> str:
             print("Strategy Manager: compiling report", flush=True)
-            claims = audit.claim_ledger(self.state.companies, self.state.price)
+            role_outputs = {"Research Analyst": self.state.research,
+                            "Financial Analyst": self.state.finance,
+                            "Investment Advisor": self.state.advisor}
+            claims = audit.claim_ledger(self.state.companies, self.state.price, role_outputs)
+            for claim in claims:
+                if claim["kind"] != "insight":
+                    continue
+                part = {"Research Analyst": "Market Positioning and Growth Outlook",
+                        "Financial Analyst": "Valuation Insights",
+                        "Investment Advisor": "Investment Recommendation"}[claim["role"]]
+                self.state.parts[part] = re.sub(
+                    r"(?im)^(Insight:.*)$",
+                    lambda match: match.group(1) + f" <!-- {claim['id']} -->",
+                    self.state.parts[part], count=1)
+            audit.save_json(Path(self.state.run_dir) / "claims.json", claims)
             body = "\n\n".join(f"## {part}\n\n{text}" for part, text in self.state.parts.items())
             body += "\n\n" + "\n".join(audit.report_claim_lines(claims))
             main = self.state.companies[0]

@@ -6,7 +6,8 @@ from pathlib import Path
 import desk
 from week03_audit_helpers import (calc_expected_ratio, code_verify_claims,
                                   cited_filing_evidence, financial_amount_audit, financial_period_audit,
-                                  analyst_insight_audit, omit_report_part, percentage_claim_audit,
+                                  analyst_insight_audit, insight_claims, omit_report_part,
+                                  percentage_claim_audit, verifier_report_copy,
                                   save_verified_report)
 
 
@@ -168,9 +169,9 @@ class VerifierTests(unittest.TestCase):
 
     def test_insight_audit_requires_one_cited_line_per_role(self):
         outputs = {
-            "Research Analyst": "**Insight:** Mix shifted (10-K, saved-text line 20).",
-            "Financial Analyst": "Insight: Cash conversion was strong (10-K tag NetCashProvidedByUsedInOperatingActivities).",
-            "Investment Advisor": "Insight: Margin supports the thesis (10-K line 40).",
+            "Research Analyst": "**Insight:** Mix shifted (10-K accession 0000000000-26-000001, saved-text line 20).",
+            "Financial Analyst": "Insight: Cash conversion was strong (10-K accession 0000000000-26-000001, saved-text line 21).",
+            "Investment Advisor": "Insight: Margin supports the thesis (10-K accession 0000000000-26-000001, saved-text line 40).",
         }
         self.assertEqual(analyst_insight_audit(outputs), [])
         outputs["Financial Analyst"] = "No insight."
@@ -184,6 +185,63 @@ class VerifierTests(unittest.TestCase):
                    "Financial Analyst": "Insight: Cash flow grew (10-K line 21).",
                    "Investment Advisor": "Insight: Margin is stable (10-K line 22)."}
         self.assertEqual(analyst_insight_audit(outputs)[0]["role"], "Research Analyst")
+
+    def test_insight_claims_are_marked_against_saved_line_for_each_analyst(self):
+        accession = "0000000000-26-000001"
+        citation = f"(10-K accession {accession}, saved-text line 2)"
+        outputs = {role: f"Insight: Gasoline represented 11% of sales in 2026 {citation}"
+                   for role in ("Research Analyst", "Financial Analyst", "Investment Advisor")}
+        company = {"facts": {"ticker": "COST", "filings": {"10-K": {"accession": accession}}},
+                   "filing_texts": {"10-K": "heading\nGasoline represented 11% of sales in 2026\n"}}
+        (self.run / "COST" / f"10K_{accession}.txt").write_text(company["filing_texts"]["10-K"])
+        claims = insight_claims(outputs, company)
+        report_lines = [f"{claim['report_line']} <!-- {claim['id']} -->" for claim in claims]
+        marks = code_verify_claims(claims, self.run, "\n".join(report_lines))
+        self.assertEqual(len(marks), 3)
+        self.assertTrue(all(mark["mark"] == "correct" for mark in marks))
+        outputs["Financial Analyst"] = outputs["Financial Analyst"].replace("11%", "12%")
+        changed_claims = insight_claims(outputs, company)
+        changed_report = "\n".join(f"{c['report_line']} <!-- {c['id']} -->" for c in changed_claims)
+        changed_marks = code_verify_claims(changed_claims, self.run, changed_report)
+        self.assertEqual(changed_marks[1]["mark"], "wrong")
+
+    def test_insight_claim_parser_handles_typographic_citations_without_counting_them(self):
+        accession = "0000909832-26-000084"
+        line = "Insight: Annual revenue was 303,154 (8‑K, accession 0000909832‑26‑000084, saved-text line 39)."
+        company = {"facts": {"ticker": "COST", "filings": {"8-K": {"accession": accession}}},
+                   "filing_texts": {"8-K": "\n" * 38 + "Total revenue 95,723 86,156 303,154 275,235\n"}}
+        claim = next(c for c in insight_claims({"Financial Analyst": line}, company)
+                     if c["role"] == "Financial Analyst")
+        self.assertEqual(claim["filing"], "8-K")
+        self.assertEqual(claim["source_line"], 39)
+        self.assertEqual(claim["insight_numbers"], [(303154.0, False)])
+
+    def test_insight_can_cite_a_peer_filing_with_reported_millions_converted_to_usd(self):
+        cost_accession = "0000909832-26-000093"
+        wmt_accession = "0000104169-26-000055"
+        company = {"facts": {"ticker": "COST", "filings": {"10-K": {"accession": cost_accession}}},
+                   "filing_texts": {"10-K": "Costco line"}}
+        peer = {"facts": {"ticker": "WMT", "filings": {"10-K": {"accession": wmt_accession}}},
+                "filing_texts": {"10-K": "(Amounts in millions)\nTotal revenues 713,163"}}
+        line = f"Insight: Walmart revenue was $713,163,000,000 (10-K {wmt_accession}, saved-text line 2)."
+        claims = insight_claims({"Financial Analyst": line}, [company, peer])
+        claim = next(c for c in claims if c["role"] == "Financial Analyst")
+        self.assertEqual(claim["ticker"], "WMT")
+        self.assertEqual(claim["source_excerpt"], "Total revenues 713,163")
+        (self.run / "WMT").mkdir()
+        (self.run / "WMT" / f"10K_{wmt_accession}.txt").write_text(peer["filing_texts"]["10-K"])
+        claim["id"] = "claim:cost_insight_financial"
+        report_line = f"{claim['report_line']} <!-- {claim['id']} -->"
+        marks = code_verify_claims([claim], self.run, report_line)
+        self.assertEqual(marks[0]["mark"], "correct")
+
+    def test_verifier_copy_keeps_advisor_insight_but_omits_thesis(self):
+        report = ("## Overview\nData\n## Investment Recommendation\nPrivate thesis text\n"
+                  "Insight: 11% (10-K accession 0000000000-26-000001, line 2)\n## Verifiable claims\nClaims")
+        copy = verifier_report_copy(report)
+        self.assertNotIn("Private thesis text", copy)
+        self.assertIn("Insight: 11%", copy)
+        self.assertIn("## Verifiable claims", copy)
 
 
 if __name__ == "__main__":

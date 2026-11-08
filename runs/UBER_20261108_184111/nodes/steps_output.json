@@ -1,0 +1,937 @@
+[
+  {
+    "ticker": "UBER",
+    "facts": {
+      "ticker": "UBER",
+      "title": "Uber Technologies, Inc",
+      "cik": "0001543151",
+      "fiscal_year_end": "2025-12-31",
+      "filings": {
+        "10-K": {
+          "accession": "0001543151-26-000015",
+          "accepted": "2026-02-13T21:08:17.000Z",
+          "filing_date": "2026-02-13",
+          "document": "uber-20251231.htm",
+          "index_url": "https://www.sec.gov/Archives/edgar/data/1543151/000154315126000015/index.json"
+        },
+        "10-Q": {
+          "accession": "0001543151-26-000041",
+          "accepted": "2026-11-04T21:07:19.000Z",
+          "filing_date": "2026-11-04",
+          "document": "uber-20260930.htm",
+          "index_url": "https://www.sec.gov/Archives/edgar/data/1543151/000154315126000041/index.json"
+        },
+        "8-K": {
+          "accession": "0001543151-26-000039",
+          "accepted": "2026-11-04T11:55:39.000Z",
+          "filing_date": "2026-11-04",
+          "document": "uberq326earningspressrelea.htm",
+          "index_url": "https://www.sec.gov/Archives/edgar/data/1543151/000154315126000039/index.json"
+        }
+      },
+      "facts": {
+        "revenue": {
+          "label": "revenue",
+          "value": 52017000000,
+          "unit": "USD",
+          "tag": "Revenues",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "filing": "10-K",
+          "filed": "2026-02-13",
+          "accession": "0001543151-26-000015"
+        },
+        "operating_income": {
+          "label": "operating_income",
+          "value": 5565000000,
+          "unit": "USD",
+          "tag": "OperatingIncomeLoss",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "filing": "10-K",
+          "filed": "2026-02-13",
+          "accession": "0001543151-26-000015"
+        },
+        "net_income": {
+          "label": "net_income",
+          "value": 10053000000,
+          "unit": "USD",
+          "tag": "NetIncomeLoss",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "filing": "10-K",
+          "filed": "2026-02-13",
+          "accession": "0001543151-26-000015"
+        },
+        "diluted_eps": {
+          "label": "diluted_eps",
+          "value": 4.73,
+          "unit": "USD/shares",
+          "tag": "EarningsPerShareDiluted",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "filing": "10-K",
+          "filed": "2026-02-13",
+          "accession": "0001543151-26-000015"
+        },
+        "equity": {
+          "label": "equity",
+          "value": 27041000000,
+          "unit": "USD",
+          "tag": "StockholdersEquity",
+          "period_start": null,
+          "period_end": "2025-12-31",
+          "filing": "10-K",
+          "filed": "2026-02-13",
+          "accession": "0001543151-26-000015"
+        },
+        "long_term_debt": {
+          "label": "long_term_debt",
+          "value": 10521000000,
+          "unit": "USD",
+          "tag": "LongTermDebtNoncurrent",
+          "period_start": null,
+          "period_end": "2025-12-31",
+          "filing": "10-K",
+          "filed": "2026-02-13",
+          "accession": "0001543151-26-000015"
+        },
+        "current_debt": {
+          "label": "current_debt",
+          "value": 0,
+          "unit": "USD",
+          "tag": "LongTermDebtCurrent",
+          "period_start": null,
+          "period_end": "2025-12-31",
+          "filing": "10-K",
+          "filed": "2026-02-13",
+          "accession": "0001543151-26-000015"
+        },
+        "cash_from_operations": {
+          "label": "cash_from_operations",
+          "value": 10099000000,
+          "unit": "USD",
+          "tag": "NetCashProvidedByUsedInOperatingActivities",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "filing": "10-K",
+          "filed": "2026-02-13",
+          "accession": "0001543151-26-000015"
+        },
+        "capex": {
+          "label": "capex",
+          "value": 336000000,
+          "unit": "USD",
+          "tag": "PaymentsToAcquirePropertyPlantAndEquipment",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "filing": "10-K",
+          "filed": "2026-02-13",
+          "accession": "0001543151-26-000015"
+        },
+        "revenue_prior_year": {
+          "label": "revenue_prior_year",
+          "value": 43978000000,
+          "unit": "USD",
+          "tag": "Revenues",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "filing": "10-K",
+          "filed": "2026-02-13",
+          "accession": "0001543151-26-000015"
+        }
+      },
+      "quarter": {
+        "revenue_current": 14766.0,
+        "revenue_prior_quarter": 13467.0,
+        "revenue_growth": 0.09645800846513697,
+        "revenue_release_line": "Revenue $ 13,467 $ 14,766 10 % 10 %",
+        "revenue_release_line_number": 35,
+        "revenue_number_line_number": 35,
+        "diluted_eps_current": 0.25,
+        "diluted_eps_prior_quarter": 3.11,
+        "eps_release_line": "GAAP Diluted EPS $ 3.11 $ 0.25 (92) %",
+        "eps_release_line_number": 39,
+        "eps_number_line_number": 39,
+        "release_units": "Dollars in millions except per-share data, as captioned in the release; quarter comparison uses the first two columns."
+      }
+    },
+    "ratios": {
+      "revenue_growth": 0.1827959434262585,
+      "operating_margin": 0.10698425514735567,
+      "return_on_average_equity": 0.41371221630074695,
+      "debt_to_equity": 0.3890758477866943,
+      "free_cash_flow": 9763000000.0,
+      "pe": null,
+      "inputs": {
+        "price": null,
+        "diluted_eps": 4.73,
+        "current_equity": 27041000000.0,
+        "prior_equity": 21558000000.0,
+        "prior_equity_fact": {
+          "label": "prior_equity",
+          "value": 21558000000,
+          "unit": "USD",
+          "tag": "StockholdersEquity",
+          "period_start": null,
+          "period_end": "2024-12-31",
+          "filing": "10-K",
+          "filed": "2025-02-14",
+          "accession": "0001543151-25-000008"
+        },
+        "current_portion_debt": 0.0,
+        "long_term_debt": 10521000000.0,
+        "cash_from_operations": 10099000000.0,
+        "additions_to_property_and_equipment": 336000000.0
+      }
+    },
+    "quarter": {
+      "revenue_current": 14766.0,
+      "revenue_prior_quarter": 13467.0,
+      "revenue_growth": 0.09645800846513697,
+      "revenue_release_line": "Revenue $ 13,467 $ 14,766 10 % 10 %",
+      "revenue_release_line_number": 35,
+      "revenue_number_line_number": 35,
+      "diluted_eps_current": 0.25,
+      "diluted_eps_prior_quarter": 3.11,
+      "eps_release_line": "GAAP Diluted EPS $ 3.11 $ 0.25 (92) %",
+      "eps_release_line_number": 39,
+      "eps_number_line_number": 39,
+      "release_units": "Dollars in millions except per-share data, as captioned in the release; quarter comparison uses the first two columns."
+    }
+  },
+  {
+    "ticker": "AMD",
+    "facts": {
+      "ticker": "AMD",
+      "title": "ADVANCED MICRO DEVICES INC",
+      "cik": "0000002488",
+      "fiscal_year_end": "2025-12-27",
+      "filings": {
+        "10-K": {
+          "accession": "0000002488-26-000018",
+          "accepted": "2026-02-03T23:14:52.000Z",
+          "filing_date": "2026-02-04",
+          "document": "amd-20251227.htm",
+          "index_url": "https://www.sec.gov/Archives/edgar/data/2488/000000248826000018/index.json"
+        },
+        "10-Q": {
+          "accession": "0000002488-26-000191",
+          "accepted": "2026-11-03T23:00:17.000Z",
+          "filing_date": "2026-11-04",
+          "document": "amd-20260926.htm",
+          "index_url": "https://www.sec.gov/Archives/edgar/data/2488/000000248826000191/index.json"
+        },
+        "8-K": {
+          "accession": "0000002488-26-000188",
+          "accepted": "2026-11-03T21:16:27.000Z",
+          "filing_date": "2026-11-03",
+          "document": "q32026991.htm",
+          "index_url": "https://www.sec.gov/Archives/edgar/data/2488/000000248826000188/index.json"
+        }
+      },
+      "facts": {
+        "revenue": {
+          "label": "revenue",
+          "value": 34639000000,
+          "unit": "USD",
+          "tag": "RevenueFromContractWithCustomerExcludingAssessedTax",
+          "period_start": "2024-12-29",
+          "period_end": "2025-12-27",
+          "filing": "10-K",
+          "filed": "2026-02-04",
+          "accession": "0000002488-26-000018"
+        },
+        "operating_income": {
+          "label": "operating_income",
+          "value": 3694000000,
+          "unit": "USD",
+          "tag": "OperatingIncomeLoss",
+          "period_start": "2024-12-29",
+          "period_end": "2025-12-27",
+          "filing": "10-K",
+          "filed": "2026-02-04",
+          "accession": "0000002488-26-000018"
+        },
+        "net_income": {
+          "label": "net_income",
+          "value": 4335000000,
+          "unit": "USD",
+          "tag": "NetIncomeLoss",
+          "period_start": "2024-12-29",
+          "period_end": "2025-12-27",
+          "filing": "10-K",
+          "filed": "2026-02-04",
+          "accession": "0000002488-26-000018"
+        },
+        "diluted_eps": {
+          "label": "diluted_eps",
+          "value": 2.65,
+          "unit": "USD/shares",
+          "tag": "EarningsPerShareDiluted",
+          "period_start": "2024-12-29",
+          "period_end": "2025-12-27",
+          "filing": "10-K",
+          "filed": "2026-02-04",
+          "accession": "0000002488-26-000018"
+        },
+        "equity": {
+          "label": "equity",
+          "value": 62999000000,
+          "unit": "USD",
+          "tag": "StockholdersEquity",
+          "period_start": null,
+          "period_end": "2025-12-27",
+          "filing": "10-K",
+          "filed": "2026-02-04",
+          "accession": "0000002488-26-000018"
+        },
+        "long_term_debt": {
+          "label": "long_term_debt",
+          "value": 2348000000,
+          "unit": "USD",
+          "tag": "LongTermDebtNoncurrent",
+          "period_start": null,
+          "period_end": "2025-12-27",
+          "filing": "10-K",
+          "filed": "2026-02-04",
+          "accession": "0000002488-26-000018"
+        },
+        "current_debt": {
+          "label": "current_debt",
+          "value": 874000000,
+          "unit": "USD",
+          "tag": "LongTermDebtCurrent",
+          "period_start": null,
+          "period_end": "2025-12-27",
+          "filing": "10-K",
+          "filed": "2026-02-04",
+          "accession": "0000002488-26-000018"
+        },
+        "cash_from_operations": {
+          "label": "cash_from_operations",
+          "value": 7709000000,
+          "unit": "USD",
+          "tag": "NetCashProvidedByUsedInOperatingActivities",
+          "period_start": "2024-12-29",
+          "period_end": "2025-12-27",
+          "filing": "10-K",
+          "filed": "2026-02-04",
+          "accession": "0000002488-26-000018"
+        },
+        "capex": {
+          "label": "capex",
+          "value": 974000000,
+          "unit": "USD",
+          "tag": "PaymentsToAcquirePropertyPlantAndEquipment",
+          "period_start": "2024-12-29",
+          "period_end": "2025-12-27",
+          "filing": "10-K",
+          "filed": "2026-02-04",
+          "accession": "0000002488-26-000018"
+        },
+        "revenue_prior_year": {
+          "label": "revenue_prior_year",
+          "value": 25785000000,
+          "unit": "USD",
+          "tag": "RevenueFromContractWithCustomerExcludingAssessedTax",
+          "period_start": "2023-12-31",
+          "period_end": "2024-12-28",
+          "filing": "10-K",
+          "filed": "2026-02-04",
+          "accession": "0000002488-26-000018"
+        }
+      },
+      "quarter": {
+        "revenue_current": 13377.0,
+        "revenue_prior_quarter": 11536.0,
+        "revenue_growth": 0.15958737864077666,
+        "revenue_release_line": "Total net revenue $ 13,377 $ 11,536 $ 9,246 $ 35,166 $ 24,369",
+        "revenue_release_line_number": 298,
+        "revenue_number_line_number": 298,
+        "diluted_eps_current": 1.46,
+        "diluted_eps_prior_quarter": 0.75,
+        "eps_release_line": "Diluted earnings per share $1.46 $0.75 Up 95% $1.38 Up 6%",
+        "eps_release_line_number": 25,
+        "eps_number_line_number": 25,
+        "release_units": "Dollars in millions except per-share data, as captioned in the release; quarter comparison uses the first two columns."
+      }
+    },
+    "ratios": {
+      "revenue_growth": 0.3433779329067288,
+      "operating_margin": 0.10664280146655504,
+      "return_on_average_equity": 0.07191022419069895,
+      "debt_to_equity": 0.051143668947126145,
+      "free_cash_flow": 6735000000.0,
+      "pe": null,
+      "inputs": {
+        "price": null,
+        "diluted_eps": 2.65,
+        "current_equity": 62999000000.0,
+        "prior_equity": 57568000000.0,
+        "prior_equity_fact": {
+          "label": "prior_equity",
+          "value": 57568000000,
+          "unit": "USD",
+          "tag": "StockholdersEquity",
+          "period_start": null,
+          "period_end": "2024-12-28",
+          "filing": "10-K",
+          "filed": "2025-02-05",
+          "accession": "0000002488-25-000012"
+        },
+        "current_portion_debt": 874000000.0,
+        "long_term_debt": 2348000000.0,
+        "cash_from_operations": 7709000000.0,
+        "additions_to_property_and_equipment": 974000000.0
+      }
+    },
+    "quarter": {
+      "revenue_current": 13377.0,
+      "revenue_prior_quarter": 11536.0,
+      "revenue_growth": 0.15958737864077666,
+      "revenue_release_line": "Total net revenue $ 13,377 $ 11,536 $ 9,246 $ 35,166 $ 24,369",
+      "revenue_release_line_number": 298,
+      "revenue_number_line_number": 298,
+      "diluted_eps_current": 1.46,
+      "diluted_eps_prior_quarter": 0.75,
+      "eps_release_line": "Diluted earnings per share $1.46 $0.75 Up 95% $1.38 Up 6%",
+      "eps_release_line_number": 25,
+      "eps_number_line_number": 25,
+      "release_units": "Dollars in millions except per-share data, as captioned in the release; quarter comparison uses the first two columns."
+    }
+  },
+  {
+    "ticker": "YUM",
+    "facts": {
+      "ticker": "YUM",
+      "title": "YUM BRANDS INC",
+      "cik": "0001041061",
+      "fiscal_year_end": "2025-12-31",
+      "filings": {
+        "10-K": {
+          "accession": "0001041061-26-000084",
+          "accepted": "2026-02-20T21:54:25.000Z",
+          "filing_date": "2026-02-20",
+          "document": "yum-20251231.htm",
+          "index_url": "https://www.sec.gov/Archives/edgar/data/1041061/000104106126000084/index.json"
+        },
+        "10-Q": {
+          "accession": "0001041061-26-000210",
+          "accepted": "2026-11-06T19:39:43.000Z",
+          "filing_date": "2026-11-06",
+          "document": "yum-20260930.htm",
+          "index_url": "https://www.sec.gov/Archives/edgar/data/1041061/000104106126000210/index.json"
+        },
+        "8-K": {
+          "accession": "0001041061-26-000195",
+          "accepted": "2026-11-03T13:07:58.000Z",
+          "filing_date": "2026-11-03",
+          "document": "a8kex9919302026.htm",
+          "index_url": "https://www.sec.gov/Archives/edgar/data/1041061/000104106126000195/index.json"
+        }
+      },
+      "facts": {
+        "revenue": {
+          "label": "revenue",
+          "value": 8214000000,
+          "unit": "USD",
+          "tag": "Revenues",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "filing": "10-K",
+          "filed": "2026-02-20",
+          "accession": "0001041061-26-000084"
+        },
+        "operating_income": {
+          "label": "operating_income",
+          "value": 2574000000,
+          "unit": "USD",
+          "tag": "OperatingIncomeLoss",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "filing": "10-K",
+          "filed": "2026-02-20",
+          "accession": "0001041061-26-000084"
+        },
+        "net_income": {
+          "label": "net_income",
+          "value": 1559000000,
+          "unit": "USD",
+          "tag": "NetIncomeLoss",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "filing": "10-K",
+          "filed": "2026-02-20",
+          "accession": "0001041061-26-000084"
+        },
+        "diluted_eps": {
+          "label": "diluted_eps",
+          "value": 5.55,
+          "unit": "USD/shares",
+          "tag": "EarningsPerShareDiluted",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "filing": "10-K",
+          "filed": "2026-02-20",
+          "accession": "0001041061-26-000084"
+        },
+        "equity": null,
+        "long_term_debt": null,
+        "current_debt": {
+          "label": "current_debt",
+          "value": 39000000,
+          "unit": "USD",
+          "tag": "LongTermDebtAndCapitalLeaseObligationsCurrent",
+          "period_start": null,
+          "period_end": "2025-12-31",
+          "filing": "10-K",
+          "filed": "2026-02-20",
+          "accession": "0001041061-26-000084"
+        },
+        "cash_from_operations": {
+          "label": "cash_from_operations",
+          "value": 2010000000,
+          "unit": "USD",
+          "tag": "NetCashProvidedByUsedInOperatingActivities",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "filing": "10-K",
+          "filed": "2026-02-20",
+          "accession": "0001041061-26-000084"
+        },
+        "capex": {
+          "label": "capex",
+          "value": 371000000,
+          "unit": "USD",
+          "tag": "PaymentsToAcquirePropertyPlantAndEquipment",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "filing": "10-K",
+          "filed": "2026-02-20",
+          "accession": "0001041061-26-000084"
+        },
+        "revenue_prior_year": {
+          "label": "revenue_prior_year",
+          "value": 7549000000,
+          "unit": "USD",
+          "tag": "Revenues",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "filing": "10-K",
+          "filed": "2026-02-20",
+          "accession": "0001041061-26-000084"
+        }
+      },
+      "quarter": {
+        "revenue_current": 2054.0,
+        "revenue_prior_quarter": 1979.0,
+        "revenue_growth": 0.03789792824658922,
+        "revenue_release_line": "Total revenues 2,054 1,979 4 6,282 5,699 10",
+        "revenue_release_line_number": 133,
+        "revenue_number_line_number": 133,
+        "diluted_eps_current": 5.92,
+        "diluted_eps_prior_quarter": 1.41,
+        "eps_release_line": "Diluted EPS $ 5.92 $ 1.41 $ 10.51 $ 3.64",
+        "eps_release_line_number": 374,
+        "eps_number_line_number": 374,
+        "release_units": "Dollars in millions except per-share data, as captioned in the release; quarter comparison uses the first two columns."
+      }
+    },
+    "ratios": {
+      "revenue_growth": 0.08809113789905942,
+      "operating_margin": 0.3133674214755296,
+      "return_on_average_equity": null,
+      "debt_to_equity": null,
+      "free_cash_flow": 1639000000.0,
+      "pe": null,
+      "inputs": {
+        "price": null,
+        "diluted_eps": 5.55,
+        "current_equity": null,
+        "prior_equity": null,
+        "prior_equity_fact": null,
+        "current_portion_debt": 39000000.0,
+        "long_term_debt": null,
+        "cash_from_operations": 2010000000.0,
+        "additions_to_property_and_equipment": 371000000.0
+      }
+    },
+    "quarter": {
+      "revenue_current": 2054.0,
+      "revenue_prior_quarter": 1979.0,
+      "revenue_growth": 0.03789792824658922,
+      "revenue_release_line": "Total revenues 2,054 1,979 4 6,282 5,699 10",
+      "revenue_release_line_number": 133,
+      "revenue_number_line_number": 133,
+      "diluted_eps_current": 5.92,
+      "diluted_eps_prior_quarter": 1.41,
+      "eps_release_line": "Diluted EPS $ 5.92 $ 1.41 $ 10.51 $ 3.64",
+      "eps_release_line_number": 374,
+      "eps_number_line_number": 374,
+      "release_units": "Dollars in millions except per-share data, as captioned in the release; quarter comparison uses the first two columns."
+    }
+  },
+  {
+    "ticker": "DUOL",
+    "facts": {
+      "ticker": "DUOL",
+      "title": "Duolingo, Inc.",
+      "cik": "0001562088",
+      "fiscal_year_end": "2025-12-31",
+      "filings": {
+        "10-K": {
+          "accession": "0001628280-26-012494",
+          "accepted": "2026-02-26T23:35:35.000Z",
+          "filing_date": "2026-02-27",
+          "document": "duol-20251231.htm",
+          "index_url": "https://www.sec.gov/Archives/edgar/data/1562088/000162828026012494/index.json"
+        },
+        "10-Q": {
+          "accession": "0001628280-26-069692",
+          "accepted": "2026-11-03T23:01:57.000Z",
+          "filing_date": "2026-11-04",
+          "document": "duol-20260930.htm",
+          "index_url": "https://www.sec.gov/Archives/edgar/data/1562088/000162828026069692/index.json"
+        },
+        "8-K": {
+          "accession": "0001628280-26-069474",
+          "accepted": "2026-11-03T21:06:09.000Z",
+          "filing_date": "2026-11-03",
+          "document": "q3fy26duolingo9-30x26xpres.htm",
+          "index_url": "https://www.sec.gov/Archives/edgar/data/1562088/000162828026069474/index.json"
+        }
+      },
+      "facts": {
+        "revenue": {
+          "label": "revenue",
+          "value": 1037589000,
+          "unit": "USD",
+          "tag": "RevenueFromContractWithCustomerExcludingAssessedTax",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "filing": "10-K",
+          "filed": "2026-02-27",
+          "accession": "0001628280-26-012494"
+        },
+        "operating_income": {
+          "label": "operating_income",
+          "value": 135570000,
+          "unit": "USD",
+          "tag": "OperatingIncomeLoss",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "filing": "10-K",
+          "filed": "2026-02-27",
+          "accession": "0001628280-26-012494"
+        },
+        "net_income": {
+          "label": "net_income",
+          "value": 414065000,
+          "unit": "USD",
+          "tag": "NetIncomeLoss",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "filing": "10-K",
+          "filed": "2026-02-27",
+          "accession": "0001628280-26-012494"
+        },
+        "diluted_eps": {
+          "label": "diluted_eps",
+          "value": 8.57,
+          "unit": "USD/shares",
+          "tag": "EarningsPerShareDiluted",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "filing": "10-K",
+          "filed": "2026-02-27",
+          "accession": "0001628280-26-012494"
+        },
+        "equity": {
+          "label": "equity",
+          "value": 1347006000,
+          "unit": "USD",
+          "tag": "StockholdersEquity",
+          "period_start": null,
+          "period_end": "2025-12-31",
+          "filing": "10-K",
+          "filed": "2026-02-27",
+          "accession": "0001628280-26-012494"
+        },
+        "long_term_debt": null,
+        "current_debt": null,
+        "cash_from_operations": {
+          "label": "cash_from_operations",
+          "value": 387823000,
+          "unit": "USD",
+          "tag": "NetCashProvidedByUsedInOperatingActivities",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "filing": "10-K",
+          "filed": "2026-02-27",
+          "accession": "0001628280-26-012494"
+        },
+        "capex": {
+          "label": "capex",
+          "value": 18096000,
+          "unit": "USD",
+          "tag": "PaymentsToAcquirePropertyPlantAndEquipment",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "filing": "10-K",
+          "filed": "2026-02-27",
+          "accession": "0001628280-26-012494"
+        },
+        "revenue_prior_year": {
+          "label": "revenue_prior_year",
+          "value": 748024000,
+          "unit": "USD",
+          "tag": "RevenueFromContractWithCustomerExcludingAssessedTax",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "filing": "10-K",
+          "filed": "2026-02-27",
+          "accession": "0001628280-26-012494"
+        }
+      },
+      "quarter": {
+        "revenue_current": null,
+        "revenue_prior_quarter": null,
+        "revenue_growth": null,
+        "revenue_release_line": "",
+        "revenue_release_line_number": null,
+        "revenue_number_line_number": null,
+        "diluted_eps_current": null,
+        "diluted_eps_prior_quarter": null,
+        "eps_release_line": "",
+        "eps_release_line_number": null,
+        "eps_number_line_number": null,
+        "release_units": "Dollars in millions except per-share data, as captioned in the release; quarter comparison uses the first two columns."
+      }
+    },
+    "ratios": {
+      "revenue_growth": 0.38710656342577243,
+      "operating_margin": 0.13065867120796384,
+      "return_on_average_equity": 0.3813532784786577,
+      "debt_to_equity": 0.0,
+      "free_cash_flow": 369727000.0,
+      "pe": null,
+      "inputs": {
+        "price": null,
+        "diluted_eps": 8.57,
+        "current_equity": 1347006000.0,
+        "prior_equity": 824550000.0,
+        "prior_equity_fact": {
+          "label": "prior_equity",
+          "value": 824550000,
+          "unit": "USD",
+          "tag": "StockholdersEquity",
+          "period_start": null,
+          "period_end": "2024-12-31",
+          "filing": "10-K",
+          "filed": "2025-02-28",
+          "accession": "0001562088-25-000042"
+        },
+        "current_portion_debt": null,
+        "long_term_debt": null,
+        "cash_from_operations": 387823000.0,
+        "additions_to_property_and_equipment": 18096000.0
+      }
+    },
+    "quarter": {
+      "revenue_current": null,
+      "revenue_prior_quarter": null,
+      "revenue_growth": null,
+      "revenue_release_line": "",
+      "revenue_release_line_number": null,
+      "revenue_number_line_number": null,
+      "diluted_eps_current": null,
+      "diluted_eps_prior_quarter": null,
+      "eps_release_line": "",
+      "eps_release_line_number": null,
+      "eps_number_line_number": null,
+      "release_units": "Dollars in millions except per-share data, as captioned in the release; quarter comparison uses the first two columns."
+    }
+  },
+  {
+    "ticker": "PLTR",
+    "facts": {
+      "ticker": "PLTR",
+      "title": "Palantir Technologies Inc.",
+      "cik": "0001321655",
+      "fiscal_year_end": "2025-12-31",
+      "filings": {
+        "10-K": {
+          "accession": "0001321655-26-000011",
+          "accepted": "2026-02-17T11:14:19.000Z",
+          "filing_date": "2026-02-17",
+          "document": "pltr-20251231.htm",
+          "index_url": "https://www.sec.gov/Archives/edgar/data/1321655/000132165526000011/index.json"
+        },
+        "10-Q": {
+          "accession": "0001321655-26-000048",
+          "accepted": "2026-11-02T23:00:39.000Z",
+          "filing_date": "2026-11-03",
+          "document": "pltr-20260930.htm",
+          "index_url": "https://www.sec.gov/Archives/edgar/data/1321655/000132165526000048/index.json"
+        },
+        "8-K": {
+          "accession": "0001321655-26-000045",
+          "accepted": "2026-11-02T21:06:48.000Z",
+          "filing_date": "2026-11-02",
+          "document": "a2026q3ex991pressrelease.htm",
+          "index_url": "https://www.sec.gov/Archives/edgar/data/1321655/000132165526000045/index.json"
+        }
+      },
+      "facts": {
+        "revenue": {
+          "label": "revenue",
+          "value": 4475446000,
+          "unit": "USD",
+          "tag": "RevenueFromContractWithCustomerExcludingAssessedTax",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "filing": "10-K",
+          "filed": "2026-02-17",
+          "accession": "0001321655-26-000011"
+        },
+        "operating_income": {
+          "label": "operating_income",
+          "value": 1414015000,
+          "unit": "USD",
+          "tag": "OperatingIncomeLoss",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "filing": "10-K",
+          "filed": "2026-02-17",
+          "accession": "0001321655-26-000011"
+        },
+        "net_income": {
+          "label": "net_income",
+          "value": 1625033000,
+          "unit": "USD",
+          "tag": "NetIncomeLoss",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "filing": "10-K",
+          "filed": "2026-02-17",
+          "accession": "0001321655-26-000011"
+        },
+        "diluted_eps": {
+          "label": "diluted_eps",
+          "value": 0.63,
+          "unit": "USD/shares",
+          "tag": "EarningsPerShareDiluted",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "filing": "10-K",
+          "filed": "2026-02-17",
+          "accession": "0001321655-26-000011"
+        },
+        "equity": {
+          "label": "equity",
+          "value": 7387268000,
+          "unit": "USD",
+          "tag": "StockholdersEquity",
+          "period_start": null,
+          "period_end": "2025-12-31",
+          "filing": "10-K",
+          "filed": "2026-02-17",
+          "accession": "0001321655-26-000011"
+        },
+        "long_term_debt": null,
+        "current_debt": null,
+        "cash_from_operations": {
+          "label": "cash_from_operations",
+          "value": 2134473000,
+          "unit": "USD",
+          "tag": "NetCashProvidedByUsedInOperatingActivities",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "filing": "10-K",
+          "filed": "2026-02-17",
+          "accession": "0001321655-26-000011"
+        },
+        "capex": {
+          "label": "capex",
+          "value": 33882000,
+          "unit": "USD",
+          "tag": "PaymentsToAcquirePropertyPlantAndEquipment",
+          "period_start": "2025-01-01",
+          "period_end": "2025-12-31",
+          "filing": "10-K",
+          "filed": "2026-02-17",
+          "accession": "0001321655-26-000011"
+        },
+        "revenue_prior_year": {
+          "label": "revenue_prior_year",
+          "value": 2865507000,
+          "unit": "USD",
+          "tag": "RevenueFromContractWithCustomerExcludingAssessedTax",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "filing": "10-K",
+          "filed": "2026-02-17",
+          "accession": "0001321655-26-000011"
+        }
+      },
+      "quarter": {
+        "revenue_current": 2313411.0,
+        "revenue_prior_quarter": 1181092.0,
+        "revenue_growth": 0.9587051643733087,
+        "revenue_release_line": "Revenue $ 2,313,411 $ 1,181,092 $ 5,881,458 $ 3,068,644",
+        "revenue_release_line_number": 96,
+        "revenue_number_line_number": 96,
+        "diluted_eps_current": null,
+        "diluted_eps_prior_quarter": null,
+        "eps_release_line": "",
+        "eps_release_line_number": null,
+        "eps_number_line_number": null,
+        "release_units": "Dollars in millions except per-share data, as captioned in the release; quarter comparison uses the first two columns."
+      }
+    },
+    "ratios": {
+      "revenue_growth": 0.5618339093221549,
+      "operating_margin": 0.3159495165398041,
+      "return_on_average_equity": 0.26230214446614647,
+      "debt_to_equity": 0.0,
+      "free_cash_flow": 2100591000.0,
+      "pe": null,
+      "inputs": {
+        "price": null,
+        "diluted_eps": 0.63,
+        "current_equity": 7387268000.0,
+        "prior_equity": 5003275000.0,
+        "prior_equity_fact": {
+          "label": "prior_equity",
+          "value": 5003275000,
+          "unit": "USD",
+          "tag": "StockholdersEquity",
+          "period_start": null,
+          "period_end": "2024-12-31",
+          "filing": "10-K",
+          "filed": "2025-02-18",
+          "accession": "0001321655-25-000022"
+        },
+        "current_portion_debt": null,
+        "long_term_debt": null,
+        "cash_from_operations": 2134473000.0,
+        "additions_to_property_and_equipment": 33882000.0
+      }
+    },
+    "quarter": {
+      "revenue_current": 2313411.0,
+      "revenue_prior_quarter": 1181092.0,
+      "revenue_growth": 0.9587051643733087,
+      "revenue_release_line": "Revenue $ 2,313,411 $ 1,181,092 $ 5,881,458 $ 3,068,644",
+      "revenue_release_line_number": 96,
+      "revenue_number_line_number": 96,
+      "diluted_eps_current": null,
+      "diluted_eps_prior_quarter": null,
+      "eps_release_line": "",
+      "eps_release_line_number": null,
+      "eps_number_line_number": null,
+      "release_units": "Dollars in millions except per-share data, as captioned in the release; quarter comparison uses the first two columns."
+    }
+  }
+]

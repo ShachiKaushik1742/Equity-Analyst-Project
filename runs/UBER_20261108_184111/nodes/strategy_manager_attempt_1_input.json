@@ -1,0 +1,138 @@
+{
+  "task": "Check the five required report parts for completeness and consistency. Check every analyst output for exactly one sourced and distinct Insight line. Each insight must make a filing-supported claim that the supplied earnings release opening excerpt does not state. Reject duplicate insight claims, an insight that restates the release headline, or an insight without a source citation. If automatic_numeric_audit is non-empty, fail Valuation Insights. If automatic_insight_audit is non-empty, fail the part owned by the first listed role. Write a concise, substantive future_developments_and_recommendations section with specific next-period indicators and recommendations that follow from the analysts' evidence. Use only facts in the analyst parts. Cite each factual claim with the same filing, accession, and line or tag used by the analyst. Do not add an uncited number, estimate, target, or forecast. Do not copy the analyst sections into it. Return JSON with status, failing_part, repair_request, and future_developments_and_recommendations, or identify one failing part for its single repair.",
+  "context": {
+    "ticker": "UBER",
+    "parts": {
+      "Overview": "Ticker: UBER. Fiscal year ended 2025-12-31. Filings: 10-K 0001543151-26-000015; 10-Q 0001543151-26-000041; 8-K 0001543151-26-000039",
+      "Market Positioning and Growth Outlook": "**Business Model** – Uber “is a technology platform that uses a massive network, leading technology, operational excellence and product expertise to power movement from point A to point B… We connect consumers (“Rider(s)”) with independent providers of ride services (“Mobility Driver(s)”)… and connect Riders and other consumers (“Eater(s)”) with restaurants, grocers and other stores… with delivery service providers (“Couriers”)” (10‑K accession 0001543151-26-000015 line 181). Its technology “is available in over 70 countries around the world” (10‑K accession 0001543151-26-000015 line 182).\n\n**Competitive Position** – Uber “believes our global leadership position—and the vast amount of marketplace data…—means that we have the best technical and data platform to innovate faster than other companies with similar products” (10‑K accession 0001543151-26-000015 line 186). The firm also notes that “our scale and global availability allows our Mobility segment to offer better consumer experiences… providing consumers with higher reliability and Drivers with better earnings opportunities” (10‑K accession 0001543151-26-000015 line 187).\n\n**Catalysts** – Management highlights that “approximately 700 fully driverless vehicles [are] expected on Uber by year‑end and over 2,000 in 2027” (8‑K accession 0001543151-26-000039 line 8), underscoring autonomous‑vehicle rollout as a growth driver.\n\n**Recent Developments** – The Delivery business “has expanded to include Uber Direct, our white‑label Delivery‑as‑a‑Service offering to retailers and restaurants around the world, as well as advertising” (10‑K accession 0001543151-26-000015 line 189). The CEO also said Uber is “investing… to expand Mobility supply, build on Delivery’s momentum, and deepen engagement across our platform” (8‑K accession 0001543151-26-000039 line 8).\n\nInsight: Uber’s platform is available in over 70 countries worldwide, a scope not mentioned in the earnings release opening excerpt (10‑K accession 0001543151-26-000015 line 182).",
+      "Valuation Insights": "Code-calculated figures and filing evidence (use these values; do not recompute in the model):\n- revenue: 52017000000 USD; tag Revenues; period 2025-01-01 to 2025-12-31; 10-K accession 0001543151-26-000015.\n- revenue_prior_year: 43978000000 USD; tag Revenues; period 2024-01-01 to 2024-12-31; 10-K accession 0001543151-26-000015.\n- operating_income: 5565000000 USD; tag OperatingIncomeLoss; period 2025-01-01 to 2025-12-31; 10-K accession 0001543151-26-000015.\n- net_income: 10053000000 USD; tag NetIncomeLoss; period 2025-01-01 to 2025-12-31; 10-K accession 0001543151-26-000015.\n- diluted_eps: 4.73 USD/shares; tag EarningsPerShareDiluted; period 2025-01-01 to 2025-12-31; 10-K accession 0001543151-26-000015.\n- equity: 27041000000 USD; tag StockholdersEquity; period instant to 2025-12-31; 10-K accession 0001543151-26-000015.\n- long_term_debt: 10521000000 USD; tag LongTermDebtNoncurrent; period instant to 2025-12-31; 10-K accession 0001543151-26-000015.\n- current_debt: 0 USD; tag LongTermDebtCurrent; period instant to 2025-12-31; 10-K accession 0001543151-26-000015.\n- cash_from_operations: 10099000000 USD; tag NetCashProvidedByUsedInOperatingActivities; period 2025-01-01 to 2025-12-31; 10-K accession 0001543151-26-000015.\n- capex: 336000000 USD; tag PaymentsToAcquirePropertyPlantAndEquipment; period 2025-01-01 to 2025-12-31; 10-K accession 0001543151-26-000015.\n- Revenue growth: 18.28%; arithmetic: (52017000000 / 43978000000) - 1.\n- Operating margin: 10.70%; arithmetic: 5565000000 / 52017000000.\n- Return on average equity: 41.37%; arithmetic: 10053000000 / ((27041000000.0 + 21558000000.0) / 2).\n- Debt to equity: 0.3891; arithmetic: (10521000000.0 + 0.0) / 27041000000.0.\n- Free cash flow: 9763000000.0; arithmetic: 10099000000.0 - 336000000.0.\n- P/E: None; arithmetic: None / 4.73.\n- Prior-year equity for ROAE: 21558000000 USD; tag StockholdersEquity; period instant at 2024-12-31; 10-K accession 0001543151-25-000008.\n- Calculator average equity for ROAE: 24299500000.00 USD; arithmetic: (27041000000.0 + 21558000000.0) / 2.\n- Latest-quarter revenue (dollars in millions): 14766.0; same quarter prior year: 13467.0; growth: 9.65%, arithmetic (14766.0 / 13467.0) - 1; 8-K accession 0001543151-26-000039, Exhibit 99.1 label line 35, value line 35: Revenue $ 13,467 $ 14,766 10 % 10 %\n- Latest-quarter diluted EPS, GAAP: 0.25; prior-year quarter: 3.11; 8-K accession 0001543151-26-000039, Exhibit 99.1 line 39: GAAP Diluted EPS $ 3.11 $ 0.25 (92) %\n- Peer AMD: revenue $34,639,000,000 USD (RevenueFromContractWithCustomerExcludingAssessedTax, 2024-12-29 to 2025-12-27, 10-K 0000002488-26-000018); operating income $3,694,000,000 USD (OperatingIncomeLoss, 2024-12-29 to 2025-12-27, 10-K 0000002488-26-000018); operating margin = 3,694,000,000 / 34,639,000,000 = 10.66%.\n- Peer YUM: revenue $8,214,000,000 USD (Revenues, 2025-01-01 to 2025-12-31, 10-K 0001041061-26-000084; statement top-line label 'Total revenues' at saved-text line 1083); operating income $2,574,000,000 USD (OperatingIncomeLoss, 2025-01-01 to 2025-12-31, 10-K 0001041061-26-000084); operating margin = 2,574,000,000 / 8,214,000,000 = 31.34%.\n- Peer DUOL: revenue $1,037,589,000 USD (RevenueFromContractWithCustomerExcludingAssessedTax, 2025-01-01 to 2025-12-31, 10-K 0001628280-26-012494); operating income $135,570,000 USD (OperatingIncomeLoss, 2025-01-01 to 2025-12-31, 10-K 0001628280-26-012494); operating margin = 135,570,000 / 1,037,589,000 = 13.07%.\n- Peer PLTR: revenue $4,475,446,000 USD (RevenueFromContractWithCustomerExcludingAssessedTax, 2025-01-01 to 2025-12-31, 10-K 0001321655-26-000011); operating income $1,414,015,000 USD (OperatingIncomeLoss, 2025-01-01 to 2025-12-31, 10-K 0001321655-26-000011); operating margin = 1,414,015,000 / 4,475,446,000 = 31.59%.\n\nFinancial Analyst interpretation:\n\nFull‑year revenue (Revenues tag) was $52.017 B (2025‑01‑01 to 2025‑12‑31, Form 10‑K, accession 0001543151‑26‑000015) up 18.28% from $43.978 B prior year. Operating margin = $5.565 B ÷ $52.017 B = 10.70% (same filing). ROE = $10.053 B ÷ $24.2995 B = 41.37% (average equity from 2025 and 2024 StockholdersEquity tags). Debt‑to‑equity = ($10.521 B+$0) ÷ $27.041 B = 0.3891 (LongTermDebt tags). Free cash flow = $10.099 B – $0.336 B = $9.763 B (NetCashProvidedByUsedInOperatingActivities and PaymentsToAcquirePropertyPlantAndEquipment tags). Latest‑quarter revenue $14.766 B vs $13.467 B (+9.65%) and diluted EPS $0.25 vs $3.11 (‑92%) (8‑K accession 0001543151‑26‑000039). Peer operating margins: AMD 10.66%, YUM 31.34%, DUOL 13.07%, PLTR 31.59% (respective 10‑K filings).\n\nCALCULATOR_REQUESTS: NONE  \nInsight: Net cash provided by operating activities was $10.1 billion for the year ended December 31, 2025 (Form 10‑K, accession 0001543151‑26‑000015, saved‑text line 1086).",
+      "Future Developments and Strategic Recommendations": "",
+      "Investment Recommendation": "**Thesis:** Uber leverages a global platform in >70 countries, strong network effects and expanding Delivery and autonomous‑vehicle initiatives. FY 2025 revenue grew 18% to $52 B, operating margin is 10.70% and ROE exceeds 40%, while debt‑to‑equity remains modest at 0.39. These fundamentals support continued earnings growth, justifying a **Buy**.\n\n**Deciding number:** Operating margin = 10.70% (Form 10‑K, accession 0001543151‑26‑000015)\n\nInsight: Approximately 700 fully driverless vehicles are expected on Uber by year‑end and over 2,000 in 2027 (8‑K accession 0001543151-26-000039 line 8)."
+    },
+    "required_parts": [
+      "Overview",
+      "Market Positioning and Growth Outlook",
+      "Valuation Insights",
+      "Future Developments and Strategic Recommendations",
+      "Investment Recommendation"
+    ],
+    "source_facts": {
+      "revenue": {
+        "label": "revenue",
+        "value": 52017000000,
+        "unit": "USD",
+        "tag": "Revenues",
+        "period_start": "2025-01-01",
+        "period_end": "2025-12-31",
+        "filing": "10-K",
+        "filed": "2026-02-13",
+        "accession": "0001543151-26-000015"
+      },
+      "operating_income": {
+        "label": "operating_income",
+        "value": 5565000000,
+        "unit": "USD",
+        "tag": "OperatingIncomeLoss",
+        "period_start": "2025-01-01",
+        "period_end": "2025-12-31",
+        "filing": "10-K",
+        "filed": "2026-02-13",
+        "accession": "0001543151-26-000015"
+      },
+      "net_income": {
+        "label": "net_income",
+        "value": 10053000000,
+        "unit": "USD",
+        "tag": "NetIncomeLoss",
+        "period_start": "2025-01-01",
+        "period_end": "2025-12-31",
+        "filing": "10-K",
+        "filed": "2026-02-13",
+        "accession": "0001543151-26-000015"
+      },
+      "diluted_eps": {
+        "label": "diluted_eps",
+        "value": 4.73,
+        "unit": "USD/shares",
+        "tag": "EarningsPerShareDiluted",
+        "period_start": "2025-01-01",
+        "period_end": "2025-12-31",
+        "filing": "10-K",
+        "filed": "2026-02-13",
+        "accession": "0001543151-26-000015"
+      },
+      "equity": {
+        "label": "equity",
+        "value": 27041000000,
+        "unit": "USD",
+        "tag": "StockholdersEquity",
+        "period_start": null,
+        "period_end": "2025-12-31",
+        "filing": "10-K",
+        "filed": "2026-02-13",
+        "accession": "0001543151-26-000015"
+      },
+      "long_term_debt": {
+        "label": "long_term_debt",
+        "value": 10521000000,
+        "unit": "USD",
+        "tag": "LongTermDebtNoncurrent",
+        "period_start": null,
+        "period_end": "2025-12-31",
+        "filing": "10-K",
+        "filed": "2026-02-13",
+        "accession": "0001543151-26-000015"
+      },
+      "current_debt": {
+        "label": "current_debt",
+        "value": 0,
+        "unit": "USD",
+        "tag": "LongTermDebtCurrent",
+        "period_start": null,
+        "period_end": "2025-12-31",
+        "filing": "10-K",
+        "filed": "2026-02-13",
+        "accession": "0001543151-26-000015"
+      },
+      "cash_from_operations": {
+        "label": "cash_from_operations",
+        "value": 10099000000,
+        "unit": "USD",
+        "tag": "NetCashProvidedByUsedInOperatingActivities",
+        "period_start": "2025-01-01",
+        "period_end": "2025-12-31",
+        "filing": "10-K",
+        "filed": "2026-02-13",
+        "accession": "0001543151-26-000015"
+      },
+      "capex": {
+        "label": "capex",
+        "value": 336000000,
+        "unit": "USD",
+        "tag": "PaymentsToAcquirePropertyPlantAndEquipment",
+        "period_start": "2025-01-01",
+        "period_end": "2025-12-31",
+        "filing": "10-K",
+        "filed": "2026-02-13",
+        "accession": "0001543151-26-000015"
+      },
+      "revenue_prior_year": {
+        "label": "revenue_prior_year",
+        "value": 43978000000,
+        "unit": "USD",
+        "tag": "Revenues",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31",
+        "filing": "10-K",
+        "filed": "2026-02-13",
+        "accession": "0001543151-26-000015"
+      }
+    },
+    "automatic_numeric_audit": [
+      "Unsupported percentage 92%; use only percentages from the code-calculated evidence."
+    ],
+    "automatic_insight_audit": [],
+    "earnings_release_opening_excerpt": "8-K accession 0001543151-26-000039 saved-text line 1: EX-99.1 2 uberq326earningspressrelea.htm EX-99.1 Document\n8-K accession 0001543151-26-000039 saved-text line 2: Exhibit 99.1\n8-K accession 0001543151-26-000039 saved-text line 3: Uber Announces Results for Third Quarter 2026\n8-K accession 0001543151-26-000039 saved-text line 4: Gross Bookings grew 20% year-over-year on a constant currency basis\n8-K accession 0001543151-26-000039 saved-text line 5: GAAP Income from operations of $1.4 billion; Non-GAAP Operating Income of $2.3 billion, up 38% year-over-year\n8-K accession 0001543151-26-000039 saved-text line 6: GAAP Diluted EPS of $0.25; Non-GAAP EPS of $0.88, up 35% year-over-year\n8-K accession 0001543151-26-000039 saved-text line 7: SAN FRANCISCO – November 4, 2026 – Uber Technologies, Inc. (NYSE: UBER) today announced financial results for the quarter ended September 30, 2026.\n8-K accession 0001543151-26-000039 saved-text line 8: “Uber delivered its fifth consecutive quarter of 20%+ Gross Bookings growth, driven by record audience and consumer engagement,” said Dara Khosrowshahi, CEO. “We’re investing from a position of strength to expand Mobility supply, build on Delivery’s momentum, and deepen engagement across our platform. Our focus on autonomous is now on commercial execution, with approximately 700 fully driverless vehicles expected on Uber by year-end and over 2,000 in 2027.”\n8-K accession 0001543151-26-000039 saved-text line 9: “Uber continues to translate strong growth into expanding profitability, with Non-GAAP Operating Income margins reaching a record 3.9% of Gross Bookings and Non-GAAP EPS growing 35%,\" said Balaji Krishnamurthy, CFO. “Our Q4 outlook reinforces our confidence in the durability of our financial model as we enter 2027. We remain disciplined in capital allocation, maintaining a high bar for investments in our core businesses and autonomy to drive Uber’s next phase of growth.”\n8-K accession 0001543151-26-000039 saved-text line 10: Financial and Operational Highlights for Third Quarter 2026"
+  },
+  "expected_output": "{\"status\":\"PASS\"|\"FAIL\",\"failing_part\":string|null,\"repair_request\":string|null,\"future_developments_and_recommendations\":string}"
+}

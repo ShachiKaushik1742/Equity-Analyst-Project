@@ -6,7 +6,7 @@ from pathlib import Path
 import desk
 from week03_audit_helpers import (calc_expected_ratio, code_verify_claims,
                                   cited_filing_evidence, financial_amount_audit, financial_period_audit,
-                                  analyst_insight_audit, insight_claims, omit_report_part,
+                                  analyst_insight_audit, enrich_insight_source_lines, insight_claims, insight_values_supported, omit_report_part,
                                   percentage_claim_audit, verifier_report_copy,
                                   save_verified_report)
 
@@ -26,6 +26,47 @@ class VerifierTests(unittest.TestCase):
 
     def tearDown(self):
         self.temp.cleanup()
+
+    def test_earnings_release_selector_handles_sec_truncated_filename(self):
+        files = [
+            {"name": "uber-20261104.htm", "type": "text.gif"},
+            {"name": "uberq326earningspressrelea.htm", "type": "text.gif"},
+            {"name": "uber-20261104.xsd", "type": "text.gif"},
+        ]
+        self.assertEqual(desk.earnings_release_document(files), "uberq326earningspressrelea.htm")
+
+    def test_earnings_release_selector_accepts_exhibit_99_1_names(self):
+        files = [{"name": "primary.htm"}, {"name": "exhibit_99_1.htm"}]
+        self.assertEqual(desk.earnings_release_document(files), "exhibit_99_1.htm")
+
+    def test_earnings_release_selector_accepts_numbered_exhibit_filename(self):
+        files = [{"name": "amd-20261103.htm"}, {"name": "q32026991.htm"}]
+        self.assertEqual(desk.earnings_release_document(files), "q32026991.htm")
+
+    def test_earnings_release_selector_uses_sec_index_exhibit_type(self):
+        files = [{"name": "primary.htm"}, {"name": "duolingo-release.htm"}]
+        index_text = ("Seq Description Document Type Size\n"
+                      "1 8-K duol-20261103.htm iXBRL 8-K 27254\n"
+                      "2 EX-99.1 q3fy26duolingo9-30x26xpres.htm EX-99.1 10331")
+        self.assertEqual(desk.earnings_release_document(files, index_text),
+                         "q3fy26duolingo9-30x26xpres.htm")
+
+    def test_quarter_metrics_ignores_revenue_narrative_and_orders_years(self):
+        release = """Uber Announces Results for Third Quarter 2026
+Revenue grew 10% YoY to $14.8 billion.
+Financial and Operational Highlights
+Three Months Ended September 30,
+(In millions, except percentages and per share amounts) 2025 2026 % Change
+Revenue $ 13,467 $ 14,766 10 %
+GAAP Diluted EPS $ 3.11 $ 0.25 (92) %
+"""
+        quarter = desk.quarter_metrics(release)
+        self.assertEqual(quarter["revenue_current"], 14766)
+        self.assertEqual(quarter["revenue_prior_quarter"], 13467)
+        self.assertEqual(quarter["revenue_release_line_number"], 6)
+        self.assertEqual(quarter["diluted_eps_current"], 0.25)
+        self.assertEqual(quarter["diluted_eps_prior_quarter"], 3.11)
+        self.assertEqual(quarter["eps_release_line_number"], 7)
 
     def test_clean_xbrl_claim(self):
         claims = [{"id": "claim:cost_diluted_eps", "kind": "xbrl", "ticker": "COST",
@@ -186,11 +227,59 @@ class VerifierTests(unittest.TestCase):
                    "Investment Advisor": "Insight: Margin is stable (10-K line 22)."}
         self.assertEqual(analyst_insight_audit(outputs)[0]["role"], "Research Analyst")
 
+    def test_insight_audit_checks_form_accession_line_and_numbers_before_manager_pass(self):
+        accession = "0000000000-26-000001"
+        company = {"facts": {"ticker": "COST", "filings": {"10-K": {"accession": accession}}},
+                   "filing_texts": {"10-K": "heading\nGasoline represented 11% of sales in 2026\nGasoline represented 11% of sales in 2026\nGasoline represented 11% of sales in 2026\n"}}
+        outputs = {role: f"Insight: Gasoline was 11% of sales in 2026 (10-K accession {accession}, line {line})."
+                   for role, line in zip(("Research Analyst", "Financial Analyst", "Investment Advisor"), (2, 3, 4))}
+        outputs["Financial Analyst"] = f"Insight: The 2026 gasoline share was 11% (10-K accession {accession}, line 3)."
+        outputs["Investment Advisor"] = f"Insight: Gasoline accounted for 11% in 2026 (10-K accession {accession}, line 4)."
+        self.assertEqual(analyst_insight_audit(outputs, [company]), [])
+        outputs["Research Analyst"] = outputs["Research Analyst"].replace("10-K accession", "8-K accession")
+        issues = analyst_insight_audit(outputs, [company])
+        self.assertTrue(any("filing form must match" in issue["issue"] for issue in issues))
+
+    def test_insight_audit_rejects_duplicate_cited_filing_line(self):
+        accession = "0000000000-26-000001"
+        company = {"facts": {"ticker": "COST", "filings": {"10-K": {"accession": accession}}},
+                   "filing_texts": {"10-K": "heading\nClaim is 11% here\n"}}
+        citation = f"10-K accession {accession}, line 2"
+        outputs = {"Research Analyst": f"Insight: Claim is 11% ({citation}).",
+                   "Financial Analyst": f"Insight: It comes to 11% ({citation}).",
+                   "Investment Advisor": f"Insight: 11% is material ({citation})."}
+        issues = analyst_insight_audit(outputs, [company])
+        self.assertEqual([item["role"] for item in issues], ["Financial Analyst", "Investment Advisor"])
+
+    def test_insight_enrichment_adds_source_lines_and_statement_scale(self):
+        accession = "0000000000-26-000001"
+        company = {
+            "facts": {"ticker": "UBER", "filings": {"10-K": {"accession": accession}},
+                      "facts": {
+                          "cash_from_operations": {"tag": "NetCashProvidedByUsedInOperatingActivities", "value": 10_099_000_000},
+                          "diluted_eps": {"tag": "EarningsPerShareDiluted", "value": 4.73},
+                      }},
+            "filing_texts": {"10-K": "heading\nThere were 3 reportable segments\nConsolidated Statements of Cash Flows\n(In millions)\nCash flows from operating activities\nNet cash provided by operating activities 3,585 7,137 10,099\nNet income per share\nBasic $ 0.90 $ 4.71 $ 4.82\nDiluted $ 0.87 $ 4.56 $ 4.73\n"},
+        }
+        outputs = {
+            "Research Analyst": f"Insight: There were 3 reportable segments (10-K accession {accession}, line 2).",
+            "Financial Analyst": f"Insight: Cash from operations was $10,099,000,000 (10-K accession {accession}, NetCashProvidedByUsedInOperatingActivities).",
+            "Investment Advisor": f"Insight: Diluted EPS was $4.73 (10-K accession {accession}, EarningsPerShareDiluted).",
+        }
+        enriched, changes = enrich_insight_source_lines(outputs, [company])
+        self.assertEqual(len(changes), 2)
+        self.assertIn("10,099 million", enriched["Financial Analyst"])
+        self.assertIn("saved-text line 6", enriched["Financial Analyst"])
+        self.assertIn("saved-text line 9", enriched["Investment Advisor"])
+        self.assertEqual(analyst_insight_audit(enriched, [company]), [])
+
     def test_insight_claims_are_marked_against_saved_line_for_each_analyst(self):
         accession = "0000000000-26-000001"
         citation = f"(10-K accession {accession}, saved-text line 2)"
         outputs = {role: f"Insight: Gasoline represented 11% of sales in 2026 {citation}"
                    for role in ("Research Analyst", "Financial Analyst", "Investment Advisor")}
+        outputs["Financial Analyst"] = f"Insight: In 2026, gasoline made up 11% of sales {citation}"
+        outputs["Investment Advisor"] = f"Insight: The 2026 gasoline share was 11% {citation}"
         company = {"facts": {"ticker": "COST", "filings": {"10-K": {"accession": accession}}},
                    "filing_texts": {"10-K": "heading\nGasoline represented 11% of sales in 2026\n"}}
         (self.run / "COST" / f"10K_{accession}.txt").write_text(company["filing_texts"]["10-K"])
@@ -215,6 +304,27 @@ class VerifierTests(unittest.TestCase):
         self.assertEqual(claim["filing"], "8-K")
         self.assertEqual(claim["source_line"], 39)
         self.assertEqual(claim["insight_numbers"], [(303154.0, False)])
+
+    def test_insight_period_year_is_not_a_statement_amount(self):
+        accession = "0000000000-26-000001"
+        citation = f"(saved-text line 2, 10-K, accession {accession})"
+        company = {"facts": {"ticker": "UBER", "filings": {"10-K": {"accession": accession}}},
+                   "filing_texts": {"10-K": "heading\nNet cash provided by operating activities $ 7,137 $ 10,099\n"}}
+        line = f"Insight: Cash from operations was $10,099 million in FY 2025 {citation}."
+        claim = next(c for c in insight_claims({"Financial Analyst": line}, company)
+                     if c["role"] == "Financial Analyst")
+        self.assertEqual(claim["insight_numbers"], [(10099.0, False)])
+        self.assertTrue(insight_values_supported(claim))
+
+    def test_insight_parser_ignores_date_and_citation_numbers(self):
+        accession = "0000000000-26-000001"
+        line = (f"Insight: Net cash provided by operating activities was $10.1 billion for the year ended "
+                f"December 31, 2025 (saved-text line 2, 10-K accession {accession}).")
+        company = {"facts": {"ticker": "UBER", "filings": {"10-K": {"accession": accession}}},
+                   "filing_texts": {"10-K": "heading\nNet cash provided by operating activities was $10.1 billion for the year ended December 31, 2025\n"}}
+        claim = next(c for c in insight_claims({"Financial Analyst": line}, company)
+                     if c["role"] == "Financial Analyst")
+        self.assertEqual(claim["insight_numbers"], [(10.1, False)])
 
     def test_insight_can_cite_a_peer_filing_with_reported_millions_converted_to_usd(self):
         cost_accession = "0000909832-26-000093"

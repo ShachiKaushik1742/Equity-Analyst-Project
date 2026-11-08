@@ -1,0 +1,135 @@
+{
+  "ticker": "PLTR",
+  "title": "Palantir Technologies Inc.",
+  "cik": "0001321655",
+  "fiscal_year_end": "2025-12-31",
+  "filings": {
+    "10-K": {
+      "accession": "0001321655-26-000011",
+      "accepted": "2026-02-17T11:14:19.000Z",
+      "filing_date": "2026-02-17",
+      "document": "pltr-20251231.htm",
+      "index_url": "https://www.sec.gov/Archives/edgar/data/1321655/000132165526000011/index.json"
+    },
+    "10-Q": {
+      "accession": "0001321655-26-000048",
+      "accepted": "2026-11-02T23:00:39.000Z",
+      "filing_date": "2026-11-03",
+      "document": "pltr-20260930.htm",
+      "index_url": "https://www.sec.gov/Archives/edgar/data/1321655/000132165526000048/index.json"
+    },
+    "8-K": {
+      "accession": "0001321655-26-000045",
+      "accepted": "2026-11-02T21:06:48.000Z",
+      "filing_date": "2026-11-02",
+      "document": "a2026q3ex991pressrelease.htm",
+      "index_url": "https://www.sec.gov/Archives/edgar/data/1321655/000132165526000045/index.json"
+    }
+  },
+  "facts": {
+    "revenue": {
+      "label": "revenue",
+      "value": 4475446000,
+      "unit": "USD",
+      "tag": "RevenueFromContractWithCustomerExcludingAssessedTax",
+      "period_start": "2025-01-01",
+      "period_end": "2025-12-31",
+      "filing": "10-K",
+      "filed": "2026-02-17",
+      "accession": "0001321655-26-000011"
+    },
+    "operating_income": {
+      "label": "operating_income",
+      "value": 1414015000,
+      "unit": "USD",
+      "tag": "OperatingIncomeLoss",
+      "period_start": "2025-01-01",
+      "period_end": "2025-12-31",
+      "filing": "10-K",
+      "filed": "2026-02-17",
+      "accession": "0001321655-26-000011"
+    },
+    "net_income": {
+      "label": "net_income",
+      "value": 1625033000,
+      "unit": "USD",
+      "tag": "NetIncomeLoss",
+      "period_start": "2025-01-01",
+      "period_end": "2025-12-31",
+      "filing": "10-K",
+      "filed": "2026-02-17",
+      "accession": "0001321655-26-000011"
+    },
+    "diluted_eps": {
+      "label": "diluted_eps",
+      "value": 0.63,
+      "unit": "USD/shares",
+      "tag": "EarningsPerShareDiluted",
+      "period_start": "2025-01-01",
+      "period_end": "2025-12-31",
+      "filing": "10-K",
+      "filed": "2026-02-17",
+      "accession": "0001321655-26-000011"
+    },
+    "equity": {
+      "label": "equity",
+      "value": 7387268000,
+      "unit": "USD",
+      "tag": "StockholdersEquity",
+      "period_start": null,
+      "period_end": "2025-12-31",
+      "filing": "10-K",
+      "filed": "2026-02-17",
+      "accession": "0001321655-26-000011"
+    },
+    "long_term_debt": null,
+    "current_debt": null,
+    "cash_from_operations": {
+      "label": "cash_from_operations",
+      "value": 2134473000,
+      "unit": "USD",
+      "tag": "NetCashProvidedByUsedInOperatingActivities",
+      "period_start": "2025-01-01",
+      "period_end": "2025-12-31",
+      "filing": "10-K",
+      "filed": "2026-02-17",
+      "accession": "0001321655-26-000011"
+    },
+    "capex": {
+      "label": "capex",
+      "value": 33882000,
+      "unit": "USD",
+      "tag": "PaymentsToAcquirePropertyPlantAndEquipment",
+      "period_start": "2025-01-01",
+      "period_end": "2025-12-31",
+      "filing": "10-K",
+      "filed": "2026-02-17",
+      "accession": "0001321655-26-000011"
+    },
+    "revenue_prior_year": {
+      "label": "revenue_prior_year",
+      "value": 2865507000,
+      "unit": "USD",
+      "tag": "RevenueFromContractWithCustomerExcludingAssessedTax",
+      "period_start": "2024-01-01",
+      "period_end": "2024-12-31",
+      "filing": "10-K",
+      "filed": "2026-02-17",
+      "accession": "0001321655-26-000011"
+    }
+  },
+  "quarter": {
+    "revenue_current": 2313411.0,
+    "revenue_prior_quarter": 1181092.0,
+    "revenue_growth": 0.9587051643733087,
+    "revenue_release_line": "Revenue $ 2,313,411 $ 1,181,092 $ 5,881,458 $ 3,068,644",
+    "revenue_release_line_number": 96,
+    "revenue_number_line_number": 96,
+    "diluted_eps_current": null,
+    "diluted_eps_prior_quarter": null,
+    "eps_release_line": "",
+    "eps_release_line_number": null,
+    "eps_number_line_number": null,
+    "release_units": "Dollars in millions except per-share data, as captioned in the release; quarter comparison uses the first two columns."
+  }
+}

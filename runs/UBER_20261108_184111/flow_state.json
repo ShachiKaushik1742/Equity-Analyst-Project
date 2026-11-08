@@ -1,0 +1,12 @@
+{
+  "ticker": "UBER",
+  "manager_initial_status": "FAIL",
+  "manager_status": "PASS_AFTER_REPAIR",
+  "repair_used": true,
+  "repair_outcome": "passed_after_repair",
+  "framework": "CrewAI Flow + Process.sequential",
+  "framework_version": "1.15.34",
+  "verification_total": 32,
+  "verification_correct": 32,
+  "verification_other": 0
+}

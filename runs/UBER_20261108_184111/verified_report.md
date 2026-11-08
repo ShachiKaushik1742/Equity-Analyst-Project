@@ -1,0 +1,152 @@
+Filings read: 10-K 0001543151-26-000015; 10-Q 0001543151-26-000041; 8-K 0001543151-26-000039
+
+## Verifier marks
+
+| Claim | Mark | Reason | Source | Correction |
+|---|---|---|---|---|
+| claim:uber_revenue | correct | Report value, tag, period, and accession match the saved XBRL fact. | UBER 10-K accession 0001543151-26-000015; tag Revenues, period ending 2025-12-31 | None |
+| claim:uber_operating_income | correct | Report value, tag, period, and accession match the saved XBRL fact. | UBER 10-K accession 0001543151-26-000015; tag OperatingIncomeLoss, period ending 2025-12-31 | None |
+| claim:uber_net_income | correct | Report value, tag, period, and accession match the saved XBRL fact. | UBER 10-K accession 0001543151-26-000015; tag NetIncomeLoss, period ending 2025-12-31, saved-text line 1304 | None |
+| claim:uber_diluted_eps | correct | Report value, tag, period, and accession match the saved XBRL fact. | UBER 10-K accession 0001543151-26-000015; tag EarningsPerShareDiluted, period ending 2025-12-31, saved-text line 1307 | None |
+| claim:uber_equity | correct | Report value, tag, period, and accession match the saved XBRL fact. | UBER 10-K accession 0001543151-26-000015; tag StockholdersEquity, period ending 2025-12-31 | None |
+| claim:uber_long_term_debt | correct | Report value, tag, period, and accession match the saved XBRL fact. | UBER 10-K accession 0001543151-26-000015; tag LongTermDebtNoncurrent, period ending 2025-12-31, saved-text line 1263 | None |
+| claim:uber_current_debt | correct | Report value, tag, period, and accession match the saved XBRL fact. | UBER 10-K accession 0001543151-26-000015; tag LongTermDebtCurrent, period ending 2025-12-31 | None |
+| claim:uber_cash_from_operations | correct | Report value, tag, period, and accession match the saved XBRL fact. | UBER 10-K accession 0001543151-26-000015; tag NetCashProvidedByUsedInOperatingActivities, period ending 2025-12-31, saved-text line 1423 | None |
+| claim:uber_capex | correct | Report value, tag, period, and accession match the saved XBRL fact. | UBER 10-K accession 0001543151-26-000015; tag PaymentsToAcquirePropertyPlantAndEquipment, period ending 2025-12-31 | None |
+| claim:uber_revenue_prior_year | correct | Report value, tag, period, and accession match the saved XBRL fact. | UBER 10-K accession 0001543151-26-000015; tag Revenues, period ending 2024-12-31 | None |
+| claim:uber_ratio_revenue_growth | correct | Ratio recomputed from its saved inputs and formula. | UBER ratio formula revenue / revenue_prior_year - 1 | None |
+| claim:uber_ratio_operating_margin | correct | Ratio recomputed from its saved inputs and formula. | UBER ratio formula operating_income / revenue | None |
+| claim:uber_ratio_return_on_average_equity | correct | Ratio recomputed from its saved inputs and formula. | UBER ratio formula net_income / ((current_equity + prior_equity) / 2) | None |
+| claim:uber_ratio_debt_to_equity | correct | Ratio recomputed from its saved inputs and formula. | UBER ratio formula (long_term_debt + current_portion_debt) / current_equity | None |
+| claim:uber_ratio_free_cash_flow | correct | Ratio recomputed from its saved inputs and formula. | UBER ratio formula cash_from_operations - additions_to_property_and_equipment | None |
+| claim:uber_quarter_revenue | correct | Quoted filing text and report value are present. | UBER 8-K accession 0001543151-26-000039, saved-text line 35 | None |
+| claim:uber_quarter_diluted_eps | correct | Quoted filing text and report value are present. | UBER 8-K accession 0001543151-26-000039, saved-text line 39 | None |
+| claim:amd_revenue | correct | Report value, tag, period, and accession match the saved XBRL fact. | AMD 10-K accession 0000002488-26-000018; tag RevenueFromContractWithCustomerExcludingAssessedTax, period ending 2025-12-27 | None |
+| claim:amd_operating_income | correct | Report value, tag, period, and accession match the saved XBRL fact. | AMD 10-K accession 0000002488-26-000018; tag OperatingIncomeLoss, period ending 2025-12-27, saved-text line 824 | None |
+| claim:amd_ratio_operating_margin | correct | Ratio recomputed from its saved inputs and formula. | AMD ratio formula operating_income / revenue | None |
+| claim:yum_revenue | correct | Report value, tag, period, and accession match the saved XBRL fact. | YUM 10-K accession 0001041061-26-000084; tag Revenues, period ending 2025-12-31, saved-text line 1083 | None |
+| claim:yum_operating_income | correct | Report value, tag, period, and accession match the saved XBRL fact. | YUM 10-K accession 0001041061-26-000084; tag OperatingIncomeLoss, period ending 2025-12-31 | None |
+| claim:yum_ratio_operating_margin | correct | Ratio recomputed from its saved inputs and formula. | YUM ratio formula operating_income / revenue | None |
+| claim:duol_revenue | correct | Report value, tag, period, and accession match the saved XBRL fact. | DUOL 10-K accession 0001628280-26-012494; tag RevenueFromContractWithCustomerExcludingAssessedTax, period ending 2025-12-31 | None |
+| claim:duol_operating_income | correct | Report value, tag, period, and accession match the saved XBRL fact. | DUOL 10-K accession 0001628280-26-012494; tag OperatingIncomeLoss, period ending 2025-12-31 | None |
+| claim:duol_ratio_operating_margin | correct | Ratio recomputed from its saved inputs and formula. | DUOL ratio formula operating_income / revenue | None |
+| claim:pltr_revenue | correct | Report value, tag, period, and accession match the saved XBRL fact. | PLTR 10-K accession 0001321655-26-000011; tag RevenueFromContractWithCustomerExcludingAssessedTax, period ending 2025-12-31 | None |
+| claim:pltr_operating_income | correct | Report value, tag, period, and accession match the saved XBRL fact. | PLTR 10-K accession 0001321655-26-000011; tag OperatingIncomeLoss, period ending 2025-12-31 | None |
+| claim:pltr_ratio_operating_margin | correct | Ratio recomputed from its saved inputs and formula. | PLTR ratio formula operating_income / revenue | None |
+| claim:uber_insight_research | correct | Insight number(s) match the cited saved filing line. | UBER 10-K accession 0001543151-26-000015, saved-text line 182 | None |
+| claim:uber_insight_financial | correct | Insight number(s) match the cited saved filing line. | UBER 10-K accession 0001543151-26-000015, saved-text line 1086 | None |
+| claim:uber_insight_advisor | correct | Insight number(s) match the cited saved filing line. | UBER 8-K accession 0001543151-26-000039, saved-text line 8 | None |
+
+Run time: 2026-11-08T18:43:20-05:00
+
+## Overview
+
+Ticker: UBER. Fiscal year ended 2025-12-31. Filings: 10-K 0001543151-26-000015; 10-Q 0001543151-26-000041; 8-K 0001543151-26-000039
+
+## Market Positioning and Growth Outlook
+
+**Business Model** – Uber “is a technology platform that uses a massive network, leading technology, operational excellence and product expertise to power movement from point A to point B… We connect consumers (“Rider(s)”) with independent providers of ride services (“Mobility Driver(s)”)… and connect Riders and other consumers (“Eater(s)”) with restaurants, grocers and other stores… with delivery service providers (“Couriers”)” (10‑K accession 0001543151-26-000015 line 181). Its technology “is available in over 70 countries around the world” (10‑K accession 0001543151-26-000015 line 182).
+
+**Competitive Position** – Uber “believes our global leadership position—and the vast amount of marketplace data…—means that we have the best technical and data platform to innovate faster than other companies with similar products” (10‑K accession 0001543151-26-000015 line 186). The firm also notes that “our scale and global availability allows our Mobility segment to offer better consumer experiences… providing consumers with higher reliability and Drivers with better earnings opportunities” (10‑K accession 0001543151-26-000015 line 187).
+
+**Catalysts** – Management highlights that “approximately 700 fully driverless vehicles [are] expected on Uber by year‑end and over 2,000 in 2027” (8‑K accession 0001543151-26-000039 line 8), underscoring autonomous‑vehicle rollout as a growth driver.
+
+**Recent Developments** – The Delivery business “has expanded to include Uber Direct, our white‑label Delivery‑as‑a‑Service offering to retailers and restaurants around the world, as well as advertising” (10‑K accession 0001543151-26-000015 line 189). The CEO also said Uber is “investing… to expand Mobility supply, build on Delivery’s momentum, and deepen engagement across our platform” (8‑K accession 0001543151-26-000039 line 8).
+
+Insight: Uber’s platform is available in over 70 countries worldwide, a scope not mentioned in the earnings release opening excerpt (10‑K accession 0001543151-26-000015 line 182). <!-- claim:uber_insight_research -->
+
+## Valuation Insights
+
+Code-calculated figures and filing evidence (use these values; do not recompute in the model):
+- revenue: 52017000000 USD; tag Revenues; period 2025-01-01 to 2025-12-31; 10-K accession 0001543151-26-000015.
+- revenue_prior_year: 43978000000 USD; tag Revenues; period 2024-01-01 to 2024-12-31; 10-K accession 0001543151-26-000015.
+- operating_income: 5565000000 USD; tag OperatingIncomeLoss; period 2025-01-01 to 2025-12-31; 10-K accession 0001543151-26-000015.
+- net_income: 10053000000 USD; tag NetIncomeLoss; period 2025-01-01 to 2025-12-31; 10-K accession 0001543151-26-000015.
+- diluted_eps: 4.73 USD/shares; tag EarningsPerShareDiluted; period 2025-01-01 to 2025-12-31; 10-K accession 0001543151-26-000015.
+- equity: 27041000000 USD; tag StockholdersEquity; period instant to 2025-12-31; 10-K accession 0001543151-26-000015.
+- long_term_debt: 10521000000 USD; tag LongTermDebtNoncurrent; period instant to 2025-12-31; 10-K accession 0001543151-26-000015.
+- current_debt: 0 USD; tag LongTermDebtCurrent; period instant to 2025-12-31; 10-K accession 0001543151-26-000015.
+- cash_from_operations: 10099000000 USD; tag NetCashProvidedByUsedInOperatingActivities; period 2025-01-01 to 2025-12-31; 10-K accession 0001543151-26-000015.
+- capex: 336000000 USD; tag PaymentsToAcquirePropertyPlantAndEquipment; period 2025-01-01 to 2025-12-31; 10-K accession 0001543151-26-000015.
+- Revenue growth: 18.28%; arithmetic: (52017000000 / 43978000000) - 1.
+- Operating margin: 10.70%; arithmetic: 5565000000 / 52017000000.
+- Return on average equity: 41.37%; arithmetic: 10053000000 / ((27041000000.0 + 21558000000.0) / 2).
+- Debt to equity: 0.3891; arithmetic: (10521000000.0 + 0.0) / 27041000000.0.
+- Free cash flow: 9763000000.0; arithmetic: 10099000000.0 - 336000000.0.
+- P/E: None; arithmetic: None / 4.73.
+- Prior-year equity for ROAE: 21558000000 USD; tag StockholdersEquity; period instant at 2024-12-31; 10-K accession 0001543151-25-000008.
+- Calculator average equity for ROAE: 24299500000.00 USD; arithmetic: (27041000000.0 + 21558000000.0) / 2.
+- Latest-quarter revenue (dollars in millions): 14766.0; same quarter prior year: 13467.0; growth: 9.65%, arithmetic (14766.0 / 13467.0) - 1; 8-K accession 0001543151-26-000039, Exhibit 99.1 label line 35, value line 35: Revenue $ 13,467 $ 14,766 10 % 10 %
+- Latest-quarter diluted EPS, GAAP: 0.25; prior-year quarter: 3.11; 8-K accession 0001543151-26-000039, Exhibit 99.1 line 39: GAAP Diluted EPS $ 3.11 $ 0.25 (92) %
+- Peer AMD: revenue $34,639,000,000 USD (RevenueFromContractWithCustomerExcludingAssessedTax, 2024-12-29 to 2025-12-27, 10-K 0000002488-26-000018); operating income $3,694,000,000 USD (OperatingIncomeLoss, 2024-12-29 to 2025-12-27, 10-K 0000002488-26-000018); operating margin = 3,694,000,000 / 34,639,000,000 = 10.66%.
+- Peer YUM: revenue $8,214,000,000 USD (Revenues, 2025-01-01 to 2025-12-31, 10-K 0001041061-26-000084; statement top-line label 'Total revenues' at saved-text line 1083); operating income $2,574,000,000 USD (OperatingIncomeLoss, 2025-01-01 to 2025-12-31, 10-K 0001041061-26-000084); operating margin = 2,574,000,000 / 8,214,000,000 = 31.34%.
+- Peer DUOL: revenue $1,037,589,000 USD (RevenueFromContractWithCustomerExcludingAssessedTax, 2025-01-01 to 2025-12-31, 10-K 0001628280-26-012494); operating income $135,570,000 USD (OperatingIncomeLoss, 2025-01-01 to 2025-12-31, 10-K 0001628280-26-012494); operating margin = 135,570,000 / 1,037,589,000 = 13.07%.
+- Peer PLTR: revenue $4,475,446,000 USD (RevenueFromContractWithCustomerExcludingAssessedTax, 2025-01-01 to 2025-12-31, 10-K 0001321655-26-000011); operating income $1,414,015,000 USD (OperatingIncomeLoss, 2025-01-01 to 2025-12-31, 10-K 0001321655-26-000011); operating margin = 1,414,015,000 / 4,475,446,000 = 31.59%.
+- Direct 10-K operating-cash-flow narrative: saved-text line 1086: Net cash provided by operating activities was $10.1 billion for the year ended December 31, 2025, primarily consisting of $10.1 billion of net income including non-controlling interests, adjusted for certain non-cash items, which primarily included $4.8 billion of deferred income taxes, $1.8 billion of stock-based compensation expense, $747 million of depreciation and amortization expense, as well as a $2.2 billion increase in cash from working capital. The increase in cash from working capital was primarily driven by an increase in our accrued insurance reserves primarily due to liabilities recorded during the period exceeding claims paid out, and accrued expenses and other liabilities, partially offset by the settlement of the Foodpanda Taiwan termination fee as described in Note 1 – Description of Business and Summary of Significant Accounting Policies to our consolidated financial statements included in Part II, Item 8, “Financial Statements and Supplementary Data,” of this Annual Report on Form 10-K, as well as an increase in accounts receivable and prepaid expenses and other assets primarily due to tax matters recorded as a receivable in other assets described in the Non-Income Tax Matters section below.
+
+Financial Analyst interpretation:
+
+Full‑year revenue $52.017 B (2025‑01‑01 to 2025‑12‑31, 10‑K, accession 0001543151‑26‑000015) up 18.28% YoY (Revenue ÷ Revenue_prior_year). Operating margin = OperatingIncome $5.565 B ÷ Revenue $52.017 B = 10.70% (same filing). Return on average equity = NetIncome $10.053 B ÷ AvgEquity $24.2995 B = 41.37% (Equity tags 2025 & 2024). Debt‑to‑equity = (LongTermDebt $10.521 B + CurrentDebt $0) ÷ Equity $27.041 B = 0.3891. Free cash flow = CashFromOps $10.099 B – Capex $0.336 B = $9.763 B. Latest‑quarter revenue $14.766 B vs $13.467 B (+9.65%) and diluted EPS $0.25 vs $3.11 (8‑K accession 0001543151‑26‑000039).
+
+CALCULATOR_REQUESTS: NONE
+Insight: Net cash provided by operating activities was $10.1 billion for the year ended December 31, 2025 (Form 10‑K, accession 0001543151‑26‑000015, saved‑text line 1086). <!-- claim:uber_insight_financial -->
+
+## Future Developments and Strategic Recommendations
+
+Future Developments and Strategic Recommendations
+
+Key indicators to monitor in the next reporting period (Q4 2026 / FY 2026):
+- **Autonomous‑vehicle deployment:** track the number of fully driverless vehicles in operation, aiming for >700 by year‑end 2026 and progress toward the 2,000‑vehicle target for 2027 (8‑K accession 0001543151‑26‑000039 line 8).
+- **Geographic reach:** confirm continued platform availability in >70 countries (10‑K accession 0001543151‑26‑000015 line 182) and any expansion into new markets.
+- **Delivery segment growth:** monitor revenue contribution from Uber Direct and advertising services (10‑K accession 0001543151‑26‑000015 line 189) and quarterly delivery‑revenue trends.
+- **Financial health:** watch net cash provided by operating activities ($10.099 B) (10‑K accession 0001543151‑26‑000015 saved‑text line 1086), free cash flow ($9.763 B) (code‑calculated) and operating margin (10.70%) (code‑calculated) for any improvement.
+- **Capital efficiency:** observe capex ($336 M) (10‑K accession 0001543151‑26‑000015) relative to revenue growth (18.28%) (code‑calculated).
+
+Recommendations:
+- Prioritize scaling the autonomous‑vehicle program while managing capital spend to keep debt‑to‑equity below 0.4 (debt‑to‑equity 0.3891 from 10‑K accession 0001543151‑26‑000015).
+- Leverage the >70‑country footprint to cross‑sell Mobility and Delivery services, aiming to increase delivery‑revenue share.
+- Maintain disciplined cash‑flow management, targeting free cash flow growth above 10% quarter‑over‑quarter.
+- Continue monitoring operating‑margin trends; seek incremental efficiency gains to push margin above the current 10.70% level.
+
+## Investment Recommendation
+
+**Thesis:** Uber leverages a global platform in >70 countries, strong network effects and expanding Delivery and autonomous‑vehicle initiatives. FY 2025 revenue grew 18% to $52 B, operating margin is 10.70% and ROE exceeds 40%, while debt‑to‑equity remains modest at 0.39. These fundamentals support continued earnings growth, justifying a **Buy**.
+
+**Deciding number:** Operating margin = 10.70% (Form 10‑K, accession 0001543151‑26‑000015)
+
+Insight: Approximately 700 fully driverless vehicles are expected on Uber by year‑end and over 2,000 in 2027 (8‑K accession 0001543151-26-000039 line 8). <!-- claim:uber_insight_advisor -->
+
+## Verifiable claims
+
+- <!-- claim:uber_revenue --> uber_revenue: 52017000000 USD | Revenues | period 2025-12-31 | 10-K accession 0001543151-26-000015
+- <!-- claim:uber_operating_income --> uber_operating_income: 5565000000 USD | OperatingIncomeLoss | period 2025-12-31 | 10-K accession 0001543151-26-000015
+- <!-- claim:uber_net_income --> uber_net_income: 10053000000 USD | NetIncomeLoss | period 2025-12-31 | 10-K accession 0001543151-26-000015 | saved-text line 1304
+- <!-- claim:uber_diluted_eps --> uber_diluted_eps: 4.73 USD/shares | EarningsPerShareDiluted | period 2025-12-31 | 10-K accession 0001543151-26-000015 | saved-text line 1307
+- <!-- claim:uber_equity --> uber_equity: 27041000000 USD | StockholdersEquity | period 2025-12-31 | 10-K accession 0001543151-26-000015
+- <!-- claim:uber_long_term_debt --> uber_long_term_debt: 10521000000 USD | LongTermDebtNoncurrent | period 2025-12-31 | 10-K accession 0001543151-26-000015 | saved-text line 1263
+- <!-- claim:uber_current_debt --> uber_current_debt: 0 USD | LongTermDebtCurrent | period 2025-12-31 | 10-K accession 0001543151-26-000015
+- <!-- claim:uber_cash_from_operations --> uber_cash_from_operations: 10099000000 USD | NetCashProvidedByUsedInOperatingActivities | period 2025-12-31 | 10-K accession 0001543151-26-000015 | saved-text line 1423
+- <!-- claim:uber_capex --> uber_capex: 336000000 USD | PaymentsToAcquirePropertyPlantAndEquipment | period 2025-12-31 | 10-K accession 0001543151-26-000015
+- <!-- claim:uber_revenue_prior_year --> uber_revenue_prior_year: 43978000000 USD | Revenues | period 2024-12-31 | 10-K accession 0001543151-26-000015
+- <!-- claim:uber_ratio_revenue_growth --> uber_ratio_revenue_growth: 0.18279594 | definition: (latest fiscal-year revenue / prior fiscal-year revenue) - 1 | formula: revenue / revenue_prior_year - 1 | inputs: {"additions_to_property_and_equipment": 336000000.0, "cash_from_operations": 10099000000.0, "current_equity": 27041000000.0, "current_portion_debt": 0.0, "diluted_eps": 4.73, "long_term_debt": 10521000000.0, "net_income": 10053000000, "operating_income": 5565000000, "price": null, "prior_equity": 21558000000.0, "prior_equity_fact": {"accession": "0001543151-25-000008", "filed": "2025-02-14", "filing": "10-K", "label": "prior_equity", "period_end": "2024-12-31", "period_start": null, "tag": "StockholdersEquity", "unit": "USD", "value": 21558000000}, "revenue": 52017000000, "revenue_prior_year": 43978000000}
+- <!-- claim:uber_ratio_operating_margin --> uber_ratio_operating_margin: 0.10698426 | definition: operating income / latest fiscal-year revenue | formula: operating_income / revenue | inputs: {"additions_to_property_and_equipment": 336000000.0, "cash_from_operations": 10099000000.0, "current_equity": 27041000000.0, "current_portion_debt": 0.0, "diluted_eps": 4.73, "long_term_debt": 10521000000.0, "net_income": 10053000000, "operating_income": 5565000000, "price": null, "prior_equity": 21558000000.0, "prior_equity_fact": {"accession": "0001543151-25-000008", "filed": "2025-02-14", "filing": "10-K", "label": "prior_equity", "period_end": "2024-12-31", "period_start": null, "tag": "StockholdersEquity", "unit": "USD", "value": 21558000000}, "revenue": 52017000000, "revenue_prior_year": 43978000000}
+- <!-- claim:uber_ratio_return_on_average_equity --> uber_ratio_return_on_average_equity: 0.41371222 | definition: net income / average of current and prior year-end equity | formula: net_income / ((current_equity + prior_equity) / 2) | inputs: {"additions_to_property_and_equipment": 336000000.0, "cash_from_operations": 10099000000.0, "current_equity": 27041000000.0, "current_portion_debt": 0.0, "diluted_eps": 4.73, "long_term_debt": 10521000000.0, "net_income": 10053000000, "operating_income": 5565000000, "price": null, "prior_equity": 21558000000.0, "prior_equity_fact": {"accession": "0001543151-25-000008", "filed": "2025-02-14", "filing": "10-K", "label": "prior_equity", "period_end": "2024-12-31", "period_start": null, "tag": "StockholdersEquity", "unit": "USD", "value": 21558000000}, "revenue": 52017000000, "revenue_prior_year": 43978000000}
+- <!-- claim:uber_ratio_debt_to_equity --> uber_ratio_debt_to_equity: 0.38907585 | definition: (long-term debt + current portion of long-term debt) / current year-end equity | formula: (long_term_debt + current_portion_debt) / current_equity | inputs: {"additions_to_property_and_equipment": 336000000.0, "cash_from_operations": 10099000000.0, "current_equity": 27041000000.0, "current_portion_debt": 0.0, "diluted_eps": 4.73, "long_term_debt": 10521000000.0, "net_income": 10053000000, "operating_income": 5565000000, "price": null, "prior_equity": 21558000000.0, "prior_equity_fact": {"accession": "0001543151-25-000008", "filed": "2025-02-14", "filing": "10-K", "label": "prior_equity", "period_end": "2024-12-31", "period_start": null, "tag": "StockholdersEquity", "unit": "USD", "value": 21558000000}, "revenue": 52017000000, "revenue_prior_year": 43978000000}
+- <!-- claim:uber_ratio_free_cash_flow --> uber_ratio_free_cash_flow: 9.763e+09 | definition: cash from operations - additions to property and equipment | formula: cash_from_operations - additions_to_property_and_equipment | inputs: {"additions_to_property_and_equipment": 336000000.0, "cash_from_operations": 10099000000.0, "current_equity": 27041000000.0, "current_portion_debt": 0.0, "diluted_eps": 4.73, "long_term_debt": 10521000000.0, "net_income": 10053000000, "operating_income": 5565000000, "price": null, "prior_equity": 21558000000.0, "prior_equity_fact": {"accession": "0001543151-25-000008", "filed": "2025-02-14", "filing": "10-K", "label": "prior_equity", "period_end": "2024-12-31", "period_start": null, "tag": "StockholdersEquity", "unit": "USD", "value": 21558000000}, "revenue": 52017000000, "revenue_prior_year": 43978000000}
+- <!-- claim:uber_quarter_revenue --> uber_quarter_revenue: 14766.0 | 8-K accession 0001543151-26-000039 line 35 | quote: Revenue $ 13,467 $ 14,766 10 % 10 %
+- <!-- claim:uber_quarter_diluted_eps --> uber_quarter_diluted_eps: 0.25 | 8-K accession 0001543151-26-000039 line 39 | quote: GAAP Diluted EPS $ 3.11 $ 0.25 (92) %
+- <!-- claim:amd_revenue --> amd_revenue: 34639000000 USD | RevenueFromContractWithCustomerExcludingAssessedTax | period 2025-12-27 | 10-K accession 0000002488-26-000018
+- <!-- claim:amd_operating_income --> amd_operating_income: 3694000000 USD | OperatingIncomeLoss | period 2025-12-27 | 10-K accession 0000002488-26-000018 | saved-text line 824
+- <!-- claim:amd_ratio_operating_margin --> amd_ratio_operating_margin: 0.1066428 | definition: operating income / latest fiscal-year revenue | formula: operating_income / revenue | inputs: {"additions_to_property_and_equipment": 974000000.0, "cash_from_operations": 7709000000.0, "current_equity": 62999000000.0, "current_portion_debt": 874000000.0, "diluted_eps": 2.65, "long_term_debt": 2348000000.0, "net_income": 4335000000, "operating_income": 3694000000, "price": null, "prior_equity": 57568000000.0, "prior_equity_fact": {"accession": "0000002488-25-000012", "filed": "2025-02-05", "filing": "10-K", "label": "prior_equity", "period_end": "2024-12-28", "period_start": null, "tag": "StockholdersEquity", "unit": "USD", "value": 57568000000}, "revenue": 34639000000, "revenue_prior_year": 25785000000}
+- <!-- claim:yum_revenue --> yum_revenue: 8214000000 USD | Revenues | period 2025-12-31 | 10-K accession 0001041061-26-000084 | saved-text line 1083
+- <!-- claim:yum_operating_income --> yum_operating_income: 2574000000 USD | OperatingIncomeLoss | period 2025-12-31 | 10-K accession 0001041061-26-000084
+- <!-- claim:yum_ratio_operating_margin --> yum_ratio_operating_margin: 0.31336742 | definition: operating income / latest fiscal-year revenue | formula: operating_income / revenue | inputs: {"additions_to_property_and_equipment": 371000000.0, "cash_from_operations": 2010000000.0, "current_equity": null, "current_portion_debt": 39000000.0, "diluted_eps": 5.55, "long_term_debt": null, "net_income": 1559000000, "operating_income": 2574000000, "price": null, "prior_equity": null, "prior_equity_fact": null, "revenue": 8214000000, "revenue_prior_year": 7549000000}
+- <!-- claim:duol_revenue --> duol_revenue: 1037589000 USD | RevenueFromContractWithCustomerExcludingAssessedTax | period 2025-12-31 | 10-K accession 0001628280-26-012494
+- <!-- claim:duol_operating_income --> duol_operating_income: 135570000 USD | OperatingIncomeLoss | period 2025-12-31 | 10-K accession 0001628280-26-012494
+- <!-- claim:duol_ratio_operating_margin --> duol_ratio_operating_margin: 0.13065867 | definition: operating income / latest fiscal-year revenue | formula: operating_income / revenue | inputs: {"additions_to_property_and_equipment": 18096000.0, "cash_from_operations": 387823000.0, "current_equity": 1347006000.0, "current_portion_debt": null, "diluted_eps": 8.57, "long_term_debt": null, "net_income": 414065000, "operating_income": 135570000, "price": null, "prior_equity": 824550000.0, "prior_equity_fact": {"accession": "0001562088-25-000042", "filed": "2025-02-28", "filing": "10-K", "label": "prior_equity", "period_end": "2024-12-31", "period_start": null, "tag": "StockholdersEquity", "unit": "USD", "value": 824550000}, "revenue": 1037589000, "revenue_prior_year": 748024000}
+- <!-- claim:pltr_revenue --> pltr_revenue: 4475446000 USD | RevenueFromContractWithCustomerExcludingAssessedTax | period 2025-12-31 | 10-K accession 0001321655-26-000011
+- <!-- claim:pltr_operating_income --> pltr_operating_income: 1414015000 USD | OperatingIncomeLoss | period 2025-12-31 | 10-K accession 0001321655-26-000011
+- <!-- claim:pltr_ratio_operating_margin --> pltr_ratio_operating_margin: 0.31594952 | definition: operating income / latest fiscal-year revenue | formula: operating_income / revenue | inputs: {"additions_to_property_and_equipment": 33882000.0, "cash_from_operations": 2134473000.0, "current_equity": 7387268000.0, "current_portion_debt": null, "diluted_eps": 0.63, "long_term_debt": null, "net_income": 1625033000, "operating_income": 1414015000, "price": null, "prior_equity": 5003275000.0, "prior_equity_fact": {"accession": "0001321655-25-000022", "filed": "2025-02-18", "filing": "10-K", "label": "prior_equity", "period_end": "2024-12-31", "period_start": null, "tag": "StockholdersEquity", "unit": "USD", "value": 5003275000}, "revenue": 4475446000, "revenue_prior_year": 2865507000}
+- <!-- claim:uber_insight_research --> uber_insight_research: Insight: Uber’s platform is available in over 70 countries worldwide, a scope not mentioned in the earnings release opening excerpt (10‑K accession 0001543151-26-000015 line 182). | source excerpt: Our technology is available in over 70 countries around the world, principally in the United States (“U.S.”) and Canada, Latin America (“LatAm”), Europe (excluding Russia), the Middle East, Africa, and Asia Pacific (“APAC”, excluding China and Southeast Asia).
+- <!-- claim:uber_insight_financial --> uber_insight_financial: Insight: Net cash provided by operating activities was $10.1 billion for the year ended December 31, 2025 (Form 10‑K, accession 0001543151‑26‑000015, saved‑text line 1086). | source excerpt: Net cash provided by operating activities was $10.1 billion for the year ended December 31, 2025, primarily consisting of $10.1 billion of net income including non-controlling interests, adjusted for certain non-cash items, which primarily included $4.8 billion of deferred income taxes, $1.8 billion of stock-based compensation expense, $747 million of depreciation and amortization expense, as well as a $2.2 billion increase in cash from working capital. The increase in cash from working capital was primarily driven by an increase in our accrued insurance reserves primarily due to liabilities recorded during the period exceeding claims paid out, and accrued expenses and other liabilities, partially offset by the settlement of the Foodpanda Taiwan termination fee as described in Note 1 – Description of Business and Summary of Significant Accounting Policies to our consolidated financial statements included in Part II, Item 8, “Financial Statements and Supplementary Data,” of this Annual Report on Form 10-K, as well as an increase in accounts receivable and prepaid expenses and other assets primarily due to tax matters recorded as a receivable in other assets described in the Non-Income Tax Matters section below.
+- <!-- claim:uber_insight_advisor --> uber_insight_advisor: Insight: Approximately 700 fully driverless vehicles are expected on Uber by year‑end and over 2,000 in 2027 (8‑K accession 0001543151-26-000039 line 8). | source excerpt: “Uber delivered its fifth consecutive quarter of 20%+ Gross Bookings growth, driven by record audience and consumer engagement,” said Dara Khosrowshahi, CEO. “We’re investing from a position of strength to expand Mobility supply, build on Delivery’s momentum, and deepen engagement across our platform. Our focus on autonomous is now on commercial execution, with approximately 700 fully driverless vehicles expected on Uber by year-end and over 2,000 in 2027.”

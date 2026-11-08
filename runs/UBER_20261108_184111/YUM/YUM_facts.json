@@ -1,0 +1,135 @@
+{
+  "ticker": "YUM",
+  "title": "YUM BRANDS INC",
+  "cik": "0001041061",
+  "fiscal_year_end": "2025-12-31",
+  "filings": {
+    "10-K": {
+      "accession": "0001041061-26-000084",
+      "accepted": "2026-02-20T21:54:25.000Z",
+      "filing_date": "2026-02-20",
+      "document": "yum-20251231.htm",
+      "index_url": "https://www.sec.gov/Archives/edgar/data/1041061/000104106126000084/index.json"
+    },
+    "10-Q": {
+      "accession": "0001041061-26-000210",
+      "accepted": "2026-11-06T19:39:43.000Z",
+      "filing_date": "2026-11-06",
+      "document": "yum-20260930.htm",
+      "index_url": "https://www.sec.gov/Archives/edgar/data/1041061/000104106126000210/index.json"
+    },
+    "8-K": {
+      "accession": "0001041061-26-000195",
+      "accepted": "2026-11-03T13:07:58.000Z",
+      "filing_date": "2026-11-03",
+      "document": "a8kex9919302026.htm",
+      "index_url": "https://www.sec.gov/Archives/edgar/data/1041061/000104106126000195/index.json"
+    }
+  },
+  "facts": {
+    "revenue": {
+      "label": "revenue",
+      "value": 8214000000,
+      "unit": "USD",
+      "tag": "Revenues",
+      "period_start": "2025-01-01",
+      "period_end": "2025-12-31",
+      "filing": "10-K",
+      "filed": "2026-02-20",
+      "accession": "0001041061-26-000084"
+    },
+    "operating_income": {
+      "label": "operating_income",
+      "value": 2574000000,
+      "unit": "USD",
+      "tag": "OperatingIncomeLoss",
+      "period_start": "2025-01-01",
+      "period_end": "2025-12-31",
+      "filing": "10-K",
+      "filed": "2026-02-20",
+      "accession": "0001041061-26-000084"
+    },
+    "net_income": {
+      "label": "net_income",
+      "value": 1559000000,
+      "unit": "USD",
+      "tag": "NetIncomeLoss",
+      "period_start": "2025-01-01",
+      "period_end": "2025-12-31",
+      "filing": "10-K",
+      "filed": "2026-02-20",
+      "accession": "0001041061-26-000084"
+    },
+    "diluted_eps": {
+      "label": "diluted_eps",
+      "value": 5.55,
+      "unit": "USD/shares",
+      "tag": "EarningsPerShareDiluted",
+      "period_start": "2025-01-01",
+      "period_end": "2025-12-31",
+      "filing": "10-K",
+      "filed": "2026-02-20",
+      "accession": "0001041061-26-000084"
+    },
+    "equity": null,
+    "long_term_debt": null,
+    "current_debt": {
+      "label": "current_debt",
+      "value": 39000000,
+      "unit": "USD",
+      "tag": "LongTermDebtAndCapitalLeaseObligationsCurrent",
+      "period_start": null,
+      "period_end": "2025-12-31",
+      "filing": "10-K",
+      "filed": "2026-02-20",
+      "accession": "0001041061-26-000084"
+    },
+    "cash_from_operations": {
+      "label": "cash_from_operations",
+      "value": 2010000000,
+      "unit": "USD",
+      "tag": "NetCashProvidedByUsedInOperatingActivities",
+      "period_start": "2025-01-01",
+      "period_end": "2025-12-31",
+      "filing": "10-K",
+      "filed": "2026-02-20",
+      "accession": "0001041061-26-000084"
+    },
+    "capex": {
+      "label": "capex",
+      "value": 371000000,
+      "unit": "USD",
+      "tag": "PaymentsToAcquirePropertyPlantAndEquipment",
+      "period_start": "2025-01-01",
+      "period_end": "2025-12-31",
+      "filing": "10-K",
+      "filed": "2026-02-20",
+      "accession": "0001041061-26-000084"
+    },
+    "revenue_prior_year": {
+      "label": "revenue_prior_year",
+      "value": 7549000000,
+      "unit": "USD",
+      "tag": "Revenues",
+      "period_start": "2024-01-01",
+      "period_end": "2024-12-31",
+      "filing": "10-K",
+      "filed": "2026-02-20",
+      "accession": "0001041061-26-000084"
+    }
+  },
+  "quarter": {
+    "revenue_current": 2054.0,
+    "revenue_prior_quarter": 1979.0,
+    "revenue_growth": 0.03789792824658922,
+    "revenue_release_line": "Total revenues 2,054 1,979 4 6,282 5,699 10",
+    "revenue_release_line_number": 133,
+    "revenue_number_line_number": 133,
+    "diluted_eps_current": 5.92,
+    "diluted_eps_prior_quarter": 1.41,
+    "eps_release_line": "Diluted EPS $ 5.92 $ 1.41 $ 10.51 $ 3.64",
+    "eps_release_line_number": 374,
+    "eps_number_line_number": 374,
+    "release_units": "Dollars in millions except per-share data, as captioned in the release; quarter comparison uses the first two columns."
+  }
+}

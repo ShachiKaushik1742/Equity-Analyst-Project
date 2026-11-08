@@ -1,0 +1,4 @@
+Full‑year revenue (Revenues tag) was $52.017 B (2025‑01‑01 to 2025‑12‑31, Form 10‑K, accession 0001543151‑26‑000015) up 18.28% from $43.978 B prior year. Operating margin = $5.565 B ÷ $52.017 B = 10.70% (same filing). ROE = $10.053 B ÷ $24.2995 B = 41.37% (average equity from 2025 and 2024 StockholdersEquity tags). Debt‑to‑equity = ($10.521 B+$0) ÷ $27.041 B = 0.3891 (LongTermDebt tags). Free cash flow = $10.099 B – $0.336 B = $9.763 B (NetCashProvidedByUsedInOperatingActivities and PaymentsToAcquirePropertyPlantAndEquipment tags). Latest‑quarter revenue $14.766 B vs $13.467 B (+9.65%) and diluted EPS $0.25 vs $3.11 (‑92%) (8‑K accession 0001543151‑26‑000039). Peer operating margins: AMD 10.66%, YUM 31.34%, DUOL 13.07%, PLTR 31.59% (respective 10‑K filings).
+
+CALCULATOR_REQUESTS: NONE
+Insight: Net cash provided by operating activities was $10.1 billion for the year ended December 31, 2025 (Form 10‑K, accession 0001543151‑26‑000015, saved‑text line 1086).

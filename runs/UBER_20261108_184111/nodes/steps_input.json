@@ -1,0 +1,12 @@
+{
+  "tickers": [
+    "UBER",
+    "AMD",
+    "YUM",
+    "DUOL",
+    "PLTR"
+  ],
+  "price": null,
+  "price_date": "",
+  "price_source": ""
+}

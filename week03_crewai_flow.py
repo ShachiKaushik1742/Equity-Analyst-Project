@@ -100,10 +100,12 @@ def _verify_with_crew(report: str, claims: list[dict[str, Any]], out: Path,
         "definition, and source. Check XBRL values against the saved tag and period. Check line claims "
         "against the cited filing line. Check ratios from their stated formula and inputs. Mark each claim "
         "correct, wrong, or unsupported. For a wrong or unsupported claim, give its corrected value and "
-        "the filing line or XBRL tag that supports the correction. Return JSON only.",
+        "the filing line or XBRL tag that supports the correction. Use exact claim ids. Return one compact "
+        "JSON array on one line. For correct claims include only id and mark. For wrong or unsupported "
+        "claims include a short correction. Do not include reasons or explanations. Return JSON only.",
         {"compiled_report_without_investment_thesis": verifier_report,
          "cited_excerpts_from_saved_filing_texts": filing_texts, "saved_facts": facts},
-        'JSON array: [{"id":"claim:ticker_revenue","mark":"correct|wrong|unsupported","correction":"value and source or null","reason":"short reason"}].',
+        'JSON array: [{"id":"claim:ticker_revenue","mark":"correct|wrong|unsupported"}].',
         out, model, key, base_url)
     try:
         parsed = json.loads(re.sub(r"^```(?:json)?\s*|\s*```$", "", raw, flags=re.I))
@@ -222,7 +224,7 @@ if isinstance(Flow, type) and Flow is not object:
             business, mda, release = audit.numbered_sections(main)
             self.state.research = _call_role(
                 "Research Analyst",
-                "In no more than 220 words, describe business model, competitive position, catalysts, and recent developments. Every factual claim needs an exact quote with filing, section, accession, and saved-text line. End with exactly one line that begins 'Insight:'. It must state one directly reported number that appears on one saved-text line, and a claim not stated in the earnings release opening excerpt. Cite filing, accession, and exact saved-text line on that same line. Do not calculate or invent numbers or sources.",
+                "In no more than 220 words, describe business model, competitive position, catalysts, and recent developments. Every factual claim needs an exact quote with filing, section, accession, and saved-text line. Use the accession shown for that same filing form in the supplied context; do not cite a 10-K accession for an 8-K line. End with exactly one line that begins 'Insight:'. It must state one directly reported number that appears on one saved-text line, and a claim not stated in the earnings release opening excerpt. Cite the filing form, its matching accession, and exact saved-text line on that same line. Copy number units and scale from the cited evidence. Do not calculate or invent numbers or sources.",
                 {"10-K Item 1 Business": business, "10-K Item 7 MD&A": mda,
                  "earnings release relevant lines": release,
                  "earnings release opening excerpt": _release_opening(main)},
@@ -235,9 +237,12 @@ if isinstance(Flow, type) and Flow is not object:
             evidence = desk.financial_evidence(self.state.companies, self.state.price,
                                                self.state.price_date or None,
                                                self.state.price_source or None)
+            cash_line, cash_text = audit.cash_operations_narrative_line(self.state.companies[0])
+            if cash_line and cash_text:
+                evidence += f"\n- Direct 10-K operating-cash-flow narrative: saved-text line {cash_line}: {cash_text}"
             self.state.finance = _call_role(
                 "Financial Analyst",
-                "In no more than 100 words, interpret the code-calculated facts, ratios, quarter, and peers. Do not reproduce evidence tables. Do not calculate or introduce intermediate values. Use only dollar amounts and percentages printed in the supplied evidence; omit unlisted numbers. Do not calculate average equity or EPS growth. Cite every number with filing/tag or saved-text line, period, and accession. State the selected revenue definition. Put CALCULATOR_REQUESTS: NONE before the final line. End with exactly one line that begins 'Insight:'. It must state one directly reported number that appears on one saved-text line, and a claim not stated in the earnings release opening excerpt. For this Insight line, copy the number exactly as printed on the cited line: do not convert thousands or millions to another scale and do not add digits from the filing citation or line number as claim values. Cite the filing form, accession, and exact saved-text line on that same line. Do not calculate or invent numbers or sources.",
+                "In no more than 100 words, interpret the code-calculated facts, ratios, quarter, and peers. Do not reproduce evidence tables. Do not calculate or introduce intermediate values. Use only dollar amounts and percentages printed in the supplied evidence; omit unlisted numbers. Do not calculate average equity or EPS growth. Cite every number with filing/tag or saved-text line, period, and accession. State the selected revenue definition. Put CALCULATOR_REQUESTS: NONE before the final line. End with exactly one line that begins 'Insight:'. Use the direct 10-K operating-cash-flow narrative sentence supplied in the evidence, not the multi-year table. Copy the cash-flow amount, period, filing form, accession, and exact saved-text line from that sentence. The Insight must make a filing-supported claim not stated in the earnings release opening excerpt. Do not use a calculated ratio, growth rate, or quarter figure for the Insight. Do not cite a 10-K accession for an 8-K line. Do not calculate or invent numbers or sources.",
                 {"code_calculated_evidence": evidence,
                  "earnings release opening excerpt": _release_opening(self.state.companies[0]),
                  "available_calculator_requests": ["debt_to_revenue", "operating_cash_flow_margin", "capex_to_revenue"]},
@@ -249,7 +254,7 @@ if isinstance(Flow, type) and Flow is not object:
         def investment_advisor(self, _: str) -> str:
             self.state.advisor = _call_role(
                 "Investment Advisor",
-                "In no more than 120 words, write a thesis and choose Buy, Hold, or Sell. Name one deciding number. Use only the Research Analyst and Financial Analyst outputs. End with exactly one line that begins 'Insight:'. Reuse one directly reported number and its exact filing, accession, and saved-text line from the other analyst outputs. The claim must be absent from the earnings release opening. Do not add a fact or an uncited number.",
+                "In no more than 120 words, write a thesis and choose Buy, Hold, or Sell. Name one deciding number. Use only the Research Analyst and Financial Analyst outputs. End with exactly one line that begins 'Insight:'. Use a different source line and claim from the Research Analyst Insight. Reuse one directly reported number and its exact filing form, matching accession, and saved-text line from the other analyst outputs. The claim must be absent from the earnings release opening. Copy the complete citation from the role that first cited this number; do not change the filing form or accession. Do not add a fact or an uncited number.",
                 {"Research Analyst": self.state.research, "Financial Analyst": self.state.finance},
                 "A thesis, one supported deciding number, one recommendation, and a sourced Insight line.",
                 Path(self.state.run_dir), self.state.model, self.state.api_key, self.state.base_url)
@@ -258,6 +263,17 @@ if isinstance(Flow, type) and Flow is not object:
         @listen(investment_advisor)
         def strategy_manager(self, _: str) -> dict[str, Any]:
             main = self.state.companies[0]
+            raw_roles = {"Research Analyst": self.state.research,
+                         "Financial Analyst": self.state.finance,
+                         "Investment Advisor": self.state.advisor}
+            enriched_roles, enrichment_changes = audit.enrich_insight_source_lines(
+                raw_roles, self.state.companies)
+            self.state.research = enriched_roles["Research Analyst"]
+            self.state.finance = enriched_roles["Financial Analyst"]
+            self.state.advisor = enriched_roles["Investment Advisor"]
+            audit.save_node_record(Path(self.state.run_dir), "insight_line_enrichment",
+                                   {"role_outputs": raw_roles},
+                                   {"role_outputs": enriched_roles, "changes": enrichment_changes})
             evidence = desk.financial_evidence(self.state.companies, self.state.price,
                                                self.state.price_date or None,
                                                self.state.price_source or None)
@@ -266,8 +282,7 @@ if isinstance(Flow, type) and Flow is not object:
                     "; ".join(f"{f} {main['facts']['filings'][f]['accession']}" for f in ("10-K", "10-Q", "8-K")),
                 "Market Positioning and Growth Outlook": self.state.research,
                 "Valuation Insights": evidence + "\n\nFinancial Analyst interpretation:\n\n" + self.state.finance,
-                "Future Developments and Strategic Recommendations": "Research findings:\n\n" + self.state.research +
-                    "\n\nFinancial findings:\n\n" + self.state.finance,
+                "Future Developments and Strategic Recommendations": "",
                 "Investment Recommendation": self.state.advisor,
             }
             numeric_audit = audit.percentage_claim_audit(self.state.finance, self.state.companies)
@@ -277,32 +292,62 @@ if isinstance(Flow, type) and Flow is not object:
                 "Research Analyst": self.state.research,
                 "Financial Analyst": self.state.finance,
                 "Investment Advisor": self.state.advisor,
-            })
+            }, self.state.companies)
             raw = _call_role(
                 "Strategy Manager",
-                "Check the five required report parts for completeness and consistency. Check every analyst output for exactly one sourced Insight line. Each insight must make a filing-supported claim that the supplied earnings release opening excerpt does not state. Reject an insight that restates the release headline or lacks a source citation. If automatic_numeric_audit is non-empty, fail Valuation Insights. If automatic_insight_audit is non-empty, fail the part owned by the first listed role. Return JSON PASS or identify one failing part for its single repair.",
+                "Check the five required report parts for completeness and consistency. Check every analyst output for exactly one sourced and distinct Insight line. Each insight must make a filing-supported claim that the supplied earnings release opening excerpt does not state. Reject duplicate insight claims, an insight that restates the release headline, or an insight without a source citation. If automatic_numeric_audit is non-empty, fail Valuation Insights. If automatic_insight_audit is non-empty, fail the part owned by the first listed role. Write a concise, substantive future_developments_and_recommendations section with specific next-period indicators and recommendations that follow from the analysts' evidence. Use only facts in the analyst parts. Cite each factual claim with the same filing, accession, and line or tag used by the analyst. Do not add an uncited number, estimate, target, or forecast. Do not copy the analyst sections into it. Return JSON with status, failing_part, repair_request, and future_developments_and_recommendations, or identify one failing part for its single repair.",
                 {"ticker": self.state.ticker, "parts": self.state.parts, "required_parts": PARTS,
                  "source_facts": main["facts"]["facts"], "automatic_numeric_audit": numeric_audit,
                  "automatic_insight_audit": insight_issues,
                  "earnings_release_opening_excerpt": _release_opening(main)},
-                '{"status":"PASS"|"FAIL","failing_part":string|null,"repair_request":string|null}',
+                '{"status":"PASS"|"FAIL","failing_part":string|null,"repair_request":string|null,"future_developments_and_recommendations":string}',
                 Path(self.state.run_dir), self.state.model, self.state.api_key, self.state.base_url)
             try:
                 self.state.manager_result = json.loads(re.sub(r"^```(?:json)?\s*|\s*```$", "", raw, flags=re.I))
             except json.JSONDecodeError as exc:
                 raise RuntimeError("Strategy Manager did not return valid JSON.") from exc
+            future_section = str(self.state.manager_result.get("future_developments_and_recommendations", "")).strip()
+            repair_requests = []
+            if len(future_section) < 80 or "Research findings:" in future_section:
+                repair_requests = [{
+                    "role": "Strategy Manager", "part": "Future Developments and Strategic Recommendations",
+                    "request": "Write a substantive, evidence-based section with next-period indicators and recommendations. Do not copy or repeat the analyst sections.",
+                }]
+            else:
+                self.state.parts["Future Developments and Strategic Recommendations"] = future_section
             if numeric_audit:
-                self.state.manager_result.update({
-                    "status": "FAIL",
-                    "failing_part": "Valuation Insights",
-                    "repair_request": "Correct the financial language flagged by the automatic audit: " + "; ".join(numeric_audit),
+                repair_requests.append({
+                    "role": "Financial Analyst", "part": "Valuation Insights",
+                    "request": "Correct the financial language flagged by the automatic audit: " + "; ".join(numeric_audit),
                 })
-            elif insight_issues:
-                first_issue = insight_issues[0]
+            role_for_part = {
+                "Market Positioning and Growth Outlook": "Research Analyst",
+                "Valuation Insights": "Financial Analyst",
+                "Future Developments and Strategic Recommendations": "Strategy Manager",
+                "Investment Recommendation": "Investment Advisor",
+                "Overview": "Strategy Manager",
+            }
+            for issue in insight_issues:
+                request = {"role": issue["role"], "part": issue["part"], "request": issue["issue"]}
+                if not any(item["role"] == request["role"] for item in repair_requests):
+                    repair_requests.append(request)
+                else:
+                    existing = next(item for item in repair_requests if item["role"] == request["role"])
+                    existing["request"] += "; " + request["request"]
+            if str(self.state.manager_result.get("status", "")).upper() != "PASS":
+                failing_part = self.state.manager_result.get("failing_part")
+                if failing_part in PARTS:
+                    manager_role = role_for_part[failing_part]
+                    if not any(item["role"] == manager_role for item in repair_requests):
+                        repair_requests.append({
+                            "role": manager_role, "part": failing_part,
+                            "request": self.state.manager_result.get("repair_request") or "Revise the failing report part.",
+                        })
+            if repair_requests:
                 self.state.manager_result.update({
-                    "status": "FAIL",
-                    "failing_part": first_issue["part"],
-                    "repair_request": first_issue["issue"],
+                    "status": "FAIL", "failing_part": repair_requests[0]["part"],
+                    "repair_request": repair_requests[0]["request"],
+                    "repair_requests": repair_requests,
                 })
             if str(self.state.manager_result.get("status", "")).upper() != "PASS" and self.state.manager_result.get("failing_part") not in PARTS:
                 raise RuntimeError("Strategy Manager failed without naming one valid report part.")
@@ -326,45 +371,78 @@ if isinstance(Flow, type) and Flow is not object:
 
         @listen("perform_one_repair")
         def repair_once(self) -> str:
-            heading = self.state.manager_result["failing_part"]
-            role = ("Research Analyst" if heading == "Market Positioning and Growth Outlook" else
-                    "Financial Analyst" if heading in {"Valuation Insights", "Future Developments and Strategic Recommendations"} else
-                    "Investment Advisor" if heading == "Investment Recommendation" else "Strategy Manager")
             main = self.state.companies[0]
             evidence = desk.financial_evidence(self.state.companies, self.state.price,
                                                self.state.price_date or None,
                                                self.state.price_source or None)
-            current = self.state.parts[heading]
-            repair_input = {"part": heading, "role": role, "manager_request": self.state.manager_result.get("repair_request"),
-                            "current_part": current}
-            repaired = _call_role(
-                role, (f"Repair {heading} once. Follow the manager request and use only the supplied evidence. "
-                      "Do not calculate any values; remove every unsupported dollar amount or percentage. "
-                      "Quarter revenue growth compares the same quarter last year: call it YoY, never QoQ. "
-                      "Preserve exactly one final Insight: line. It must state a supported claim absent from the earnings release opening and cite its filing plus exact saved-text line or XBRL tag."),
-                {"current_part": current, "manager_request": self.state.manager_result.get("repair_request"),
-                 "evidence": evidence if role != "Research Analyst" else audit.numbered_sections(main),
-                 "earnings_release_opening_excerpt": _release_opening(main),
-                 "role_outputs": {"Research Analyst": self.state.research, "Financial Analyst": self.state.finance},
-                 "automatic_numeric_audit": self.state.manager_result.get("numeric_audit", [])},
-                "The revised report part only.", Path(self.state.run_dir), self.state.model,
-                self.state.api_key, self.state.base_url)
-            audit.save_node_record(Path(self.state.run_dir), "repair_once", repair_input,
-                                   {"role": role, "repaired_part": repaired})
-            if role == "Financial Analyst":
-                self.state.finance = repaired
-                evidence = desk.financial_evidence(self.state.companies, self.state.price,
-                                                   self.state.price_date or None,
-                                                   self.state.price_source or None)
-                self.state.parts["Valuation Insights"] = evidence + "\n\nFinancial Analyst interpretation:\n\n" + repaired
-                self.state.parts["Future Developments and Strategic Recommendations"] = (
-                    "Research findings:\n\n" + self.state.research + "\n\nFinancial findings:\n\n" + repaired)
-            elif role == "Research Analyst":
-                self.state.research = repaired
-                self.state.parts[heading] = repaired
-            elif role == "Investment Advisor":
-                self.state.advisor = repaired
-                self.state.parts[heading] = repaired
+            cash_line, cash_text = audit.cash_operations_narrative_line(main)
+            if cash_line and cash_text:
+                evidence += f"\n- Direct 10-K operating-cash-flow narrative: saved-text line {cash_line}: {cash_text}"
+            requests = self.state.manager_result.get("repair_requests") or [{
+                "part": self.state.manager_result["failing_part"],
+                "role": "Financial Analyst", "request": self.state.manager_result.get("repair_request", "Revise the failing part."),
+            }]
+            # Retry each failing role at most once, in a fixed code-defined order.
+            requests_by_role = {item["role"]: item for item in requests}
+            repair_results = {}
+            for role in ("Research Analyst", "Financial Analyst", "Investment Advisor", "Strategy Manager"):
+                if role not in requests_by_role:
+                    continue
+                request = requests_by_role[role]
+                heading = request["part"]
+                current = self.state.parts[heading]
+                repair_input = {"part": heading, "role": role, "manager_request": request["request"],
+                                "current_part": current}
+                repair_task = (f"Repair {heading} once. Follow the manager request and use only the supplied evidence. "
+                          "Do not calculate any values; remove every unsupported dollar amount or percentage. "
+                          "Quarter revenue growth compares the same quarter last year: call it YoY, never QoQ. "
+                          "Preserve exactly one final Insight: line when repairing an analyst part. It must state a supported claim absent from the earnings release opening and cite the correct filing form, its matching accession, and exact saved-text line or XBRL tag. Copy the number and scale from the evidence. When repairing a Strategy Manager section, return only that section's prose, with specific indicators and recommendations. Use only facts and periods in the analyst outputs. Cite each factual claim with its filing, accession, and saved-text line or tag. Do not add forecasts, targets, or numerical claims that the supplied evidence does not state. Do not return JSON or copy analyst sections.")
+                if role == "Financial Analyst":
+                    repair_task += (" For the Insight, use the direct 10-K operating-cash-flow narrative sentence in the supplied evidence, not the multi-year table. "
+                                    "Copy its amount, period, matching 10-K accession, and exact saved-text line. Do not state a growth rate in the Insight.")
+                elif role == "Investment Advisor":
+                    repair_task += (" For the Insight, cite the latest 10-K diluted EPS value and its saved-text line from the supplied role outputs. "
+                                    "Use the complete 10-K accession and exact line citation in parentheses, and use a distinct claim from the Research Analyst Insight.")
+                repaired = _call_role(
+                    role, repair_task,
+                    {"current_part": current, "manager_request": request["request"],
+                     "evidence": evidence if role != "Research Analyst" else audit.numbered_sections(main),
+                     "earnings_release_opening_excerpt": _release_opening(main),
+                     "role_outputs": {"Research Analyst": self.state.research, "Financial Analyst": self.state.finance},
+                     "automatic_numeric_audit": self.state.manager_result.get("numeric_audit", [])},
+                    "The revised report part only.", Path(self.state.run_dir), self.state.model,
+                    self.state.api_key, self.state.base_url)
+                repair_results[role] = repaired
+                slug = role.lower().replace(" ", "_")
+                audit.save_node_record(Path(self.state.run_dir), f"repair_{slug}", repair_input,
+                                       {"role": role, "repaired_part": repaired})
+                if role == "Financial Analyst":
+                    self.state.finance = repaired
+                    self.state.parts["Valuation Insights"] = evidence + "\n\nFinancial Analyst interpretation:\n\n" + repaired
+                elif role == "Research Analyst":
+                    self.state.research = repaired
+                    self.state.parts[heading] = repaired
+                elif role == "Investment Advisor":
+                    self.state.advisor = repaired
+                    self.state.parts[heading] = repaired
+                elif role == "Strategy Manager":
+                    self.state.parts[heading] = repaired.strip()
+            # A repair can add or change an Insight citation. Enrich repaired
+            # role outputs before the final audit and report compilation.
+            repaired_roles = {"Research Analyst": self.state.research,
+                              "Financial Analyst": self.state.finance,
+                              "Investment Advisor": self.state.advisor}
+            enriched_roles, enrichment_changes = audit.enrich_insight_source_lines(
+                repaired_roles, self.state.companies)
+            self.state.research = enriched_roles["Research Analyst"]
+            self.state.finance = enriched_roles["Financial Analyst"]
+            self.state.advisor = enriched_roles["Investment Advisor"]
+            self.state.parts["Market Positioning and Growth Outlook"] = self.state.research
+            self.state.parts["Valuation Insights"] = evidence + "\n\nFinancial Analyst interpretation:\n\n" + self.state.finance
+            self.state.parts["Investment Recommendation"] = self.state.advisor
+            audit.save_node_record(Path(self.state.run_dir), "repair_insight_line_enrichment",
+                                   {"role_outputs": repaired_roles},
+                                   {"role_outputs": enriched_roles, "changes": enrichment_changes})
             unresolved = audit.percentage_claim_audit(self.state.finance, self.state.companies)
             unresolved += audit.financial_amount_audit(self.state.finance, self.state.companies, self.state.price)
             unresolved += audit.financial_period_audit(self.state.finance, self.state.companies[0])
@@ -372,14 +450,19 @@ if isinstance(Flow, type) and Flow is not object:
                 "Research Analyst": self.state.research,
                 "Financial Analyst": self.state.finance,
                 "Investment Advisor": self.state.advisor,
-            })
-            self.state.repair_used = True
+            }, self.state.companies)
+            if (len(self.state.parts["Future Developments and Strategic Recommendations"].strip()) < 80 or
+                    "Research findings:" in self.state.parts["Future Developments and Strategic Recommendations"]):
+                unresolved_insights.append({"role": "Strategy Manager",
+                                            "part": "Future Developments and Strategic Recommendations",
+                                            "issue": "The Manager did not produce a substantive, distinct future developments section."})
+            self.state.repair_used = bool(repair_results)
             self.state.repair_outcome = "unresolved" if unresolved or unresolved_insights else "passed_after_repair"
             if unresolved:
                 self.state.parts["Valuation Insights"] += "\n\nManager note: Numeric audit remains unresolved after the one permitted repair. " + "; ".join(unresolved)
-            if unresolved_insights:
-                self.state.parts[heading] += "\n\nManager note: Insight requirement remains unresolved after the one permitted repair. " + "; ".join(
-                    item["issue"] for item in unresolved_insights)
+            for part in sorted({item["part"] for item in unresolved_insights}):
+                part_issues = [item["issue"] for item in unresolved_insights if item["part"] == part]
+                self.state.parts[part] += "\n\nManager note: Insight requirement remains unresolved after the permitted repair. " + "; ".join(part_issues)
             return self._compile_report()
 
         @listen(or_(compile_approved_report, repair_once))

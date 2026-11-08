@@ -11,7 +11,8 @@ ROOT = Path(__file__).resolve().parent
 RUNS = ROOT / "runs"
 PARTS = ["Overview", "Market Positioning and Growth Outlook", "Valuation Insights", "Future Developments and Strategic Recommendations", "Investment Recommendation"]
 
-def analyst_insight_audit(outputs: dict[str, str]) -> list[dict[str, str]]:
+def analyst_insight_audit(outputs: dict[str, str],
+                          companies: list[dict[str, Any]] | None = None) -> list[dict[str, str]]:
     """Check analyst outputs for one sourced insight line each."""
     required = {
         "Research Analyst": "Market Positioning and Growth Outlook",
@@ -35,7 +36,120 @@ def analyst_insight_audit(outputs: dict[str, str]) -> list[dict[str, str]]:
                 issue = f"{role} Insight: line must cite the filing, accession, and exact saved-text line."
         if issue:
             issues.append({"role": role, "part": part, "issue": issue})
+    if companies:
+        seen_insights: set[str] = set()
+        seen_sources: set[tuple[str, str, int | None]] = set()
+        for claim in insight_claims(outputs, companies):
+            role = claim["role"]
+            part = required[role]
+            normalized_text = re.sub(r"\W+", " ", claim.get("claim_text", "").casefold()).strip()
+            source_key = (claim.get("filing", ""), claim.get("accession", ""), claim.get("source_line"))
+            duplicate = bool(normalized_text and normalized_text in seen_insights) or (
+                bool(source_key[0] and source_key[1] and source_key[2]) and source_key in seen_sources)
+            if duplicate:
+                issues.append({"role": role, "part": part,
+                               "issue": f"{role} Insight must add a distinct claim; it duplicates another analyst's Insight."})
+            if normalized_text:
+                seen_insights.add(normalized_text)
+            if source_key[0] and source_key[1] and source_key[2]:
+                seen_sources.add(source_key)
+            citation_form = re.search(r"\b(10[-‐‑–—]K|10[-‐‑–—]Q|8[-‐‑–—]K)\b",
+                                      normalize_citation(claim.get("report_line", "")), re.I)
+            normalized_form = normalize_citation(citation_form.group(1)).upper() if citation_form else ""
+            if not claim.get("source_line") or not claim.get("source_excerpt") or not claim.get("accession"):
+                issues.append({"role": role, "part": part,
+                               "issue": f"{role} Insight must cite a real saved filing line and accession."})
+            elif not normalized_form or normalized_form != claim.get("filing", "").upper():
+                issues.append({"role": role, "part": part,
+                               "issue": f"{role} Insight filing form must match the cited accession and saved-text line."})
+            elif not insight_values_supported(claim):
+                issues.append({"role": role, "part": part,
+                               "issue": f"{role} Insight numbers must appear on the cited line, using its stated table scale."})
     return issues
+
+
+def enrich_insight_source_lines(outputs: dict[str, str],
+                               companies: list[dict[str, Any]]) -> tuple[dict[str, str], list[dict[str, Any]]]:
+    """Add exact saved-text lines when a role cites a fact tag and accession but omits its line."""
+    enriched = dict(outputs)
+    changes: list[dict[str, Any]] = []
+    line_citation = re.compile(r"\b(?:saved[- ]text\s+)?line\s+\d+\b", re.I)
+    for role, output in list(enriched.items()):
+        lines = output.splitlines()
+        for index, row in enumerate(lines):
+            if not re.match(r"(?i)^\s*Insight\s*:", row):
+                continue
+            normalized = normalize_citation(row)
+            accession_match = re.search(r"(\d{10})-(\d{2})-(\d{6})", normalized)
+            if not accession_match or line_citation.search(normalized):
+                continue
+            accession = "-".join(accession_match.groups())
+            source_company = next((company for company in companies
+                                   if accession in {item.get("accession") for item in
+                                                    company["facts"].get("filings", {}).values()}), None)
+            if not source_company:
+                continue
+            form = next(name for name, item in source_company["facts"].get("filings", {}).items()
+                        if item.get("accession") == accession)
+            source_text = source_company.get("filing_texts", {}).get(form, "")
+            tags = [fact.get("tag") for fact in source_company["facts"].get("facts", {}).values()
+                    if fact.get("tag") and fact.get("tag") in normalized]
+            if not tags:
+                continue
+            tag = tags[0]
+            fact = next(item for item in source_company["facts"]["facts"].values()
+                        if item.get("tag") == tag)
+            value = float(fact["value"])
+            label_pattern = {
+                "NetCashProvidedByUsedInOperatingActivities": re.compile(r"net cash provided by operating activities", re.I),
+                "EarningsPerShareDiluted": re.compile(r"^\s*diluted\b", re.I),
+            }.get(tag)
+            if not label_pattern:
+                continue
+            raw_lines = source_text.splitlines()
+            target_line = None
+            target_value = None
+            for line_no, text in enumerate(raw_lines, 1):
+                if not label_pattern.search(text):
+                    continue
+                tokens = re.findall(r"(?<!\w)\d[\d,]*(?:\.\d+)?", text)
+                for scale in (1.0, 1_000.0, 1_000_000.0, 1_000_000_000.0):
+                    candidate = value / scale
+                    matches = [token for token in tokens if float(token.replace(",", "")) == candidate]
+                    if matches:
+                        target_line, target_value = line_no, matches[-1]
+                        break
+                if target_line:
+                    break
+            if not target_line or not target_value:
+                continue
+            updated = row
+            citation_match = re.search(
+                r"[\(\[\u3010]([^\)\]\u3011]*\d{10}[-‐‑–—]\d{2}[-‐‑–—]\d{6}[^\)\]\u3011]*)[\)\]\u3011]",
+                row)
+            if citation_match:
+                content = citation_match.group(1).rstrip()
+                updated = (row[:citation_match.start()] + "(" + content +
+                           f", saved-text line {target_line})" + row[citation_match.end():])
+            else:
+                continue
+            # Normalize a converted amount to the exact figure and unit scale in the statement.
+            insight_text = re.sub(r"(?i)^\s*Insight\s*:\s*", "", normalized)
+            numeric_matches = list(re.finditer(r"(?<!\w)\$?\d[\d,]*(?:\.\d+)?", insight_text))
+            for numeric_match in numeric_matches:
+                reported = float(numeric_match.group(0).replace("$", "").replace(",", ""))
+                if reported == value:
+                    unit = " million" if value / float(target_value.replace(",", "")) == 1_000_000 else ""
+                    old_number = numeric_match.group(0)
+                    replacement = target_value + unit
+                    updated = re.sub(re.escape(old_number), replacement, updated, count=1)
+                    break
+            lines[index] = updated
+            changes.append({"role": role, "accession": accession, "tag": tag,
+                            "saved_text_line": target_line, "statement_value": target_value,
+                            "updated_insight": updated})
+        enriched[role] = "\n".join(lines)
+    return enriched, changes
 
 def save_json(path: Path, value: Any) -> None:
     path.write_text(json.dumps(value, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
@@ -100,7 +214,9 @@ def insight_claims(outputs: dict[str, str], companies: dict[str, Any] | list[dic
                      if re.match(r"(?i)^\s*Insight\s*:", row.strip())), "")
         claim_id = f"claim:{primary_facts['ticker'].lower()}_insight_{slug}"
         normalized = normalize_citation(line)
-        citation = re.search(r"\(([^)]*\d{10}-\d{2}-\d{6}[^)]*line\s+\d+[^)]*)\)", normalized, re.I)
+        citation = re.search(
+            r"[\(\[\u3010]([^\)\]\u3011]*(?:\d{10}-\d{2}-\d{6}|\bline\s+\d+)[^\)\]\u3011]*)[\)\]\u3011]",
+            normalized, re.I)
         accession_match = re.search(r"(\d{10})-(\d{2})-(\d{6})", normalized)
         line_match = re.search(r"\bline\s+(\d+)\b", normalized, re.I)
         accession = "-".join(accession_match.groups()) if accession_match else None
@@ -114,21 +230,47 @@ def insight_claims(outputs: dict[str, str], companies: dict[str, Any] | list[dic
         source_text = source_company.get("filing_texts", {}).get(filing or "", "") if source_company else ""
         rows = source_text.splitlines()
         source_excerpt = rows[source_line - 1] if source_line and source_line <= len(rows) else ""
-        source_context = "\n".join(rows[max(0, source_line - 12):source_line]) if source_line else ""
+        source_context = "\n".join(rows[max(0, source_line - 40):source_line]) if source_line else ""
         claim_text = re.sub(r"(?i)^\s*Insight\s*:\s*", "", normalized)
         claim_text = re.sub(r"<!--\s*claim:[^>]+-->", "", claim_text).strip()
         if citation:
             claim_text = claim_text.replace(citation.group(0), "").strip()
         claim_text = re.sub(r"(?i)^(?:the\s+)?(?:10-K|10-Q|8-K)\s+", "", claim_text)
+        # A fiscal/calendar year identifies the period. It is not a reported
+        # amount that must also appear on the cited statement row.
+        claim_text_for_values = re.sub(
+            r"(?i)\b(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\s+\d{1,2},?\s+(?:19|20)\d{2}\b",
+            "", claim_text)
+        claim_text_for_values = re.sub(r"\b\d{4}-\d{2}-\d{2}\b", "", claim_text_for_values)
+        claim_text_for_values = re.sub(r"(?i)\b(?:FY\s*)?(?:19|20)\d{2}\b", "", claim_text_for_values)
         claims.append({
             "id": claim_id, "kind": "insight", "ticker": source_ticker, "role": role,
-            "report_line": line, "claim_text": claim_text, "insight_numbers": numeric_tokens(claim_text),
+            "report_line": line, "claim_text": claim_text, "insight_numbers": numeric_tokens(claim_text_for_values),
             "filing": filing, "accession": accession, "source_line": source_line,
             "source_excerpt": source_excerpt, "source_context": source_context,
             "source_file": (f"{source_ticker}/{filing.replace('-', '')}_{accession}.txt"
                             if filing and accession else ""),
         })
     return claims
+
+
+def insight_values_supported(claim: dict[str, Any]) -> bool:
+    """Check insight values against its cited row and an explicit statement scale."""
+    tokens = claim.get("insight_numbers", [])
+    source_tokens = numeric_tokens(claim.get("source_excerpt", ""))
+    context = claim.get("source_context", "")
+    scale = 1.0
+    if re.search(r"(?i)in\s+millions", context):
+        scale = 1_000_000.0
+    elif re.search(r"(?i)in\s+thousands", context):
+        scale = 1_000.0
+    elif re.search(r"(?i)in\s+billions", context):
+        scale = 1_000_000_000.0
+    return bool(tokens) and all(
+        (float(token[0]), bool(token[1])) in source_tokens
+        or (not bool(token[1]) and scale > 1 and
+            (float(token[0]) / scale, False) in source_tokens)
+        for token in tokens)
 
 
 def cited_filing_evidence(claims: list[dict[str, Any]],
@@ -425,20 +567,7 @@ def code_verify_claims(claims: list[dict[str, Any]], run_dir: Path,
                                 and filing_text[line_number - 1] == excerpt
                                 and cited_accession)
                 tokens = claim.get("insight_numbers", [])
-                source_tokens = numeric_tokens(excerpt)
-                context = claim.get("source_context", "")
-                scale = 1.0
-                if re.search(r"(?i)in\s+millions", context):
-                    scale = 1_000_000.0
-                elif re.search(r"(?i)in\s+thousands", context):
-                    scale = 1_000.0
-                elif re.search(r"(?i)in\s+billions", context):
-                    scale = 1_000_000_000.0
-                values_supported = bool(tokens) and all(
-                    (float(token[0]), bool(token[1])) in source_tokens
-                    or (not bool(token[1]) and scale > 1 and
-                        (float(token[0]) / scale, False) in source_tokens)
-                    for token in tokens)
+                values_supported = insight_values_supported(claim)
                 report_has_insight = claim.get("report_line", "") in report_line
                 if not cited_source:
                     mark, reason = "unsupported", "The cited accession or exact filing line is missing or does not match."
@@ -534,6 +663,20 @@ def source_lines(company: dict[str, Any], key: str) -> tuple[int | None, str]:
             context = " ".join(lines[max(start, index - 4):min(end, index + 2)])
             if re.search(label_pattern, context, re.I):
                 return index + 1, lines[index]
+    return None, ""
+
+
+def cash_operations_narrative_line(company: dict[str, Any]) -> tuple[int | None, str]:
+    """Find the 10-K narrative sentence that states annual operating cash flow and period."""
+    fact = company.get("facts", {}).get("facts", {}).get("cash_from_operations")
+    if not fact:
+        return None, ""
+    year = str(fact.get("period_end", ""))[:4]
+    text = company.get("filing_texts", {}).get(fact.get("filing", "10-K"), "")
+    for line_no, line in enumerate(text.splitlines(), 1):
+        if (re.search(r"net cash provided by operating activities was", line, re.I)
+                and re.search(rf"year ended December 31,?\s*{re.escape(year)}", line, re.I)):
+            return line_no, line
     return None, ""
 
 def save_verified_report(path: Path, first_line: str, timestamp: str, body: str,

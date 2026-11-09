@@ -13,11 +13,11 @@ This tracker records saved evidence and student-reported activities separately. 
 - The three student-authored personas are in [`personas.md`](personas.md). Shachi confirms that her final wording is her own and complete.
 - The spoken reflection and three-person team formation are complete per Shachi.
 - The written gap-list answer is in [`gap_list_work.md`](gap_list_work.md), using UBER's 10-K evidence. It analyzes operating cash flow, net income, and working capital.
+- Shachi confirms that she completed the separate-chat gap-list activity and her own ASD-STE100 rewrite of the Lab 05 request. The workspace keeps the AI-assisted draft as reference; her final rewritten wording is not saved here.
 
 ## Still to confirm or complete
 
 - The local partner worksheet [`Lab05_partner_check.md`](Lab05_partner_check.md) still has blank review marks and reviewer signature. Shachi said she will handle the partner check; save the completed copy here when received.
-- The written gap-list answer is saved, but the separate-chat activity is not independently evidenced in this workspace.
 - Confirm whether the Checkpoint 2 commit permalink was submitted in Brightspace; that submission status is not available here.
 
 ## Checkpoint 2 commit

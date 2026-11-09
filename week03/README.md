@@ -76,7 +76,7 @@ Flow decorators control the end-to-end order and repair branch. Each role runs w
 - Start the local browser interface with `.venv-crewai/bin/python -m streamlit run app.py`. The app accepts a ticker, optional peers and price, displays node progress, and presents the verified report when the run ends. `AppTest` passed.
 - The current verifier adds individual marks for all three insight lines, resolves citations to peer filings, and checks reported-unit conversions against nearby statement scale labels. The offline suite has 33 passing tests.
 - The final UBER run saved filings, facts, all Flow node inputs and outputs, and final marks. The Strategy Manager passed without a repair, and the Verifier marked 32/32 claims correct. The partner review remains blank for the partner to complete.
-- The ASD-STE100 Lab 05 prompt is an AI-assisted draft at [lab-05-asd-ste100-draft.md](../prompts/lab-05-asd-ste100-draft.md). The course asks the student to rewrite it; the file does not claim student authorship.
+- Shachi confirms that she completed her own ASD-STE100 rewrite of the Lab 05 prompt and the separate-chat gap-list activity. The saved [AI-assisted draft](../prompts/lab-05-asd-ste100-draft.md) remains reference material; her final wording is not saved in this workspace.
 
 The ASD-STE100-style reconstructed request is in [reconstructed-week-03-crewai-flow.md](../prompts/reconstructed-week-03-crewai-flow.md).
 

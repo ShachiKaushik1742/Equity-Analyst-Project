@@ -55,20 +55,11 @@ Insight: Net cash provided by operating activities was $10.1 billion for the y
 
 ## Future Developments and Strategic Recommendations
 
-Future Developments and Strategic Recommendations
+In the next reporting period, compare management's autonomous-vehicle deployment with its stated expectation of approximately 700 fully driverless vehicles on Uber by year-end and more than 2,000 in 2027 (8-K accession `0001543151-26-000039`, saved-text line 8). Treat these as management expectations and check for reported progress before assuming they will be achieved.
 
-Key indicators to monitor in the next reporting period (Q4 2026 / FY 2026):
-- **Autonomous‑vehicle deployment:** track the number of fully driverless vehicles in operation, aiming for >700 by year‑end 2026 and progress toward the 2,000‑vehicle target for 2027 (8‑K accession 0001543151‑26‑000039 line 8).
-- **Geographic reach:** confirm continued platform availability in >70 countries (10‑K accession 0001543151‑26‑000015 line 182) and any expansion into new markets.
-- **Delivery segment growth:** monitor revenue contribution from Uber Direct and advertising services (10‑K accession 0001543151‑26‑000015 line 189) and quarterly delivery‑revenue trends.
-- **Financial health:** watch net cash provided by operating activities ($10.099 B) (10‑K accession 0001543151‑26‑000015 saved‑text line 1086), free cash flow ($9.763 B) (code‑calculated) and operating margin (10.70%) (code‑calculated) for any improvement.
-- **Capital efficiency:** observe capex ($336 M) (10‑K accession 0001543151‑26‑000015) relative to revenue growth (18.28%) (code‑calculated).
+Also monitor operating cash flow and its composition. The 10-K reports $10.1 billion of 2025 cash from operating activities, including a $2.2 billion increase in cash from working capital, primarily from accrued insurance reserves because liabilities recorded exceeded claims paid (10-K accession `0001543151-26-000015`, saved-text line 1086). In the next filing, compare cash from operations with net income and examine whether reserve-related working-capital effects continue or reverse.
 
-Recommendations:
-- Prioritize scaling the autonomous‑vehicle program while managing capital spend to keep debt‑to‑equity below 0.4 (debt‑to‑equity 0.3891 from 10‑K accession 0001543151‑26‑000015).
-- Leverage the >70‑country footprint to cross‑sell Mobility and Delivery services, aiming to increase delivery‑revenue share.
-- Maintain disciplined cash‑flow management, targeting free cash flow growth above 10% quarter‑over‑quarter.
-- Continue monitoring operating‑margin trends; seek incremental efficiency gains to push margin above the current 10.70% level.
+Allocate growth investment against reported operating results. Review the economics of autonomous-vehicle deployment and Delivery expansion as new results become available. Keep operating margin and cash conversion in view when assessing whether growth is translating into durable financial performance.
 
 ## Investment Recommendation
 

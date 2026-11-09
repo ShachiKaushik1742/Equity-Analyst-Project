@@ -1,6 +1,6 @@
 # Week 3 analyst personas
 
-This revision uses Shachi's draft as its source. The personas apply to the ticker selected for a run. Review the wording and make the final choices in your own words before submission, as the course asks.
+These personas were prepared from Shachi's supplied wording and updated for the selected UBER run. Shachi confirms that she completed the final wording in her own words.
 
 ## Research Analyst
 

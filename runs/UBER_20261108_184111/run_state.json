@@ -10,6 +10,9 @@
   "price_date": "",
   "price_source": "",
   "run_time": "2026-11-08T18:41:40-05:00",
+  "manager_status": "REPAIR_CALL_DID_NOT_RETURN",
+  "manager_editorial_fallback": "nodes/manager_repair_fallback.md",
+  "verifier_status": "32 ledger claims marked correct before the report's Manager-section editorial update; re-verification is still required",
   "framework": "CrewAI Flow + Process.sequential",
   "framework_version": "1.15.34",
   "filings": [

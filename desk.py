@@ -177,6 +177,26 @@ def is_earnings_8k(cik: int, row: dict[str, str], ua: str) -> tuple[bool, dict[s
     return False, index
 
 
+def earnings_release_document(index_files: list[dict[str, Any]], index_text: str = "") -> str | None:
+    """Select Exhibit 99.1 from the SEC filing index, with filename fallbacks."""
+    exhibit = re.search(r"\bEX-99\.1\s+([A-Za-z0-9_.-]+\.html?)\b", index_text, re.I)
+    if exhibit:
+        return exhibit.group(1)
+    candidates: list[tuple[int, int, str]] = []
+    for order, item in enumerate(index_files):
+        name = item.get("name", "")
+        if not name.lower().endswith((".htm", ".html")):
+            continue
+        lowered = name.casefold()
+        if re.search(r"earnings.{0,40}relea", lowered):
+            candidates.append((0, order, name))
+        elif re.search(r"(?:ex|exhibit).{0,10}99.{0,4}1", lowered):
+            candidates.append((1, order, name))
+        elif re.search(r"99.{0,4}1", lowered):
+            candidates.append((2, order, name))
+    return min(candidates)[2] if candidates else None
+
+
 def choose_filings(cik: int, subs: dict[str, Any], ua: str) -> tuple[dict[str, str], dict[str, Any]]:
     rows = recent_rows(subs)
     annual = next((r for r in rows if r["form"] == "10-K"), None)
@@ -356,10 +376,15 @@ def facts_for_company(ticker: str, ua: str, out: Path, peers: list[str] | None =
     for form, row in filings.items():
         index_files = row.get("indexFiles", [])
         if form == "8-K":
-            docs = [f["name"] for f in index_files if f.get("name", "").lower().endswith((".htm", ".html"))
-                    and re.search(r"earnings.?release|99[-.]?1|ex[-.]?99", f.get("name", ""), re.IGNORECASE)]
-            if not docs:
-                docs = [f["name"] for f in index_files if "EX-99.1" in f.get("type", "") or "EX-99" in f.get("type", "")]
+            index_text = ""
+            accession_index_url = filing_url(cik, row).replace(
+                "index.json", f"{row['accessionNumber']}-index.html")
+            try:
+                index_text = plain_text(get_bytes(accession_index_url, ua))
+            except (HTTPError, URLError):
+                pass
+            release_document = earnings_release_document(index_files, index_text)
+            docs = [release_document] if release_document else []
         else:
             docs = [row.get("primaryDocument", "")]
         if not docs or not docs[0]:
@@ -528,39 +553,73 @@ def release_claims(release_text: str) -> list[str]:
 
 def quarter_metrics(release_text: str) -> dict[str, Any]:
     lines = release_text.splitlines()
+    first_text = "\n".join(lines[:30])
+    fiscal_year_match = re.search(r"(?:results for|quarter ended)[^\n]{0,80}?(20\d{2})", first_text, re.I)
+    fiscal_year = int(fiscal_year_match.group(1)) if fiscal_year_match else None
+
+    def numbers(text: str, decimals: bool = False) -> list[float]:
+        pattern = r"(?<![\w.])\$?\s*(\d{1,3}(?:,\d{3})+(?:\.\d+)?|\d+(?:\.\d+)?)(?![\w.])"
+        values = [float(value.replace(",", "")) for value in re.findall(pattern, text)]
+        return values
+
+    def ordered_pair(values: list[float], index: int) -> list[float]:
+        if len(values) < 2:
+            return []
+        header = next((lines[j] for j in range(index - 1, max(-1, index - 12), -1)
+                       if len(re.findall(r"\b20\d{2}\b", lines[j])) >= 2), "")
+        years = [int(year) for year in re.findall(r"\b20\d{2}\b", header)]
+        if fiscal_year and len(years) >= 2 and len(values) >= 2:
+            first_two_years = years[:2]
+            if fiscal_year in first_two_years and fiscal_year - 1 in first_two_years:
+                return [values[first_two_years.index(fiscal_year)],
+                        values[first_two_years.index(fiscal_year - 1)]]
+        return values[:2]
+
     revenue_line = ""
     revenue_line_number: int | None = None
     revenue_number_line_number: int | None = None
     revenue_numbers: list[float] = []
     for i, line in enumerate(lines):
-        match = re.search(r"\btotal\s+(?:net\s+)?(?:revenues?|sales)\b", line, re.IGNORECASE)
+        # Match a financial-statement/table row, not a narrative bullet such as
+        # “Revenue grew 10% YoY to ...”.
+        match = re.match(r"\s*(?:total\s+(?:net\s+)?(?:revenues?|sales)|revenue|net\s+sales)\b", line, re.I)
         if not match:
             continue
-        revenue_line = line
+        tail = line[match.end():]
+        if re.search(r"[A-Za-z]", tail):
+            continue
+        row_numbers = numbers(tail)
+        if len(row_numbers) < 2:
+            continue
+        revenue_numbers = ordered_pair(row_numbers, i)
+        revenue_line = line.strip()
         revenue_line_number = i + 1
-        revenue_context = re.sub(r"\(\d+\)", "", " ".join(lines[i:min(len(lines), i + 3)]))
-        revenue_display_lines = [re.sub(r"\(\d+\)", "", item).strip() for item in lines[i:min(len(lines), i + 3)]]
-        number_offset = next((offset for offset, item in enumerate(revenue_display_lines) if re.search(r"\d", item)), 0)
-        number_line = revenue_display_lines[number_offset] if revenue_display_lines else ""
-        revenue_number_line_number = i + number_offset + 1
-        label_line = re.sub(r"\(\d+\)", "", line).strip()
-        revenue_line = label_line if number_line == label_line or not number_line else f"{label_line} {number_line}"
-        revenue_tail = revenue_context[match.end():]
-        revenue_numbers = [float(x.replace(",", "")) for x in re.findall(
-            r"(?<![\w.])\$?\s*(\d{1,3}(?:,\d{3})+|\d+)(?![\w.])", revenue_tail)]
-        if len(revenue_numbers) >= 2:
-            break
+        revenue_number_line_number = i + 1
+        break
     eps_line = ""
     eps_line_number: int | None = None
     eps_number_line_number: int | None = None
     eps_numbers: list[float] = []
+    for i, line in enumerate(lines):
+        direct = re.match(r"\s*(?:GAAP\s+)?Diluted\s+EPS\b", line, re.I)
+        if not direct:
+            continue
+        tail = line[direct.end():]
+        if re.search(r"[A-Za-z]", tail):
+            continue
+        pair = ordered_pair(numbers(tail), i)
+        if pair:
+            eps_line = line.strip()
+            eps_line_number = eps_number_line_number = i + 1
+            eps_numbers = pair
+            break
     heading = next((i for i, line in enumerate(lines) if re.search(
         r"(?:NET INCOME PER COMMON SHARE|EARNINGS PER SHARE)", line, re.IGNORECASE)), -1)
     eps_start = max(0, heading + 1) if heading >= 0 else 0
     for i in range(eps_start, min(len(lines), eps_start + 20)):
         # Require an Earnings per share heading first. Otherwise the later
         # diluted weighted-share-count row can be mistaken for diluted EPS.
-        if heading < 0 or not re.match(r"\s*Diluted(?:\s|$)", lines[i], re.IGNORECASE):
+        if eps_numbers or heading < 0 or not re.match(r"\s*Diluted(?:\s|$)", lines[i], re.IGNORECASE):
             continue
         values: list[tuple[int, float]] = []
         for j in range(i, min(len(lines), i + 4)):
@@ -575,13 +634,13 @@ def quarter_metrics(release_text: str) -> dict[str, Any]:
             eps_line_number = i + 1
             eps_number_line_number = values[-1][0] + 1
             eps_line = " ".join(lines[i:values[-1][0] + 1])
-            eps_numbers = [value for _, value in values]
+            eps_numbers = ordered_pair([value for _, value in values], i)
             break
         if len(values) > 2:
             eps_line_number = i + 1
             eps_number_line_number = values[-1][0] + 1
             eps_line = " ".join(lines[i:values[-1][0] + 1])
-            eps_numbers = [value for _, value in values[:2]]
+            eps_numbers = ordered_pair([value for _, value in values], i)
             break
     revenue = revenue_numbers[:2] if len(revenue_numbers) >= 2 else []
     return {

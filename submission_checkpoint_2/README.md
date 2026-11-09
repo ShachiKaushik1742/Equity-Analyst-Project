@@ -21,10 +21,11 @@ This repository contains the Week 3 agent team, student-provided analyst persona
 - [Lab 05 completion and outstanding partner/student actions](../week03/Lab05_completion.md)
 - [Local Streamlit interface](../app.py)
 - [COST Lab 05 run with three sourced insights and 30/30 verifier marks](../runs/COST_20261105_180611/verified_report.md)
+- [Final partner-selected UBER Lab 05 run with Manager PASS and 32/32 verifier marks](../runs/UBER_20261108_202611/verified_report.md)
 - [Blank partner review worksheet](../week03/Lab05_partner_check.md)
 - [AI-assisted ASD-STE100 prompt draft, awaiting the student's own rewrite](../prompts/lab-05-asd-ste100-draft.md)
 
-The complete saved runs include filing texts, facts, node inputs and outputs, claims, verifier marks, and reports. The repository excludes `.env` and API keys. Lab 05 is not fully partner-complete: the partner-selected ticker and their two manual claim checks must be added before the partner review can be marked complete.
+The complete saved runs include filing texts, facts, node inputs and outputs, claims, verifier marks, and reports. The repository excludes `.env` and API keys. UBER is the partner-selected ticker, and the partner run is included. Lab 05 partner review is still pending: the partner must check two claims and fill in the worksheet. The student must also complete any outstanding in-class activities and rewrite the prompt in their own words if that requirement remains outstanding.
 
 ## Brightspace
 

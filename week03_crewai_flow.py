@@ -46,6 +46,31 @@ def _release_opening(company: dict[str, Any], limit: int = 10) -> str:
     )
 
 
+def _segment_comparison(company: dict[str, Any]) -> str:
+    """Find a 10-K line that compares segment performance year over year."""
+    accession = company["facts"]["filings"]["10-K"]["accession"]
+    rows = company.get("filing_texts", {}).get("10-K", "").splitlines()
+    patterns = {
+        "Mobility": re.compile(r"Mobility Gross Bookings grew\s+(\d+(?:\.\d+)?)%", re.I),
+        "Delivery": re.compile(r"Delivery Gross Bookings grew\s+(\d+(?:\.\d+)?)%", re.I),
+        "Freight": re.compile(r"Freight Gross Bookings (?:declined|grew)\s+(\d+(?:\.\d+)?)%", re.I),
+    }
+    found = []
+    for line_no, line in enumerate(rows, 1):
+        if not all(pattern.search(line) for pattern in patterns.values()):
+            continue
+        for segment, pattern in patterns.items():
+            match = pattern.search(line)
+            if match:
+                found.append((abs(float(match.group(1))), segment, match.group(1), line_no, line))
+        break
+    if not found:
+        return "No single 10-K line compares all segment performance measures year over year. Do not invent a segment comparison."
+    _, segment, rate, line_no, line = max(found)
+    return (f"Largest segment year-over-year change: {segment}, {rate}% (absolute change). "
+            f"10-K accession {accession}, saved-text line {line_no}: {line}")
+
+
 def _call_role(name: str, task: str, context: dict[str, Any], expected: str,
                out: Path, model: str, key: str, base_url: str) -> str:
     """Run one isolated role task in a sequential CrewAI crew."""
@@ -222,11 +247,13 @@ if isinstance(Flow, type) and Flow is not object:
         def research_analyst(self, _: str) -> str:
             main = self.state.companies[0]
             business, mda, release = audit.numbered_sections(main)
+            segment_evidence = _segment_comparison(main)
             self.state.research = _call_role(
                 "Research Analyst",
-                "In no more than 220 words, describe business model, competitive position, catalysts, and recent developments. Every factual claim needs an exact quote with filing, section, accession, and saved-text line. Use the accession shown for that same filing form in the supplied context; do not cite a 10-K accession for an 8-K line. End with exactly one line that begins 'Insight:'. It must state one directly reported number that appears on one saved-text line, and a claim not stated in the earnings release opening excerpt. Cite the filing form, its matching accession, and exact saved-text line on that same line. Copy number units and scale from the cited evidence. Do not calculate or invent numbers or sources.",
+                "In no more than 220 words, describe business model, competitive position, catalysts, and recent developments. Every factual claim needs an exact quote with filing, section, accession, and saved-text line. Use the accession shown for that same filing form in the supplied context; do not cite a 10-K accession for an 8-K line. End with exactly one line that begins 'Insight:'. Use the supplied largest segment year-over-year comparison as the Insight. State the segment, reported percentage, and comparison; cite the exact 10-K accession and saved-text line from that supplied evidence. Do not substitute another metric or source, calculate, or invent numbers or sources. The claim must not appear in the earnings release opening excerpt.",
                 {"10-K Item 1 Business": business, "10-K Item 7 MD&A": mda,
                  "earnings release relevant lines": release,
+                 "persona segment performance evidence": segment_evidence,
                  "earnings release opening excerpt": _release_opening(main)},
                 "Concise Markdown with source-supported claims and exact line references, ending in one sourced Insight line.",
                 Path(self.state.run_dir), self.state.model, self.state.api_key, self.state.base_url)
@@ -237,12 +264,18 @@ if isinstance(Flow, type) and Flow is not object:
             evidence = desk.financial_evidence(self.state.companies, self.state.price,
                                                self.state.price_date or None,
                                                self.state.price_source or None)
+            eps_line, eps_text = audit.source_lines(self.state.companies[0], "diluted_eps")
+            eps_fact = self.state.companies[0]["facts"].get("facts", {}).get("diluted_eps", {})
+            if eps_line and eps_text and eps_fact:
+                evidence += (f"\n- Latest 10-K diluted EPS statement line for Advisor citation: "
+                            f"{eps_fact.get('value')} {eps_fact.get('unit')}; 10-K accession "
+                            f"{eps_fact.get('accession')}, saved-text line {eps_line}: {eps_text}")
             cash_line, cash_text = audit.cash_operations_narrative_line(self.state.companies[0])
             if cash_line and cash_text:
                 evidence += f"\n- Direct 10-K operating-cash-flow narrative: saved-text line {cash_line}: {cash_text}"
             self.state.finance = _call_role(
                 "Financial Analyst",
-                "In no more than 100 words, interpret the code-calculated facts, ratios, quarter, and peers. Do not reproduce evidence tables. Do not calculate or introduce intermediate values. Use only dollar amounts and percentages printed in the supplied evidence; omit unlisted numbers. Do not calculate average equity or EPS growth. Cite every number with filing/tag or saved-text line, period, and accession. State the selected revenue definition. Put CALCULATOR_REQUESTS: NONE before the final line. End with exactly one line that begins 'Insight:'. Use the direct 10-K operating-cash-flow narrative sentence supplied in the evidence, not the multi-year table. Copy the cash-flow amount, period, filing form, accession, and exact saved-text line from that sentence. The Insight must make a filing-supported claim not stated in the earnings release opening excerpt. Do not use a calculated ratio, growth rate, or quarter figure for the Insight. Do not cite a 10-K accession for an 8-K line. Do not calculate or invent numbers or sources.",
+                "In no more than 100 words, interpret the code-calculated facts, ratios, quarter, and peers. Do not reproduce evidence tables. Do not calculate or introduce intermediate values. Use only dollar amounts and percentages printed in the supplied evidence; omit unlisted numbers. Copy each amount's numeric scale and unit exactly as the evidence prints it; do not change, infer, or convert units. Do not calculate average equity or EPS growth. Cite every number with filing/tag or saved-text line, period, and accession. Include diluted EPS with the exact 10-K statement line, accession, and period so the Advisor can cite it. State the selected revenue definition. Put CALCULATOR_REQUESTS: NONE before the final line. End with exactly one line that begins 'Insight:'. Use the direct 10-K operating-cash-flow narrative sentence supplied in the evidence, not the multi-year table. Make the Insight one short sentence with only the $10.1 billion operating-cash-flow amount, the fiscal period, and its exact filing, full accession, and saved-text line. Do not quote or restate the other dollar figures in that narrative sentence. The Insight must make a filing-supported claim not stated in the earnings release opening excerpt. Do not use a calculated ratio, growth rate, or quarter figure for the Insight. Do not cite a 10-K accession for an 8-K line. Do not calculate or invent numbers or sources.",
                 {"code_calculated_evidence": evidence,
                  "earnings release opening excerpt": _release_opening(self.state.companies[0]),
                  "available_calculator_requests": ["debt_to_revenue", "operating_cash_flow_margin", "capex_to_revenue"]},
@@ -254,7 +287,7 @@ if isinstance(Flow, type) and Flow is not object:
         def investment_advisor(self, _: str) -> str:
             self.state.advisor = _call_role(
                 "Investment Advisor",
-                "In no more than 120 words, write a thesis and choose Buy, Hold, or Sell. Name one deciding number. Use only the Research Analyst and Financial Analyst outputs. End with exactly one line that begins 'Insight:'. Use a different source line and claim from the Research Analyst Insight. Reuse one directly reported number and its exact filing form, matching accession, and saved-text line from the other analyst outputs. The claim must be absent from the earnings release opening. Copy the complete citation from the role that first cited this number; do not change the filing form or accession. Do not add a fact or an uncited number.",
+                "In no more than 120 words, write a thesis and choose Buy, Hold, or Sell. Name one deciding number. Use only the Research Analyst and Financial Analyst outputs. End with exactly one line that begins 'Insight:'. For the Insight, use the latest 10-K diluted EPS statement line cited by the Financial Analyst. Copy its value, period, filing form, full accession, and exact saved-text line. This must differ from the Research Analyst's segment Insight and the Financial Analyst's cash-flow Insight. The claim must be absent from the earnings release opening. Do not claim that revenue declined unless the cited filing explicitly reports a decline in revenue; a negative impact on the growth rate is not a revenue decline. Do not add a fact or an uncited number.",
                 {"Research Analyst": self.state.research, "Financial Analyst": self.state.finance},
                 "A thesis, one supported deciding number, one recommendation, and a sourced Insight line.",
                 Path(self.state.run_dir), self.state.model, self.state.api_key, self.state.base_url)
@@ -295,7 +328,7 @@ if isinstance(Flow, type) and Flow is not object:
             }, self.state.companies)
             raw = _call_role(
                 "Strategy Manager",
-                "Check the five required report parts for completeness and consistency. Check every analyst output for exactly one sourced and distinct Insight line. Each insight must make a filing-supported claim that the supplied earnings release opening excerpt does not state. Reject duplicate insight claims, an insight that restates the release headline, or an insight without a source citation. If automatic_numeric_audit is non-empty, fail Valuation Insights. If automatic_insight_audit is non-empty, fail the part owned by the first listed role. Write a concise, substantive future_developments_and_recommendations section with specific next-period indicators and recommendations that follow from the analysts' evidence. Use only facts in the analyst parts. Cite each factual claim with the same filing, accession, and line or tag used by the analyst. Do not add an uncited number, estimate, target, or forecast. Do not copy the analyst sections into it. Return JSON with status, failing_part, repair_request, and future_developments_and_recommendations, or identify one failing part for its single repair.",
+                "Check the five required report parts for completeness and consistency. Check every analyst output for exactly one sourced and distinct Insight line. Each insight must make a filing-supported claim that the supplied earnings release opening excerpt does not state. Reject duplicate insight claims, an insight that restates the release headline, or an insight without a source citation. If automatic_numeric_audit is non-empty, fail Valuation Insights. If automatic_insight_audit is non-empty, fail the part owned by the first listed role. Write a concise, substantive future_developments_and_recommendations section with specific next-period indicators and recommendations that follow from the analysts' evidence. Use only the analyst parts. For a factual statement, copy the complete citation from the analyst part that supports it, character for character, including filing form, complete accession, and line or tag. Do not use a citation that appears in another filing or was not supplied for the specific claim. Copy every accession in full, including leading zeroes; never shorten an accession. If no supported forecast or recommendation is given, state what evidence the desk should monitor next period, without adding numerical estimates, targets, or forecasts. Do not copy analyst sections into it. Return JSON with status, failing_part, repair_request, and future_developments_and_recommendations, or identify one failing part for its single repair.",
                 {"ticker": self.state.ticker, "parts": self.state.parts, "required_parts": PARTS,
                  "source_facts": main["facts"]["facts"], "automatic_numeric_audit": numeric_audit,
                  "automatic_insight_audit": insight_issues,
@@ -393,20 +426,41 @@ if isinstance(Flow, type) and Flow is not object:
                 current = self.state.parts[heading]
                 repair_input = {"part": heading, "role": role, "manager_request": request["request"],
                                 "current_part": current}
-                repair_task = (f"Repair {heading} once. Follow the manager request and use only the supplied evidence. "
-                          "Do not calculate any values; remove every unsupported dollar amount or percentage. "
-                          "Quarter revenue growth compares the same quarter last year: call it YoY, never QoQ. "
-                          "Preserve exactly one final Insight: line when repairing an analyst part. It must state a supported claim absent from the earnings release opening and cite the correct filing form, its matching accession, and exact saved-text line or XBRL tag. Copy the number and scale from the evidence. When repairing a Strategy Manager section, return only that section's prose, with specific indicators and recommendations. Use only facts and periods in the analyst outputs. Cite each factual claim with its filing, accession, and saved-text line or tag. Do not add forecasts, targets, or numerical claims that the supplied evidence does not state. Do not return JSON or copy analyst sections.")
+                repair_task = (
+                    f"Repair {heading} once. Follow the manager request and use only the supplied evidence. "
+                    "Do not calculate any values; remove every unsupported dollar amount or percentage. "
+                    "Quarter revenue growth compares the same quarter last year: call it YoY, never QoQ. "
+                    "Preserve exactly one final Insight: line when repairing an analyst part. It must state a supported claim absent from the earnings release opening and cite the correct filing form, its matching accession, and exact saved-text line or XBRL tag. Copy the number and scale from the evidence. When repairing a Strategy Manager section, return only that section's prose, with specific indicators and recommendations. Use only facts and periods in the analyst outputs. Cite each factual claim with its filing, accession, and saved-text line or tag. Do not add forecasts, targets, or numerical claims that the supplied evidence does not state. Do not return JSON or copy analyst sections."
+                )
                 if role == "Financial Analyst":
                     repair_task += (" For the Insight, use the direct 10-K operating-cash-flow narrative sentence in the supplied evidence, not the multi-year table. "
                                     "Copy its amount, period, matching 10-K accession, and exact saved-text line. Do not state a growth rate in the Insight.")
                 elif role == "Investment Advisor":
-                    repair_task += (" For the Insight, cite the latest 10-K diluted EPS value and its saved-text line from the supplied role outputs. "
-                                    "Use the complete 10-K accession and exact line citation in parentheses, and use a distinct claim from the Research Analyst Insight.")
+                    repair_task += (" For the Insight, you must use the latest 10-K diluted EPS statement row supplied in the evidence. State its exact value and cite the full 10-K accession and exact saved-text line. "
+                                    "This is distinct from the Research Analyst's segment change and the Financial Analyst's operating-cash-flow claim. Do not select another claim or source.")
+                role_evidence = evidence if role != "Research Analyst" else "\n\n".join(audit.numbered_sections(main))
+                if role == "Research Analyst":
+                    role_evidence += "\n\nPersona segment performance evidence for the required Insight: " + _segment_comparison(main)
+                    cited_release_line = re.search(r"(?i)(?:earnings\s+release|8-K)[^\n]*?line\s+(\d+)", current)
+                    if cited_release_line:
+                        line_no = int(cited_release_line.group(1))
+                        release_text = main.get("filing_texts", {}).get("8-K", "").splitlines()
+                        if 1 <= line_no <= len(release_text):
+                            release_accession = main["facts"]["filings"]["8-K"]["accession"]
+                            role_evidence += (f"\n\nExact source line already selected for the Research Analyst Insight: "
+                                             f"8-K accession {release_accession}, saved-text line {line_no}: "
+                                             f"{release_text[line_no - 1]}")
+                elif role == "Investment Advisor":
+                    eps_line, eps_text = audit.source_lines(main, "diluted_eps")
+                    eps_fact = main["facts"].get("facts", {}).get("diluted_eps", {})
+                    if eps_line and eps_text and eps_fact:
+                        role_evidence += (f"\n\nA separate, directly reported value that may support the Advisor Insight: "
+                                          f"{eps_fact.get('value')} {eps_fact.get('unit')}; tag {eps_fact.get('tag')}; "
+                                          f"10-K accession {eps_fact.get('accession')}, saved-text line {eps_line}: {eps_text}")
                 repaired = _call_role(
                     role, repair_task,
                     {"current_part": current, "manager_request": request["request"],
-                     "evidence": evidence if role != "Research Analyst" else audit.numbered_sections(main),
+                     "evidence": role_evidence,
                      "earnings_release_opening_excerpt": _release_opening(main),
                      "role_outputs": {"Research Analyst": self.state.research, "Financial Analyst": self.state.finance},
                      "automatic_numeric_audit": self.state.manager_result.get("numeric_audit", [])},

@@ -71,9 +71,11 @@ Flow decorators control the end-to-end order and repair branch. Each role runs w
 - [Lab 05 completion record and remaining student/partner work](Lab05_completion.md)
 - [Blank partner review worksheet](Lab05_partner_check.md)
 - [COST run with WMT, TGT, BJ and the logged $992.13 close: 30/30 verifier marks](../runs/COST_20261105_180611/verified_report.md)
+- [Final partner-selected UBER run with AMD, YUM, DUOL, PLTR: Manager PASS and 32/32 verifier marks](../runs/UBER_20261108_202611/verified_report.md)
 - The run folder contains SEC filing texts, facts, peer facts, every node's inputs and outputs, claims, code checks, final verifier marks, and the saved report.
 - Start the local browser interface with `.venv-crewai/bin/python -m streamlit run app.py`. The app accepts a ticker, optional peers and price, displays node progress, and presents the verified report when the run ends. `AppTest` passed.
-- The current verifier adds individual marks for all three insight lines, resolves citations to peer filings, and checks reported-unit conversions against nearby statement scale labels. The offline suite has 20 passing tests.
+- The current verifier adds individual marks for all three insight lines, resolves citations to peer filings, and checks reported-unit conversions against nearby statement scale labels. The offline suite has 33 passing tests.
+- The final UBER run saved filings, facts, all Flow node inputs and outputs, and final marks. The Strategy Manager passed without a repair, and the Verifier marked 32/32 claims correct. The partner review remains blank for the partner to complete.
 - The ASD-STE100 Lab 05 prompt is an AI-assisted draft at [lab-05-asd-ste100-draft.md](../prompts/lab-05-asd-ste100-draft.md). The course asks the student to rewrite it; the file does not claim student authorship.
 
 The ASD-STE100-style reconstructed request is in [reconstructed-week-03-crewai-flow.md](../prompts/reconstructed-week-03-crewai-flow.md).

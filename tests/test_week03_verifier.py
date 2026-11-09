@@ -273,6 +273,51 @@ GAAP Diluted EPS $ 3.11 $ 0.25 (92) %
         self.assertIn("saved-text line 9", enriched["Investment Advisor"])
         self.assertEqual(analyst_insight_audit(enriched, [company]), [])
 
+    def test_advisor_eps_insight_corrects_wrong_statement_line(self):
+        accession = "0000000000-26-000001"
+        company = {
+            "facts": {"ticker": "UBER", "filings": {"10-K": {"accession": accession}},
+                      "facts": {"diluted_eps": {"tag": "EarningsPerShareDiluted", "value": 4.73,
+                                                "accession": accession, "filing": "10-K"}}},
+            "filing_texts": {"10-K": "Consolidated Statements of Income\nNet income per share\nBasic $ 0.90 $ 4.71 $ 4.82\nDiluted $ 0.87 $ 4.56 $ 4.73\n"},
+        }
+        outputs = {"Investment Advisor":
+                   f"Insight: Diluted EPS was $4.73 (EarningsPerShareDiluted tag; 10-K accession {accession}, period 2025, line 2)."}
+        enriched, changes = enrich_insight_source_lines(outputs, [company])
+        self.assertIn(f"10-K accession {accession}, saved-text line 4", enriched["Investment Advisor"])
+        self.assertNotIn("line 2", enriched["Investment Advisor"])
+        self.assertEqual(changes[0]["citation_corrected_from"], 2)
+
+    def test_financial_insight_citation_puts_accession_before_line(self):
+        accession = "0001543151-26-000015"
+        cash_text = "Net cash provided by operating activities was $10.1 billion for the year ended December 31, 2025."
+        company = {
+            "facts": {"ticker": "UBER", "filings": {"10-K": {"accession": accession}},
+                      "facts": {"cash_from_operations": {"tag": "NetCashProvidedByUsedInOperatingActivities",
+                                                            "value": 10099000000, "period_end": "2025-12-31",
+                                                            "filing": "10-K", "accession": accession}}},
+            "filing_texts": {"10-K": "Consolidated Statements of Cash Flows\nNet cash provided by operating activities 7,137 10,099\nOperating Activities\n" + cash_text + "\n"},
+        }
+        output = {"Financial Analyst":
+                  f"Insight: {cash_text} (saved-text line 4; 10-K accession {accession})."}
+        enriched, changes = enrich_insight_source_lines(output, [company])
+        self.assertIn(f"10-K accession {accession}, saved-text line 4", enriched["Financial Analyst"])
+        self.assertNotIn("saved-text line 4; 10-K", enriched["Financial Analyst"])
+        self.assertTrue(changes)
+
+    def test_insight_enrichment_completes_earnings_release_citation_from_named_line(self):
+        accession = "0001543151-26-000039"
+        release = "\n".join(["header"] * 12 + [
+            "Business model changes negatively impacted total revenue growth by 8 percentage points."])
+        company = {"facts": {"ticker": "UBER", "filings": {"8-K": {"accession": accession}},
+                             "facts": {}},
+                   "filing_texts": {"8-K": release}}
+        outputs = {"Research Analyst":
+                   "Insight: Business model changes reduced revenue growth by 8 percentage points (earnings release line 13)."}
+        enriched, changes = enrich_insight_source_lines(outputs, [company])
+        self.assertIn(f"8-K accession {accession}, saved-text line 13", enriched["Research Analyst"])
+        self.assertEqual(changes[0]["filing"], "8-K")
+
     def test_insight_claims_are_marked_against_saved_line_for_each_analyst(self):
         accession = "0000000000-26-000001"
         citation = f"(10-K accession {accession}, saved-text line 2)"

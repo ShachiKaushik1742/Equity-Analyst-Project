@@ -1,0 +1,226 @@
+[
+  {
+    "id": "claim:uber_revenue",
+    "mark": "correct",
+    "reason": "Report value, tag, period, and accession match the saved XBRL fact.",
+    "source": "UBER 10-K accession 0001543151-26-000015; tag Revenues, period ending 2025-12-31",
+    "correction": null
+  },
+  {
+    "id": "claim:uber_operating_income",
+    "mark": "correct",
+    "reason": "Report value, tag, period, and accession match the saved XBRL fact.",
+    "source": "UBER 10-K accession 0001543151-26-000015; tag OperatingIncomeLoss, period ending 2025-12-31",
+    "correction": null
+  },
+  {
+    "id": "claim:uber_net_income",
+    "mark": "correct",
+    "reason": "Report value, tag, period, and accession match the saved XBRL fact.",
+    "source": "UBER 10-K accession 0001543151-26-000015; tag NetIncomeLoss, period ending 2025-12-31, saved-text line 1304",
+    "correction": null
+  },
+  {
+    "id": "claim:uber_diluted_eps",
+    "mark": "correct",
+    "reason": "Report value, tag, period, and accession match the saved XBRL fact.",
+    "source": "UBER 10-K accession 0001543151-26-000015; tag EarningsPerShareDiluted, period ending 2025-12-31, saved-text line 1307",
+    "correction": null
+  },
+  {
+    "id": "claim:uber_equity",
+    "mark": "correct",
+    "reason": "Report value, tag, period, and accession match the saved XBRL fact.",
+    "source": "UBER 10-K accession 0001543151-26-000015; tag StockholdersEquity, period ending 2025-12-31",
+    "correction": null
+  },
+  {
+    "id": "claim:uber_long_term_debt",
+    "mark": "correct",
+    "reason": "Report value, tag, period, and accession match the saved XBRL fact.",
+    "source": "UBER 10-K accession 0001543151-26-000015; tag LongTermDebtNoncurrent, period ending 2025-12-31, saved-text line 1263",
+    "correction": null
+  },
+  {
+    "id": "claim:uber_current_debt",
+    "mark": "correct",
+    "reason": "Report value, tag, period, and accession match the saved XBRL fact.",
+    "source": "UBER 10-K accession 0001543151-26-000015; tag LongTermDebtCurrent, period ending 2025-12-31",
+    "correction": null
+  },
+  {
+    "id": "claim:uber_cash_from_operations",
+    "mark": "correct",
+    "reason": "Report value, tag, period, and accession match the saved XBRL fact.",
+    "source": "UBER 10-K accession 0001543151-26-000015; tag NetCashProvidedByUsedInOperatingActivities, period ending 2025-12-31, saved-text line 1423",
+    "correction": null
+  },
+  {
+    "id": "claim:uber_capex",
+    "mark": "correct",
+    "reason": "Report value, tag, period, and accession match the saved XBRL fact.",
+    "source": "UBER 10-K accession 0001543151-26-000015; tag PaymentsToAcquirePropertyPlantAndEquipment, period ending 2025-12-31",
+    "correction": null
+  },
+  {
+    "id": "claim:uber_revenue_prior_year",
+    "mark": "correct",
+    "reason": "Report value, tag, period, and accession match the saved XBRL fact.",
+    "source": "UBER 10-K accession 0001543151-26-000015; tag Revenues, period ending 2024-12-31",
+    "correction": null
+  },
+  {
+    "id": "claim:uber_ratio_revenue_growth",
+    "mark": "correct",
+    "reason": "Ratio recomputed from its saved inputs and formula.",
+    "source": "UBER ratio formula revenue / revenue_prior_year - 1",
+    "correction": null
+  },
+  {
+    "id": "claim:uber_ratio_operating_margin",
+    "mark": "correct",
+    "reason": "Ratio recomputed from its saved inputs and formula.",
+    "source": "UBER ratio formula operating_income / revenue",
+    "correction": null
+  },
+  {
+    "id": "claim:uber_ratio_return_on_average_equity",
+    "mark": "correct",
+    "reason": "Ratio recomputed from its saved inputs and formula.",
+    "source": "UBER ratio formula net_income / ((current_equity + prior_equity) / 2)",
+    "correction": null
+  },
+  {
+    "id": "claim:uber_ratio_debt_to_equity",
+    "mark": "correct",
+    "reason": "Ratio recomputed from its saved inputs and formula.",
+    "source": "UBER ratio formula (long_term_debt + current_portion_debt) / current_equity",
+    "correction": null
+  },
+  {
+    "id": "claim:uber_ratio_free_cash_flow",
+    "mark": "correct",
+    "reason": "Ratio recomputed from its saved inputs and formula.",
+    "source": "UBER ratio formula cash_from_operations - additions_to_property_and_equipment",
+    "correction": null
+  },
+  {
+    "id": "claim:uber_quarter_revenue",
+    "mark": "correct",
+    "reason": "Quoted filing text and report value are present.",
+    "source": "UBER 8-K accession 0001543151-26-000039, saved-text line 35",
+    "correction": null
+  },
+  {
+    "id": "claim:uber_quarter_diluted_eps",
+    "mark": "correct",
+    "reason": "Quoted filing text and report value are present.",
+    "source": "UBER 8-K accession 0001543151-26-000039, saved-text line 39",
+    "correction": null
+  },
+  {
+    "id": "claim:amd_revenue",
+    "mark": "correct",
+    "reason": "Report value, tag, period, and accession match the saved XBRL fact.",
+    "source": "AMD 10-K accession 0000002488-26-000018; tag RevenueFromContractWithCustomerExcludingAssessedTax, period ending 2025-12-27",
+    "correction": null
+  },
+  {
+    "id": "claim:amd_operating_income",
+    "mark": "correct",
+    "reason": "Report value, tag, period, and accession match the saved XBRL fact.",
+    "source": "AMD 10-K accession 0000002488-26-000018; tag OperatingIncomeLoss, period ending 2025-12-27, saved-text line 824",
+    "correction": null
+  },
+  {
+    "id": "claim:amd_ratio_operating_margin",
+    "mark": "correct",
+    "reason": "Ratio recomputed from its saved inputs and formula.",
+    "source": "AMD ratio formula operating_income / revenue",
+    "correction": null
+  },
+  {
+    "id": "claim:yum_revenue",
+    "mark": "correct",
+    "reason": "Report value, tag, period, and accession match the saved XBRL fact.",
+    "source": "YUM 10-K accession 0001041061-26-000084; tag Revenues, period ending 2025-12-31, saved-text line 1083",
+    "correction": null
+  },
+  {
+    "id": "claim:yum_operating_income",
+    "mark": "correct",
+    "reason": "Report value, tag, period, and accession match the saved XBRL fact.",
+    "source": "YUM 10-K accession 0001041061-26-000084; tag OperatingIncomeLoss, period ending 2025-12-31",
+    "correction": null
+  },
+  {
+    "id": "claim:yum_ratio_operating_margin",
+    "mark": "correct",
+    "reason": "Ratio recomputed from its saved inputs and formula.",
+    "source": "YUM ratio formula operating_income / revenue",
+    "correction": null
+  },
+  {
+    "id": "claim:duol_revenue",
+    "mark": "correct",
+    "reason": "Report value, tag, period, and accession match the saved XBRL fact.",
+    "source": "DUOL 10-K accession 0001628280-26-012494; tag RevenueFromContractWithCustomerExcludingAssessedTax, period ending 2025-12-31",
+    "correction": null
+  },
+  {
+    "id": "claim:duol_operating_income",
+    "mark": "correct",
+    "reason": "Report value, tag, period, and accession match the saved XBRL fact.",
+    "source": "DUOL 10-K accession 0001628280-26-012494; tag OperatingIncomeLoss, period ending 2025-12-31",
+    "correction": null
+  },
+  {
+    "id": "claim:duol_ratio_operating_margin",
+    "mark": "correct",
+    "reason": "Ratio recomputed from its saved inputs and formula.",
+    "source": "DUOL ratio formula operating_income / revenue",
+    "correction": null
+  },
+  {
+    "id": "claim:pltr_revenue",
+    "mark": "correct",
+    "reason": "Report value, tag, period, and accession match the saved XBRL fact.",
+    "source": "PLTR 10-K accession 0001321655-26-000011; tag RevenueFromContractWithCustomerExcludingAssessedTax, period ending 2025-12-31",
+    "correction": null
+  },
+  {
+    "id": "claim:pltr_operating_income",
+    "mark": "correct",
+    "reason": "Report value, tag, period, and accession match the saved XBRL fact.",
+    "source": "PLTR 10-K accession 0001321655-26-000011; tag OperatingIncomeLoss, period ending 2025-12-31",
+    "correction": null
+  },
+  {
+    "id": "claim:pltr_ratio_operating_margin",
+    "mark": "correct",
+    "reason": "Ratio recomputed from its saved inputs and formula.",
+    "source": "PLTR ratio formula operating_income / revenue",
+    "correction": null
+  },
+  {
+    "id": "claim:uber_insight_research",
+    "mark": "correct",
+    "reason": "Insight number(s) match the cited saved filing line.",
+    "source": "UBER 10-K accession 0001543151-26-000015, saved-text line 776",
+    "correction": null
+  },
+  {
+    "id": "claim:uber_insight_financial",
+    "mark": "correct",
+    "reason": "Insight number(s) match the cited saved filing line.",
+    "source": "UBER 10-K accession 0001543151-26-000015, saved-text line 1086",
+    "correction": null
+  },
+  {
+    "id": "claim:uber_insight_advisor",
+    "mark": "correct",
+    "reason": "Insight number(s) match the cited saved filing line.",
+    "source": "UBER 10-K accession 0001543151-26-000015, saved-text line 1307",
+    "correction": null
+  }
+]

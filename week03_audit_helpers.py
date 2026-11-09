@@ -70,7 +70,7 @@ def analyst_insight_audit(outputs: dict[str, str],
 
 def enrich_insight_source_lines(outputs: dict[str, str],
                                companies: list[dict[str, Any]]) -> tuple[dict[str, str], list[dict[str, Any]]]:
-    """Add exact saved-text lines when a role cites a fact tag and accession but omits its line."""
+    """Complete source citations when a role names a filing line or XBRL fact."""
     enriched = dict(outputs)
     changes: list[dict[str, Any]] = []
     line_citation = re.compile(r"\b(?:saved[- ]text\s+)?line\s+\d+\b", re.I)
@@ -81,7 +81,42 @@ def enrich_insight_source_lines(outputs: dict[str, str],
                 continue
             normalized = normalize_citation(row)
             accession_match = re.search(r"(\d{10})-(\d{2})-(\d{6})", normalized)
-            if not accession_match or line_citation.search(normalized):
+            if not accession_match:
+                cited_line = re.search(r"\bline\s+(\d+)\b", normalized, re.I)
+                form_match = re.search(r"\b(10-K|10-Q|8-K)\b", normalized, re.I)
+                if not form_match and re.search(r"earnings\s+release", normalized, re.I):
+                    form_name = "8-K"
+                else:
+                    form_name = form_match.group(1).upper() if form_match else ""
+                if not cited_line or form_name not in {"10-K", "10-Q", "8-K"}:
+                    continue
+                source_company = next((company for company in companies
+                                       if company["facts"].get("filings", {}).get(form_name)), None)
+                if not source_company:
+                    continue
+                filing_meta = source_company["facts"]["filings"][form_name]
+                source_line = int(cited_line.group(1))
+                source_rows = source_company.get("filing_texts", {}).get(form_name, "").splitlines()
+                if source_line < 1 or source_line > len(source_rows) or not source_rows[source_line - 1].strip():
+                    continue
+                old_citation = re.search(
+                    r"\s*\([^)]*(?:earnings\s+release|10-K|10-Q|8-K)[^)]*\bline\s+\d+[^)]*\)",
+                    row, re.I)
+                base = row[:old_citation.start()] + row[old_citation.end():] if old_citation else row
+                updated = (base.rstrip() +
+                           f" ({form_name} accession {filing_meta['accession']}, saved-text line {source_line})")
+                lines[index] = updated
+                changes.append({"role": role, "filing": form_name,
+                                "accession": filing_meta["accession"],
+                                "saved_text_line": source_line,
+                                "citation_added": updated})
+                continue
+            advisor_eps_citation = (role == "Investment Advisor" and
+                                    bool(re.search(r"EarningsPerShareDiluted|diluted\s+EPS", normalized, re.I)))
+            financial_cash_citation = (role == "Financial Analyst" and
+                                       bool(re.search(r"net cash provided by operating activities", normalized, re.I)))
+            if not accession_match or (line_citation.search(normalized) and
+                                       not (advisor_eps_citation or financial_cash_citation)):
                 continue
             accession = "-".join(accession_match.groups())
             source_company = next((company for company in companies
@@ -92,6 +127,41 @@ def enrich_insight_source_lines(outputs: dict[str, str],
             form = next(name for name, item in source_company["facts"].get("filings", {}).items()
                         if item.get("accession") == accession)
             source_text = source_company.get("filing_texts", {}).get(form, "")
+            if role == "Financial Analyst" and re.search(r"net cash provided by operating activities", normalized, re.I):
+                cash_line, cash_text = cash_operations_narrative_line(source_company)
+                cited_line = re.search(r"\bline\s+(\d+)\b", normalized, re.I)
+                if cash_line and cash_text and cited_line:
+                    old_citation = re.search(
+                        r"\s*\([^()]*\baccession\b[^()]*\)\s*\.?\s*$", row, re.I)
+                    if old_citation and int(cited_line.group(1)) == cash_line:
+                        base = row[:old_citation.start()] + row[old_citation.end():]
+                        updated = (base.rstrip() +
+                                   f" (10-K accession {source_company['facts']['filings']['10-K']['accession']}, "
+                                   f"saved-text line {cash_line})")
+                        lines[index] = updated
+                        changes.append({"role": role, "filing": "10-K",
+                                        "accession": source_company["facts"]["filings"]["10-K"]["accession"],
+                                        "saved_text_line": cash_line,
+                                        "citation_normalized": updated})
+                        continue
+            if role == "Investment Advisor" and re.search(r"EarningsPerShareDiluted|diluted\s+EPS", normalized, re.I):
+                eps_line, eps_text = source_lines(source_company, "diluted_eps")
+                cited_line = re.search(r"\bline\s+(\d+)\b", normalized, re.I)
+                if eps_line and eps_text and cited_line and int(cited_line.group(1)) != eps_line:
+                    filing_meta = source_company["facts"]["filings"][form]
+                    old_citation = re.search(
+                        r"\s*\([^()]*\baccession\b[^()]*\)\s*(?:,\s*line\s+\d+\)?)?\s*\.?\s*$",
+                        row, re.I)
+                    base = row[:old_citation.start()] + row[old_citation.end():] if old_citation else row
+                    updated = (base.rstrip() +
+                               f" (10-K accession {filing_meta['accession']}, saved-text line {eps_line})")
+                    lines[index] = updated
+                    changes.append({"role": role, "filing": "10-K",
+                                    "accession": filing_meta["accession"],
+                                    "saved_text_line": eps_line,
+                                    "citation_corrected_from": int(cited_line.group(1)),
+                                    "citation_added": updated})
+                    continue
             tags = [fact.get("tag") for fact in source_company["facts"].get("facts", {}).values()
                     if fact.get("tag") and fact.get("tag") in normalized]
             if not tags:

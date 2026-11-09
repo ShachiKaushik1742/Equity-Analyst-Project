@@ -1,0 +1,135 @@
+{
+  "ticker": "DUOL",
+  "title": "Duolingo, Inc.",
+  "cik": "0001562088",
+  "fiscal_year_end": "2025-12-31",
+  "filings": {
+    "10-K": {
+      "accession": "0001628280-26-012494",
+      "accepted": "2026-02-26T23:35:35.000Z",
+      "filing_date": "2026-02-27",
+      "document": "duol-20251231.htm",
+      "index_url": "https://www.sec.gov/Archives/edgar/data/1562088/000162828026012494/index.json"
+    },
+    "10-Q": {
+      "accession": "0001628280-26-069692",
+      "accepted": "2026-11-03T23:01:57.000Z",
+      "filing_date": "2026-11-04",
+      "document": "duol-20260930.htm",
+      "index_url": "https://www.sec.gov/Archives/edgar/data/1562088/000162828026069692/index.json"
+    },
+    "8-K": {
+      "accession": "0001628280-26-069474",
+      "accepted": "2026-11-03T21:06:09.000Z",
+      "filing_date": "2026-11-03",
+      "document": "q3fy26duolingo9-30x26xpres.htm",
+      "index_url": "https://www.sec.gov/Archives/edgar/data/1562088/000162828026069474/index.json"
+    }
+  },
+  "facts": {
+    "revenue": {
+      "label": "revenue",
+      "value": 1037589000,
+      "unit": "USD",
+      "tag": "RevenueFromContractWithCustomerExcludingAssessedTax",
+      "period_start": "2025-01-01",
+      "period_end": "2025-12-31",
+      "filing": "10-K",
+      "filed": "2026-02-27",
+      "accession": "0001628280-26-012494"
+    },
+    "operating_income": {
+      "label": "operating_income",
+      "value": 135570000,
+      "unit": "USD",
+      "tag": "OperatingIncomeLoss",
+      "period_start": "2025-01-01",
+      "period_end": "2025-12-31",
+      "filing": "10-K",
+      "filed": "2026-02-27",
+      "accession": "0001628280-26-012494"
+    },
+    "net_income": {
+      "label": "net_income",
+      "value": 414065000,
+      "unit": "USD",
+      "tag": "NetIncomeLoss",
+      "period_start": "2025-01-01",
+      "period_end": "2025-12-31",
+      "filing": "10-K",
+      "filed": "2026-02-27",
+      "accession": "0001628280-26-012494"
+    },
+    "diluted_eps": {
+      "label": "diluted_eps",
+      "value": 8.57,
+      "unit": "USD/shares",
+      "tag": "EarningsPerShareDiluted",
+      "period_start": "2025-01-01",
+      "period_end": "2025-12-31",
+      "filing": "10-K",
+      "filed": "2026-02-27",
+      "accession": "0001628280-26-012494"
+    },
+    "equity": {
+      "label": "equity",
+      "value": 1347006000,
+      "unit": "USD",
+      "tag": "StockholdersEquity",
+      "period_start": null,
+      "period_end": "2025-12-31",
+      "filing": "10-K",
+      "filed": "2026-02-27",
+      "accession": "0001628280-26-012494"
+    },
+    "long_term_debt": null,
+    "current_debt": null,
+    "cash_from_operations": {
+      "label": "cash_from_operations",
+      "value": 387823000,
+      "unit": "USD",
+      "tag": "NetCashProvidedByUsedInOperatingActivities",
+      "period_start": "2025-01-01",
+      "period_end": "2025-12-31",
+      "filing": "10-K",
+      "filed": "2026-02-27",
+      "accession": "0001628280-26-012494"
+    },
+    "capex": {
+      "label": "capex",
+      "value": 18096000,
+      "unit": "USD",
+      "tag": "PaymentsToAcquirePropertyPlantAndEquipment",
+      "period_start": "2025-01-01",
+      "period_end": "2025-12-31",
+      "filing": "10-K",
+      "filed": "2026-02-27",
+      "accession": "0001628280-26-012494"
+    },
+    "revenue_prior_year": {
+      "label": "revenue_prior_year",
+      "value": 748024000,
+      "unit": "USD",
+      "tag": "RevenueFromContractWithCustomerExcludingAssessedTax",
+      "period_start": "2024-01-01",
+      "period_end": "2024-12-31",
+      "filing": "10-K",
+      "filed": "2026-02-27",
+      "accession": "0001628280-26-012494"
+    }
+  },
+  "quarter": {
+    "revenue_current": null,
+    "revenue_prior_quarter": null,
+    "revenue_growth": null,
+    "revenue_release_line": "",
+    "revenue_release_line_number": null,
+    "revenue_number_line_number": null,
+    "diluted_eps_current": null,
+    "diluted_eps_prior_quarter": null,
+    "eps_release_line": "",
+    "eps_release_line_number": null,
+    "eps_number_line_number": null,
+    "release_units": "Dollars in millions except per-share data, as captioned in the release; quarter comparison uses the first two columns."
+  }
+}
